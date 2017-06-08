@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>RESULTS PAGE</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<style>
+		.lineMessage{
+			
+		}
+		.messageDiv{
+			margin-bottom: 10px;
+			height: 40px;
+			transition:background-color 0.8s,height 0.8s;
+			overflow: hidden;
+			background-color: rgb(248, 248, 248);
+			font-family: "Hiragino Sans GB", "Microsoft YaHei",
+             "WenQuanYi Micro Hei", sans-serif;
+             /* box-shadow: 2px 2px 6px; */             
+             border: 1px solid transparent;
+             border-color:#ccc;
+ 			 border-radius: 4px;
+ 			 transition-delay: 0.05s;
+ 			 transition-duration:0.5s;
+		}
+		.messageDiv:hover,
+		.messageDiv:active{
+			background-color:rgb(51,122,188);
+			height: 300px;
+		
+		}
+		.messageDiv:hover>.messageName{
+			color: rgb(255, 255, 255);
+		}
+		.clear{
+			clear: both;
+		}
+		@-webkit-keyframes myfirst /* Safari and Chrome */
+		{
+			from {}
+			to {background:#00CC99;}
+		}
+		.messageName{
+			line-height: 40px;
+			font-size: 25px;
+			transition: font-size 0.8s,color 0.8s ;
+			transition-delay: 0.2s;
+		}
+		.list-group-item{
+			color: #003333;
+		}
+	</style>
+</head>
+<body>
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="navbar-header">
+			<a href="C:/app/projects/crapyWeb/index.html" class="navbar-brand ">Automatic crawler</a>
+		</div>
+		<div>
+			<ul class="nav navbar-nav ">
+				<li class="active"><a href="" id="detail">DETAIL</a></li>
+				<li class="dropdown">
+					<a href="" class="dropdown-toggle" data-toggle="dropdown">
+						ASSORTMENT
+						<b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu">
+						<li><a href="" id="classify">1</a></li>
+						<li><a href="" id="classify">2</a></li>
+						<li><a href="" id="classify">3</a></li>
+					</ul>
+				</li>
+				<li><a href="">About us</a></li>
+			</ul>
+		</div>
+		<div>
+			<form action="" class="navbar-form navbar-left" role="search">
+				<div class="form-group">
+					<input type="text" class="form-control" placeholder="Search">					
+				</div>
+				<button type="submit" class="btn btn-default">Submit</button> 
+			</form>
+		</div>
+	</nav>
+<!-- 		<div class="lineMessage">
+	<div class="col-sm-3  messageDiv">
+		<p class="text-center messageName">鞋子</p>
+		<ul class="list-group">
+			<li class="list-group-item">价格：xxx$</li>
+			<li class="list-group-item">店铺：xxx</li>
+			<li class="list-group-item">销售额：xxx</li>
+			<li class="list-group-item">24*7 支持</li>
+			<li class="list-group-item">评论：xxx
+			<button type="button" class="btn btn-default btn-sm" data-toggle = "modal" data-target = "#myModal">show</button>					
+			</li>
+		</ul>
+	</div>
+	<div class="col-sm-offset-1 col-sm-3  messageDiv">
+		
+	</div>
+	<div class="col-sm-offset-1 col-sm-3  messageDiv">
+		
+	</div>	
+</div> -->
+	<div class="container messageContainer">
+
+	</div>
+
+	<div class="container">
+		<div class="col-sm-offset-4 col-sm-3 text-center">	
+			<ul class="pagination">
+				<li><a href="" >&laquo;</a></li>
+				<li class="active"><a href="" >1</a></li>
+				<li><a href="">2</a></li>
+				<li><a href="">3</a></li>
+				<li><a href="">4</a></li>
+				<li><a href="">5</a></li>
+				<li><a href="">&raquo;</a></li>
+			</ul>
+		</div>
+	</div>
+	
+	<footer>
+		<div class="container">
+			<hr>
+			<div class="col-sm-offset-4 col-sm-3 text-center">
+			Copyright <span class="glyphicon glyphicon-copyright-mark"></span> 2017 宝石结晶虫
+			</div>	
+		</div>
+	</footer>
+	
+	<!--   modai  -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" 
+	aria-labelledby="myModalLabel" aria-hidden="true">
+	   <div class="modal-dialog">
+	    	<div class="modal-content">
+		        <div class="modal-header">
+		            <button type="button" class="close" 
+		               data-dismiss="modal" aria-hidden="true">&times;</button>
+		            <h4 class="modal-title" id="myModalLabel">评论</h4>
+		        </div>
+		        <div class="modal-body">
+		        	<ul class="list-group">
+						<li class="list-group-item">评论</li>
+						<li class="list-group-item">评论</li>
+						<li class="list-group-item">评论</li>
+						<li class="list-group-item">评论</li>
+						<li class="list-group-item">评论</li>
+					</ul>
+		        </div>
+		        <div class="modal-footer">
+		            <button type="button" class="btn btn-primary" 
+		               data-dismiss="modal">关闭 </button>
+		        </div>
+	    	</div>
+	      <!-- /.modal-content -->
+	    </div>
+      <!-- /.modal -->
+    </div>
+
+
+
+    <script type="text/javascript">
+    /*	$("#myModal").option({
+    		keyboard:true
+    	});*/
+
+    	var data = {
+    		"NAME":{
+    			"price":"PRICE",
+    			"shop":"SHOP",
+    			"sales amount":"AMOUNT",
+    			"comment":"COMMENT"
+    		},
+    		"NAME2":{
+    			"price":"PRICE",
+    			"shop":"SHOP",
+    			"sales amount":"AMOUNT",
+    			"comment":"COMMENT"
+    		},
+    		"NAME3":{
+    			"price":"PRICE",
+    			"shop":"SHOP",
+    			"sales amount":"AMOUNT",
+    			"comment":"COMMENT"
+    		},
+    		"NAME4":{
+    			"price":"PRICE",
+    			"shop":"SHOP",
+    			"sales amount":"AMOUNT",
+    			"comment":"COMMENT"
+    		},
+    		"NAME5":{
+    			"price":"PRICE",
+    			"shop":"SHOP",
+    			"sales amount":"AMOUNT",
+    			"comment":"COMMENT"
+    		},
+    		"NAME6":{
+    			"price":"PRICE",
+    			"shop":"SHOP",
+    			"sales amount":"AMOUNT",
+    			"comment":"COMMENT"
+    		},
+    		"NAME7":{
+    			"price":"PRICE",
+    			"shop":"SHOP",
+    			"sales amount":"AMOUNT",
+    			"comment":"COMMENT"
+    		},
+    		"NAME8":{
+    			"price":"PRICE",
+    			"shop":"SHOP",
+    			"sales amount":"AMOUNT",
+    			"comment":"COMMENT"
+    		}
+    		
+    	};
+    	var curLineMessageNum = 0;
+    	var curLineMessageId = 0;
+    	var test = 60;
+    	while(test > 0)
+    	{
+    		test -- ;
+			for (var key in data){
+				if(curLineMessageId === 60 &&curLineMessageNum === 2)
+					test = -1;
+				console.log(1);
+				var $draw = ''
+				if(curLineMessageNum === 0)
+					$draw += '<div class="lineMessage"><div class="col-sm-3  messageDiv clear">'
+				else 
+					$draw += '<div class="col-sm-offset-1 col-sm-3  messageDiv">'
+				
+				$draw += '<p class="text-center messageName">'+ key + '</p><ul class="list-group">';
+					
+				for (var i in data[key])
+				{
+					$draw += '<li class="list-group-item">'+i+':'+data[key][i]+'</li>';
+				}
+
+				$draw += '</ul></div>';
+				if(curLineMessageNum === 0)
+				{
+					$draw += '</div>';
+					$('div.messageContainer').append($draw);
+					curLineMessageNum++;
+				}
+				else if(curLineMessageNum === 2)	
+				{
+					$now = $('div.lineMessage')[curLineMessageId]
+					$($now).append($draw);	
+					curLineMessageNum = 0;
+					curLineMessageId++;
+				}else{
+					$now = $('div.lineMessage')[curLineMessageId] ;
+					$($now).append($draw);	
+					curLineMessageNum++;
+				}
+			}
+		}
+    </script>
+</body>
+</html>
