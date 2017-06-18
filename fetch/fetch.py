@@ -82,6 +82,7 @@ class Fetcher:
 				if(not self.bf.isContain(url)):
 					print ("put in url:"+url+'\n')
 					self.pools.put(url)
+					self.bf.add(url)
 
 if __name__ == '__main__':
 	print "start"
@@ -90,7 +91,7 @@ if __name__ == '__main__':
 	projectName = u"京东"
 	proto = 'https://'
 	host = 'www.jd.com'
-	start_url = 'https://www.jd.com/'
+	start_url = 'https://item.jd.com/3819563.html'
 	fNum = 0
 
 	fetcher = Fetcher(proto,host,start_url)
