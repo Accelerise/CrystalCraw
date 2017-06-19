@@ -16,10 +16,19 @@ list_id = '151304088'
 list_url = 'http://music.163.com/#/playlist?id='+list_id
 save_path = ""
 
+from selenium import webdriver
+
+options = webdriver.ChromeOptions()
+
+options.binary_location = '/opt/google/chrome-unstable/google-chrome-unstable'
+
+options.add_argument('headless')
+
+options.add_argument('window-size=1200x600')
+
+driver = webdriver.Chrome(chrome_options=options)
 
 
-
-driver = webdriver.Firefox()
 
 def createDir(list_name):
     global save_path
