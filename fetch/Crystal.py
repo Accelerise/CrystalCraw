@@ -11,113 +11,130 @@ from Tool import Queue
 from Tool import File
 import Xpath
 import Rules
+import requests
+import Downloader
+import Parser
+import Configer
 
 class Crystal:
 	# 构造函数
 	def __init__(self,projectName):
-		self._projectName = ""
+		self._projectName = projectName
 		self._xpath = None
 		self._rules = None
+		self._parser = None
+		self._downloader = None
+		self._configer = None
+		self._bf = None
+		self._queue = None
 
-	#
+		self.initComponents()
+
+	# 初始化各组件
+	def initComponents(self):
+		self._configer = Configer.getConfig()
+		self.initXpath()
+		self.initRules()
+		self.initDownloader()
+		self.initBF()
+		self.initQueue()
+		self.initParser()
+
+	# 运行
 	def run():
-		# 获取name->xpath
+		self.createDir(self.projectName)
+		self.initComponents()
+		start_url = []
+		for each in start_url:
+			self._queue.put(start_url)
+		
+		while not self._queue.empty():
+			pagelink = self._queue.pop()
+			host = self.extractHost()
+			page = self._downloader.get(pagelink)
+			self._parser.process_item(host=host,pagelink=pagelink,page=page)
+		
+
+
+	# 初始化xpath
+	def initXpath():
+		# 获取name->xpath字典
 		self._xpath = Xpath()
 		if(not self._xpath.isManual()):
-			dict = getXpathFromFile("")
-			self._xpath.initXpath(dict)
-		
-		# 获取url->callback
+			dic = self.getXpathFromMGDB("")
+			self._xpath.initXpath(dic)
+
+	# 初始化rules
+	def initRules():
+		# 获取url规则数组
 		self._rules = Rules()
 		if(not self._rules.isManual()):
-			dict = getRulesFromFile("")
-			self._rules.initRules(dict)
-		# 确定文档下载方式
-		# 开始下载
-		# 确认下载规则有效
-		# 分布式运行
+			arr = self.getRulesFromMGDB("")
+			# 如果能获取到数据，说明用户在web前台填写了url规则
+			if arr is not None:
+				self._rules.initRules(arr)
+	# 初始化downloader
+	def initDownloader():
+		self._downloader = Downloader.getInstance()
+		if( self.getIfChromeEnable() ):
+			self._downloader.setChromeEnable(True)
 
-	# 初始化队列
-	def createQueue(self,number = 10000000,errorRate=0.00001):
-		self.bf = Bloomfilter(number,errorRate)
-		self.bf.add(self.start_url)
+	# void 初始化过滤器
+	# - int -   number(可选) 过滤器最大过滤数
+	# - float - errorRate(可选) 过滤器允许的哈希冲突率
+	def initBF(self,number = 1000000,errorRate=0.0001):
+		# if 配置文件中配置了过滤器的数目和错误率:
+		# number = 
+		# errorRate =
+		self._bf = Bloomfilter(number,errorRate)
+
+	def initQueue(self):
+		self._queue = Queue()
+
+	def initParser(self):
+		self._parser = Parser()
+		#self._parser.setProto("http://") # 默认为https://，最好根据用户的输入智能设置 #
+		self._parser.setXpathBox(self._xpath.getXpath())
+		self._parser.setRules(self._rules)
+		self._parser.setQueue(self._queue)
+		self._parser.setBF(self._bf)
+
+	def extractHost(self,url):
+		reobj = re.compile(r"""(?xi)\A
+		[a-z][a-z0-9+\-.]*://                                # Scheme
+		([a-z0-9\-._~%!$&'()*+,;=]+@)?                       # User
+		([a-z0-9\-._~%]+                                     # Named or IPv4 host
+		|\[[a-z0-9\-._~%!$&'()*+,;=:]+\])                    # IPv6+ host
+		""")
+		match = reobj.search(url)
+		if match:
+			return match.group(2)
+		else:
+			return False
 	
 	# 创建工作目录
 	def createDir(self,projectName):
 		self.fileTool = File()
 		self.fileTool.setDir(projectName)
 
-	# 去除文件名中的非法字符 (Windows)
-	def validateTitle(title):
-	    rstr = ur"[\/\\\:\*\?\"\<\>\|]"  # '/\:*?"<>|'
-	    new_title = re.sub(rstr, "", title)
-	    return new_title
-	# 修正Url格式
-	def validateUrl(self,url):
-		# 给host拼接协议 
-		# 如 www.amazon.cn => proto+www.amazon.cn
-		pat = re.compile(r'^(\w+?(\.\w+?))',re.S)
-		url = pat.sub(self.proto + r'\1',url)
-		# 给相对路径拼接协议（proto）和主机（host）
-		# 如 /gp/help/display.html => proto+host+/gp/help/display.html
-		pat = re.compile(r'^/([^/])')
-		url = pat.sub(self.proto + self.host +r'/\1',url)
-		# 给双斜杠拼接协议
-		# 如 //channel.jd.com => proto+channel.jd.com
-		pat = re.compile(r'^//',re.S)
-		url = pat.sub(self.proto , url)
+	
+	# 从数据库获取给定的xpath规则
+	def getXpathFromMGDB():
+		pass
 
-		return url
-	# 下载页面
-	def download(self):
-		import sys 
-		reload(sys) 
-		sys.setdefaultencoding('utf8')   
-		self.pools.put(self.start_url)
-		while not self.pools.empty():
-			url = self.pools.pop()
-			print ("downloading..."+url+'\n')
-			page = os.popen('google-chrome-unstable --headless --disable-gpu --dump-dom '+url)
-			res = page.read()
-			page.close()
-			global fNum
-			fNum = fNum+1
-			filename = "file" + str(fNum)+".html"
-			self.fileTool.fileIn(filename,u"该页面来自"+url+"<br/>"+res)
-			# 防止因报错而退出
-			try:
-				dom = etree.HTML(res)
-				urls = dom.xpath('//a[not(contains(@href,"javasc"))]/@href')
-			except :
-			    pass
+	# 从数据库获取给定的url规则
+	def getRulesFromMGDB():
+		pass
 
-			if(fNum >= 30):
-				break
-			# self.pools = re.findall(r'<a(.*?)</a>', res, re.S)
-			i = 0
-			for url in urls:
-				i = i+1
-				url = self.validateUrl(url)
-				if(not self.bf.isContain(url)):
-					print ("put in url:"+url+'\n')
-					self.pools.put(url)
-					self.bf.add(url)
-
+	# 从数据库获取是否使用chrome-headless下载页面
+	def getIfChromeEnable():
+		pass
 if __name__ == '__main__':
 	print "start"
 
 	start = datetime.datetime.now()
-	projectName = u"京东"
-	proto = 'https://'
-	host = 'www.jd.com'
-	start_url = 'https://item.jd.com/3819563.html'
-	fNum = 0
-
-	fetcher = Fetcher(proto,host,start_url)
-	fetcher.createQueue()
-	fetcher.createDir(projectName)
-
-	fetcher.download()
+	project = Crystal("京东")
+	project.run()
 	end = datetime.datetime.now()
 	print "end"
 	print "time: ", end-start

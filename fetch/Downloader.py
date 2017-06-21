@@ -6,30 +6,46 @@ import requests
 class Downloader:
 	# 下载页面，提供两种方法 1.requests  2.chrome-headless
 	_downloader = None
+	# 默认使用requests
+	chrome_enable = False
 
 	# 构造函数
 	def __init__(self):
-		self.options = webdriver.ChromeOptions()
-		self.options.binary_location = '/opt/google/chrome-unstable/google-chrome-unstable'
-		self.options.add_argument('headless')
-		self.options.add_argument('window-size=1200x600')
+		options = webdriver.ChromeOptions()
+		options.binary_location = '/opt/google/chrome-unstable/google-chrome-unstable'
+		options.add_argument('headless')
+		options.add_argument('window-size=1200x600')
 		self.driver = webdriver.Chrome(chrome_options=options)
 
 	# 单例模式
-	def getInstance():
-		if _downloader is None:
-			_downloader = Downloader()
-		return _downloader
+	@classmethod
+	def getInstance(cls):
+		if cls._downloader is None:
+			cls._downloader = Downloader()
+		return cls._downloader
 
+	# 下载页面
+	def get(self,url):
+		page = ""
+		if self.chrome_enable :
+			page = self.getByChrome(url)
+		else:
+			page = self.getByRequests(url)
+		return page
 
-	# 1.收集url
+	# 开启使用chrome-headless
+	def setChromeEnable(self,enable):
+		self.chrome_enable = enable
+
+	# 1.requests
 	def getByRequests(self,url):
 		page = requests.get(url).content.decode("utf-8")
 		return page
 
-	# 2.分析详情页并收集url
+	# 2.chrome-headless
 	def getByChrome(self,url):
-		page = self.driver.get(url)
+		self.driver.get(url)
+		page = self.driver.find_elements_by_xpath("/html")[0].get_attribute("innerHTML")
 		self.driver.close()
 		return page
 
@@ -37,13 +53,12 @@ class Downloader:
 
 
 if __name__ == '__main__':
-	xpath = Xpath()
+	downloader = Downloader.getInstance()
+	print Downloader.chrome_enable
+	print downloader.chrome_enable
+	print downloader.get("http://localhost")
+	downloader.setChromeEnable(True)
+	print Downloader.chrome_enable
+	print downloader.chrome_enable
+	print downloader.get("http://localhost")
 
-	if xpath.isManual():
-		print "xpath是手动编写的"
-	else:
-		print "xpath不是手动编写的"
-
-	dict = {'Name': '//a/@href', 'time': "//time/text()"}
-	xpath.initXpath(dict)
-	print xpath.getXpath()

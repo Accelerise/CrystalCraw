@@ -16,9 +16,9 @@ class Xpath:
 			return False
 
 	#
-	def initXpath(self,dict):
-		for key in dict:
-			self.xpath[key] = dict[key]
+	def initXpath(self,dic):
+		for key in dic:
+			self.xpath[key] = dic[key]
 
 	#
 	def getXpath(self):
@@ -32,6 +32,6 @@ if __name__ == '__main__':
 	else:
 		print "xpath不是手动编写的"
 
-	dict = {'Name': '//a/@href', 'time': "//time/text()"}
-	xpath.initXpath(dict)
+	dic = {'Name': '//a/@href', 'time': "//time/text()"}
+	xpath.initXpath(dic)
 	print xpath.getXpath()
