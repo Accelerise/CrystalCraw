@@ -127,11 +127,21 @@
 			var divList = $("div.move");
 			var length =  divList.length;
 			for(var i = 0 ; i<length;i++)
+			{
+				var curLeft = $(divList[i]).css('left');
+				//alert(curLeft);
+				$(divList[i]).css('left', parseInt(curLeft)+($(window).width())/3 +10+ 'px');
+			}
+			for(i = 0 ; i<length;i++)
+			{				 
+				if(parseInt($(divList[i]).css('left')) > $(window).width())
 				{
-					var curLeft = $(divList[i]).css('left');
-					//alert(curLeft);
-					$(divList[i]).css('left', parseInt(curLeft)+($(window).width())/3 +10+ 'px');
+					$(divList[i]).remove();
 				}
+				else {
+					break;
+				}
+			}
 			$(div).addClass('move');
 			$(div).width(($(window).width()-100)/3);
 			$(div).css('left', '-'+ $(window).width()/3 + 'px');
