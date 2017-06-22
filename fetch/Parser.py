@@ -8,15 +8,13 @@ import re
 
 class Parser:
 	# 解析页面，通用解析过程为1.收集url 2.尝试生成item，成功即插入数据库
-	# 用户也可以编写自己的解析方法
 
 	_parser = None
 
 	# 构造函数
-	# - String - proto(可选) 网站使用的协议 http/https
+	# - String - proto(可选) 网站使用的协议 http:// / https://
 	def __init__(self,proto="https://"):
 		self.proto = proto
-		self.createBF()
 		self.xpathBox = None
 		self.queue = None
 		self.rules = None
@@ -67,13 +65,13 @@ class Parser:
 		if self.bf is None:
 			raise BFNotInit
 		dom = etree.HTML(page)
-		self.collectURLs(dom)
-		self.parseDetail(dom)
+		self.collectURLs(dom=dom,pagelink=pagelink,host=host)
+		self.parseDetail(dom=dom,pagelink=pagelink,host=host)
 
 		
 
 
-	def collectURLs(self,dom):
+	def collectURLs(self,dom,pagelink,host):
 		urls = dom.xpath('//a[not(contains(@href,"javasc"))]/@href')
 		for url in urls:
 			url = self.standardizeUrl(host,url)
@@ -83,8 +81,9 @@ class Parser:
 					self.bf.add(url)
 					self.queue.put(url)
 
-	def parseDetail(self,dom):
+	def parseDetail(self,dom,pagelink,host):
 		item = {}
+		item["xpath_fail_url"] = None
 		first = True
 		for key in self.xpathBox:
 			if first:
@@ -125,7 +124,7 @@ class Parser:
 		# 给相对路径拼接协议（proto）和主机（host）
 		# 如 /gp/help/display.html => proto+host+/gp/help/display.html
 		pat = re.compile(r'^/([^/])')
-		url = pat.sub(self.proto + self.host +r'/\1',url)
+		url = pat.sub(self.proto + host +r'/\1',url)
 		# 给双斜杠拼接协议
 		# 如 //channel.jd.com => proto+channel.jd.com
 		pat = re.compile(r'^//',re.S)

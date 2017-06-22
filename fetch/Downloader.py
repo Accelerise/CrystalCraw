@@ -16,6 +16,7 @@ class Downloader:
 		options.add_argument('headless')
 		options.add_argument('window-size=1200x600')
 		self.driver = webdriver.Chrome(chrome_options=options)
+		self.driver.get("http://localhost")
 
 	# 单例模式
 	@classmethod
@@ -46,9 +47,11 @@ class Downloader:
 	def getByChrome(self,url):
 		self.driver.get(url)
 		page = self.driver.find_elements_by_xpath("/html")[0].get_attribute("innerHTML")
-		self.driver.close()
 		return page
 
+	def closeDownloader(self):
+		if self.chrome_enable :
+			self.driver.quit()
 
 
 

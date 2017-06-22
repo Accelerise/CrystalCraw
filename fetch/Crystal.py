@@ -9,12 +9,12 @@ from lxml import etree
 from Bloom import Bloomfilter
 from Tool import Queue
 from Tool import File
-import Xpath
-import Rules
+from Xpath import Xpath
+from Rules import Rules
 import requests
-import Downloader
-import Parser
-import Configer
+from Downloader import Downloader
+from Parser import Parser
+from Configer import Configer
 
 class Crystal:
 	# 构造函数
@@ -41,40 +41,40 @@ class Crystal:
 		self.initParser()
 
 	# 运行
-	def run():
-		self.createDir(self.projectName)
+	def run(self):
+		self.createDir(self._projectName)
 		self.initComponents()
-		start_url = []
+		start_url = ["https://www.jd.com"]
 		for each in start_url:
-			self._queue.put(start_url)
+			self._queue.put(each)
 		
 		while not self._queue.empty():
 			pagelink = self._queue.pop()
-			host = self.extractHost()
+			host = self.extractHost(pagelink)
 			page = self._downloader.get(pagelink)
 			self._parser.process_item(host=host,pagelink=pagelink,page=page)
 		
 
 
 	# 初始化xpath
-	def initXpath():
+	def initXpath(self):
 		# 获取name->xpath字典
 		self._xpath = Xpath()
 		if(not self._xpath.isManual()):
-			dic = self.getXpathFromMGDB("")
+			dic = self.getXpathFromMGDB()
 			self._xpath.initXpath(dic)
 
 	# 初始化rules
-	def initRules():
+	def initRules(self):
 		# 获取url规则数组
 		self._rules = Rules()
 		if(not self._rules.isManual()):
-			arr = self.getRulesFromMGDB("")
+			arr = self.getRulesFromMGDB()
 			# 如果能获取到数据，说明用户在web前台填写了url规则
 			if arr is not None:
 				self._rules.initRules(arr)
 	# 初始化downloader
-	def initDownloader():
+	def initDownloader(self):
 		self._downloader = Downloader.getInstance()
 		if( self.getIfChromeEnable() ):
 			self._downloader.setChromeEnable(True)
@@ -119,15 +119,21 @@ class Crystal:
 
 	
 	# 从数据库获取给定的xpath规则
-	def getXpathFromMGDB():
+	def getXpathFromMGDB(self):
+		dic = {}
+		dic["书名"] = '//*[@id="name"]/h1'
+		dic["价格"] = '//*[@id="jd-price"]'
+		return dic
 		pass
 
 	# 从数据库获取给定的url规则
-	def getRulesFromMGDB():
+	def getRulesFromMGDB(self):
+		return None
 		pass
 
 	# 从数据库获取是否使用chrome-headless下载页面
-	def getIfChromeEnable():
+	def getIfChromeEnable(self):
+		return True
 		pass
 if __name__ == '__main__':
 	print "start"

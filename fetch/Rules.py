@@ -6,13 +6,13 @@ import re
 class Rules:
 	# 构造函数
 	def __init__(self):
-		self.rules = ["*"]
+		self.rules = [".*"]
 		#如要手动编写rules，请在构造函数中实现
 		#self.rules.append("url_reg")
 
 	# 判断用户是否手动编写rules
 	def isManual(self):
-		if(self.rules[0] is not "*"):
+		if(self.rules[0] is not ".*"):
 			return True
 		else:
 			return False
