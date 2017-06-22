@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Loading Page</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<style type="text/css">
+	body{
+		overflow-x: hidden;
+	}
+		*{
+			padding: 0px;
+			margin: 0px;
+		}
+		.back{
+			background-color: rgb(28, 39, 42);
+			width: 100%;
+			height: 100%;
+			padding: 50px;
+		}
+		.top{
+			height: 356px;
+			width: 100%;
+		}
+		.img{
+			float: left;
+			height: 356px;
+			width: 500px;
+		}
+		.showTest{
+			float: left;
+			width: 250px;
+			height: 356px;
+			line-height: 356px;
+			color: rgb(213, 221, 226);
+			margin-left: 300px;
+		}
+		.Lheight{
+			line-height: 356px;
+		}
+		.stopBtn{
+			position: fixed;
+			top: 0;
+			right: 0;
+		}
+		.xia{
+			height: 500px;
+		}
+		.move{
+			margin-top: 100px;
+			transition: left 0.3s;
+			background-color: #666666;
+			height: 400px;
+			padding: 20px;
+			position: fixed;
+			border-radius: 5px;
+			box-shadow:  4px 4px 4px 4px;
+		}
+	</style>
+</head>
+<body id="body">
+<!-- <button class="btn btn-danger" id="test">test</button> -->
+	<div class="back">
+		<div class="top">
+			<div class="img">
+				<img src="./img/loading.gif">
+			</div>	
+			<div class="showTest">
+				<h1 class=" Lheight">已爬取<span id="number">...</span>个网页</h1>	
+			</div>
+			<button class="btn btn-danger stopBtn">停止并获取结果</button>
+		</div>
+		<div class="xia">
+			
+		</div>	
+	</div>
+
+	<script type="text/javascript">
+		//获取爬取数量与数据
+		var getAjax = {};
+
+		var data = {
+			"name":"name",
+			"value":"value"
+		};
+		 function getNumber(){
+			$.ajax({
+				url: '/getNumber', //获取以爬取数量
+				type: 'GET',  //随意修改此选项
+				dataType: 'json', //返回json数据结构 {'number'：***}
+				timeout:500, //设置超时限制 以防网络不好
+				success:function(data){
+					if(typeof data === String)
+						data = JSON.parse(data);
+					$('#number').text(data.number);
+				},
+				error:function(xhr,status,error){
+					console.error(xhr);
+					console.error(status);
+					console.error(data);
+				}
+			});
+		}
+		 function getData(message){
+			$.ajax({
+				url: '/getData', //获取以爬取数量
+				type: 'POST',  //随意修改此选项
+				dataType: 'json', //返回json数据结构 {'number'：***}
+				timeout:2000, //设置超时限制 以防网络不好
+				data:message,
+				success:function(data){
+					if(typeof data === String)
+						data = JSON.parse(data);
+					show(data);
+				},
+				error:function(xhr,status,error){
+					console.error(xhr);
+					console.error(status);
+					console.error(data);
+				}
+			});
+		}
+
+		function show(data){
+			var div  = document.createElement("div");
+			var divList = $("div.move");
+			var length =  divList.length;
+			for(var i = 0 ; i<length;i++)
+				{
+					var curLeft = $(divList[i]).css('left');
+					//alert(curLeft);
+					$(divList[i]).css('left', parseInt(curLeft)+($(window).width())/3 +10+ 'px');
+				}
+			$(div).addClass('move');
+			$(div).width(($(window).width()-100)/3);
+			$(div).css('left', '-'+ $(window).width()/3 + 'px');
+			var test = "";
+			for(var key in data){
+				 test += key +':' +data[key]+'\n';
+			}
+			$(div).html(test);
+			$("div.xia").append(div);
+			
+		}
+		//网页加载完成后	
+		$(document).ready(function() {
+			curHeight = $(window).height();
+			$("#body").height(Number(curHeight) > 906?curHeight:"906px"); // 设置页面高度
+			if(Number($(window).width()) < 1150)
+			{
+				$("div.showTest").css("margin-left",'0px');
+			}
+			show(data);
+			setInterval(function(){show(data);},2000); // 每1s查询一次
+			//setInterval(show,500); 
+		});
+		//点击按钮后
+		$("button.stopBtn").click(function(event) {
+			location.href = "results.html"
+		});
+
+
+		$("#test").click(function() {
+			show();
+		});
+	</script>
+</body>
+</html>

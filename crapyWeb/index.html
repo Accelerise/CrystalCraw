@@ -13,45 +13,10 @@
 	.error{
 		color: #FF6666
 	}
-	.loadingDiv{
-		position: absolute;
-		z-index: 100;
-		width: 100%;
-		height: 100%;
-		left: -100%; 
-		background-color: rgba(37, 37, 37, 0.6);
-		transition: left 0.4s;
-	}
-	.loadinggif{
-		position: absolute;
-		width: 100%;
-		background-color: rgb(37, 37, 37);
-		top: 30%;
-	}
-	.loadingtext{
-		color: rgb(12, 255, 255);
-		font-size: 18px;
-		text-align: center;
-	}
-	.btn-black{
-		background-color: black;
-		color: white;
-		border-color:black;
-	}
+
 	</style>
 </head>
 <body>
-	<div class="loadingDiv">
-		<div class="loadinggif">
-			<!-- 应当去掉此button -->
-			<button class="btn btn-default btn-black btn-sm pull-right" id="colseBtn">Colse</button>
-			<img src="./img/loading.gif" alt="loading_gif" class="center-block">
-			<p></p>
-			<p class="loadingtext">已经爬取了<span id="number">...</span>个网页</p>
-			
-		</div>
-	</div>
-
 	<header class="container">
 		<div class="page-header">
 			<h1>Welcome To Automatic crawler
@@ -129,8 +94,9 @@
 		$("#cutAttr").click(cutA);
 		$("#subBtn").click(sub);
 		$("button.close").click(hideAlert);
-		$("button.close").click(hideAlert);
-
+		$("#testbtn").click(function() {
+			self.location='loading.html'; 
+		});
 		$().ready(function() {
 			validateForm = $("form.form-horizontal").validate({
 				rules:{
@@ -195,6 +161,7 @@
 					success:function(data){
 						console.log(data);
 						$("div.alert-success").show('400');
+						self.location='loading.html'; 
 					},
 					error:function(data){	
 						console.log(data);
@@ -203,31 +170,8 @@
 				});
 			}
 		}
-		function getNumber(){
-			$.ajax({
-				url: '/getNumber', //获取以爬取数量
-				type: 'GET',  //随意修改此选项
-				dataType: 'json', //返回json数据结构 {'number'：***}
-				timeout:500, //设置超时限制 以防网络不好
-				success:function(data){
-					$('#number').text(data.number);
-				},
-				error:function(xhr,status,error){
-					console.error(xhr);
-					console.error(status);
-					console.error(data);
-				}
-			});
-		}
+		
 
-		$('#testbtn').click(function(event){
-			$($('div.loadingDiv')[0]).css('left','0%');
-			setInterval(getNumber,500); // 每0.5s查询一次
-		});
-
-		$('#colseBtn').click(function(){
-			$($('div.loadingDiv')[0]).css('left','-100%');
-		});
 	</script>
 </body>
 </html>

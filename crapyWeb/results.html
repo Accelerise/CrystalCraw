@@ -51,6 +51,9 @@
 		.list-group-item{
 			color: #003333;
 		}
+		.moveLi{
+			cursor: pointer;
+		}
 	</style>
 </head>
 <body>
@@ -84,26 +87,6 @@
 			</form>
 		</div>
 	</nav>
-<!-- 		<div class="lineMessage">
-	<div class="col-sm-3  messageDiv">
-		<p class="text-center messageName">鞋子</p>
-		<ul class="list-group">
-			<li class="list-group-item">价格：xxx$</li>
-			<li class="list-group-item">店铺：xxx</li>
-			<li class="list-group-item">销售额：xxx</li>
-			<li class="list-group-item">24*7 支持</li>
-			<li class="list-group-item">评论：xxx
-			<button type="button" class="btn btn-default btn-sm" data-toggle = "modal" data-target = "#myModal">show</button>					
-			</li>
-		</ul>
-	</div>
-	<div class="col-sm-offset-1 col-sm-3  messageDiv">
-		
-	</div>
-	<div class="col-sm-offset-1 col-sm-3  messageDiv">
-		
-	</div>	
-</div> -->
 	<div class="container messageContainer">
 
 	</div>
@@ -111,13 +94,8 @@
 	<div class="container">
 		<div class="col-sm-offset-4 col-sm-3 text-center">	
 			<ul class="pagination">
-				<li><a href="" >&laquo;</a></li>
-				<li class="active"><a href="" >1</a></li>
-				<li><a href="">2</a></li>
-				<li><a href="">3</a></li>
-				<li><a href="">4</a></li>
-				<li><a href="">5</a></li>
-				<li><a href="">&raquo;</a></li>
+				<li class="moveLi"><a>&laquo;</a></li>
+				<li class="moveLi"><a>&raquo;</a></li>
 			</ul>
 		</div>
 	</div>
@@ -130,109 +108,18 @@
 			</div>	
 		</div>
 	</footer>
-	
-	<!--   modai  -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" 
-	aria-labelledby="myModalLabel" aria-hidden="true">
-	   <div class="modal-dialog">
-	    	<div class="modal-content">
-		        <div class="modal-header">
-		            <button type="button" class="close" 
-		               data-dismiss="modal" aria-hidden="true">&times;</button>
-		            <h4 class="modal-title" id="myModalLabel">评论</h4>
-		        </div>
-		        <div class="modal-body">
-		        	<ul class="list-group">
-						<li class="list-group-item">评论</li>
-						<li class="list-group-item">评论</li>
-						<li class="list-group-item">评论</li>
-						<li class="list-group-item">评论</li>
-						<li class="list-group-item">评论</li>
-					</ul>
-		        </div>
-		        <div class="modal-footer">
-		            <button type="button" class="btn btn-primary" 
-		               data-dismiss="modal">关闭 </button>
-		        </div>
-	    	</div>
-	      <!-- /.modal-content -->
-	    </div>
-      <!-- /.modal -->
-    </div>
-
-
-
     <script type="text/javascript">
-    /*	$("#myModal").option({
-    		keyboard:true
-    	});*/
-
-    	var data = {
-    		"NAME":{
-    			"price":"PRICE",
-    			"shop":"SHOP",
-    			"sales amount":"AMOUNT",
-    			"comment":"COMMENT"
-    		},
-    		"NAME2":{
-    			"price":"PRICE",
-    			"shop":"SHOP",
-    			"sales amount":"AMOUNT",
-    			"comment":"COMMENT"
-    		},
-    		"NAME3":{
-    			"price":"PRICE",
-    			"shop":"SHOP",
-    			"sales amount":"AMOUNT",
-    			"comment":"COMMENT"
-    		},
-    		"NAME4":{
-    			"price":"PRICE",
-    			"shop":"SHOP",
-    			"sales amount":"AMOUNT",
-    			"comment":"COMMENT"
-    		},
-    		"NAME5":{
-    			"price":"PRICE",
-    			"shop":"SHOP",
-    			"sales amount":"AMOUNT",
-    			"comment":"COMMENT"
-    		},
-    		"NAME6":{
-    			"price":"PRICE",
-    			"shop":"SHOP",
-    			"sales amount":"AMOUNT",
-    			"comment":"COMMENT"
-    		},
-    		"NAME7":{
-    			"price":"PRICE",
-    			"shop":"SHOP",
-    			"sales amount":"AMOUNT",
-    			"comment":"COMMENT"
-    		},
-    		"NAME8":{
-    			"price":"PRICE",
-    			"shop":"SHOP",
-    			"sales amount":"AMOUNT",
-    			"comment":"COMMENT"
-    		}
-    		
-    	};
-    	var curLineMessageNum = 0;
-    	var curLineMessageId = 0;
-    	var test = 60;
-    	while(test > 0)
-    	{
-    		test -- ;
-			for (var key in data){
-				if(curLineMessageId === 60 &&curLineMessageNum === 2)
-					test = -1;
-				console.log(1);
-				var $draw = ''
+		//获取到数据后调用此函数
+		function show(data){ 
+			var curLineMessageNum = 0; //第几行
+    		var curLineMessageId = 0; //每行第几个 
+    		for (var key in data)   // 每一个
+    		{ 
+				var $draw = ''; // 记录展示HTML
 				if(curLineMessageNum === 0)
-					$draw += '<div class="lineMessage"><div class="col-sm-3  messageDiv clear">'
+					$draw += '<div class="lineMessage"><div class="col-sm-3  messageDiv clear">';
 				else 
-					$draw += '<div class="col-sm-offset-1 col-sm-3  messageDiv">'
+					$draw += '<div class="col-sm-offset-1 col-sm-3  messageDiv">';
 				
 				$draw += '<p class="text-center messageName">'+ key + '</p><ul class="list-group">';
 					
@@ -250,7 +137,7 @@
 				}
 				else if(curLineMessageNum === 2)	
 				{
-					$now = $('div.lineMessage')[curLineMessageId]
+					$now = $('div.lineMessage')[curLineMessageId];
 					$($now).append($draw);	
 					curLineMessageNum = 0;
 					curLineMessageId++;
@@ -261,6 +148,36 @@
 				}
 			}
 		}
+		
+		//将ajax封装成函数 message：POST请求下发送过去的数据
+		function getData(message){
+			if(message === null || message === undefined)
+				message = "";
+			$.ajax({
+				url: '/path/to/file', //url
+				type: 'default GET (Other values: POST)', // 选择方式 GET/POST
+				dataType: 'json', // 选择返回数据类型为json格式
+				data:message, // POST请求下发送过去的数据
+				success:function(data){
+					if(typeof data === String)
+						data = JSON.parse(data);
+					show(data);
+				},
+				error:function(errdata){
+					console.error(errdata);
+				}
+			});
+		}
+
+
+		$("li.moveLi").each(function(index, el) {
+			$(this).click(function(){
+				getData();
+			});
+		});
+
+
+		getData();
     </script>
 </body>
 </html>
