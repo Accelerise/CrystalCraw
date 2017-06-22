@@ -12,7 +12,7 @@ class Rules:
 
 	# 判断用户是否手动编写rules
 	def isManual(self):
-		if(self.rules[0] is not ".*"):
+		if(len(self.rules) is not 1 ):
 			return True
 		else:
 			return False
@@ -36,14 +36,11 @@ class Rules:
 		return False
 
 if __name__ == '__main__':
-	subject = 'http://www.rgexcook.com/gv/kj'
-
-	reobj = re.compile(r"""(?xi)\A
-	[a-z][a-z0-9+\-.]*://                                # Scheme
-	([a-z0-9\-._~%!$&'()*+,;=]+@)?                       # User
-	([a-z0-9\-._~%]+                                     # Named or IPv4 host
-	|\[[a-z0-9\-._~%!$&'()*+,;=:]+\])                    # IPv6+ host
-	""")
-	match = reobj.search(subject)
-	if match:
-	    print match.group(2)
+	url = "www.jd."
+	pat = re.compile("jd"+r"\.")
+	match = pat.search(url)
+	if not match:
+		print "不匹配"
+	else:
+		print "匹配"
+	
