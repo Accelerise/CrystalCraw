@@ -55,34 +55,27 @@ class Fetcher:
 		reload(sys) 
 		sys.setdefaultencoding('utf8')   
 		self.pools.put(self.start_url)
-		while not self.pools.empty():
-			url = self.pools.pop()
-			print ("downloading..."+url+'\n')
-			page = os.popen('google-chrome-unstable --headless --disable-gpu --dump-dom '+url)
-			res = page.read()
-			page.close()
-			global fNum
-			fNum = fNum+1
-			filename = "file" + str(fNum)+".html"
-			self.fileTool.fileIn(filename,u"该页面来自"+url+"<br/>"+res)
-			# 防止因报错而退出
-			try:
-				dom = etree.HTML(res)
-				urls = dom.xpath('//a[not(contains(@href,"javasc"))]/@href')
-			except :
-			    pass
 
-			if(fNum >= 30):
-				break
-			# self.pools = re.findall(r'<a(.*?)</a>', res, re.S)
-			i = 0
-			for url in urls:
-				i = i+1
-				url = self.validateUrl(url)
-				if(not self.bf.isContain(url)):
-					print ("put in url:"+url+'\n')
-					self.pools.put(url)
-					self.bf.add(url)
+		url = self.pools.pop()
+		print ("downloading..."+url+'\n')
+		page = os.popen('google-chrome-unstable --headless --disable-gpu --dump-dom '+url)
+		res = page.read()
+		page.close()
+
+		# 防止因报错而退出
+		try:
+			dom = etree.HTML(res)
+			urls = dom.xpath('//a[not(contains(@href,"javasc"))]/@href')
+		except :
+		    pass
+
+		# self.pools = re.findall(r'<a(.*?)</a>', res, re.S)
+		for url in urls:
+			url = self.validateUrl(url)
+			if(not self.bf.isContain(url)):
+				print ("put in url:"+url+'\n')
+				self.pools.put(url)
+				self.bf.add(url)
 
 if __name__ == '__main__':
 	print "start"
@@ -91,8 +84,7 @@ if __name__ == '__main__':
 	projectName = u"京东"
 	proto = 'https://'
 	host = 'www.jd.com'
-	start_url = 'https://item.jd.com/3819563.html'
-	fNum = 0
+	start_url = 'https://www.jd.com/'
 
 	fetcher = Fetcher(proto,host,start_url)
 	fetcher.createQueue()
