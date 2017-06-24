@@ -30,14 +30,14 @@
 		}
 		.showTest{
 			float: left;
-			width: 250px;
+			width: 550px;
 			height: 356px;
-			line-height: 356px;
+			/* line-height: 356px; */
 			color: rgb(213, 221, 226);
-			margin-left: 300px;
+			padding-top: 100px;
 		}
 		.Lheight{
-			line-height: 356px;
+			/* line-height: 356px; */
 		}
 		.stopBtn{
 			position: fixed;
@@ -67,7 +67,7 @@
 				<img src="./img/loading.gif">
 			</div>	
 			<div class="showTest">
-				<h1 class=" Lheight">已爬取<span id="number">...</span>个网页</h1>	
+				<h1 class=" Lheight pull-right">已爬取<span id="number">1346233</span>个网页</h1>	
 			</div>
 			<button class="btn btn-danger stopBtn">停止并获取结果</button>
 		</div>
@@ -161,13 +161,28 @@
 			{
 				$("div.showTest").css("margin-left",'0px');
 			}
-			show(data);
-			setInterval(function(){show(data);},2000); // 每1s查询一次
-			//setInterval(show,500); 
+			setInterval(function(){show(data);},2000); // 每2s获取一次数据
+			setInterval(function(){getNumber();},500); // 每0.5s查询一次数量
 		});
 		//点击按钮后
 		$("button.stopBtn").click(function(event) {
-			location.href = "results.html"
+			//此处应有发送停止指令给后台
+			//
+			$.ajax({
+				url: '/path/to/file',
+				type: 'default GET (Other values: POST)',
+				dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
+				data: {param1: 'value1'},
+				success:function(){
+					location.href = "results.html"; //发送成功变跳转到结果页面
+				},
+				error:function(xhr,status,error){
+					console.error(xhr);
+					console.error(status);
+					console.error(data);
+				}
+			});
+			
 		});
 
 
