@@ -8,19 +8,20 @@ class Xpath:
 		#如要手动编写xpath，请在构造函数中实现
 		#self.xpath["name"] = "xpath"
 
-	# 判断用户是否手动编写name-xpath
+	# Bool 判断用户是否手动编写name-xpath
 	def isManual(self):
 		if self.xpath :
 			return True
 		else:
 			return False
 
-	#
+	# void 传入xpath字典初始化
+	# - {} - dic xpath字典
 	def initXpath(self,dic):
 		for key in dic:
 			self.xpath[key] = dic[key]
 
-	#
+	# {} 返回xpath字典
 	def getXpath(self):
 		return self.xpath
 

@@ -25,7 +25,8 @@ class Downloader:
 			cls._downloader = Downloader()
 		return cls._downloader
 
-	# 下载页面
+	# String 下载页面，返回html文档
+	# - String -  url 要下载的页面链接
 	def get(self,url):
 		page = ""
 		if self.chrome_enable :
@@ -34,24 +35,25 @@ class Downloader:
 			page = self.getByRequests(url)
 		return page
 
-	# 开启使用chrome-headless
+	# void 开启使用chrome-headless
+	# - Bool -  enable 是否启用chrome
 	def setChromeEnable(self,enable):
 		self.chrome_enable = enable
 
-	# 1.requests
+	# String 1.requests
 	def getByRequests(self,url):
 		page = requests.get(url).content.decode("utf-8")
 		return page
 
-	# 2.chrome-headless
+	# String 2.chrome-headless
 	def getByChrome(self,url):
 		self.driver.get(url)
 		page = self.driver.find_elements_by_xpath("/html")[0].get_attribute("innerHTML")
 		return page
 
+	# void 关闭Chrome下载器
 	def closeDownloader(self):
-		if self.chrome_enable :
-			self.driver.quit()
+		self.driver.quit()
 
 
 
