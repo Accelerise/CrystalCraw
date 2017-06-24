@@ -5,11 +5,11 @@ import datetime
 
 class LogUtil:
 	ENABLE_LEVEL = 5  #
-	ERROR = 5
-	WARNING = 4
+	ERROR = 1
+	WARNING = 2
 	DEBUG = 3
-	NOTICE = 2
-	INFO = 1
+	NOTICE = 4
+	INFO = 5
 	start = None
 	end = None
 
