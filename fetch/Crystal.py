@@ -28,14 +28,12 @@ class Crystal:
 		self._bf = None
 		self._queue = None
 		self._hostInfo = None
-		self._log = None
 
 		self.initComponents()
 
-	# 初始化各组件
+	# void 初始化各组件
 	def initComponents(self):
 		self._configer = Configer.getConfig()
-		self._log = LogUtil()
 		self.initStartUrl()
 		self.initXpath()
 		self.initRules()
@@ -44,9 +42,9 @@ class Crystal:
 		self.initQueue()
 		self.initParser()
 
-	# 运行
+	# void 运行
 	def run(self):
-		self._log.start_log()
+		LogUtil.start_log()
 		self.createDir(self._projectName)
 		for each in self.start_url:
 			self._queue.put(each)
@@ -62,23 +60,25 @@ class Crystal:
 			page = self._downloader.get(pagelink)
 			self._parser.process_item(host=host,pagelink=pagelink,page=page)
 		
-		self._log.end_log()
+		LogUtil.end_log()
 
+	# void 初始化起始URL
 	def initStartUrl(self):
+		# 修改这里获取起始URL的途径
 		self.start_url = ["https://www.jd.com"]
 		self._hostInfo = self.parseUrl(self.start_url[0])
-		self._log.i("初始化起始URL完成")
+		LogUtil.i("初始化起始URL完成")
 
-	# 初始化xpath
+	# void 初始化xpath
 	def initXpath(self):
 		# 获取name->xpath字典
 		self._xpath = Xpath()
 		if(not self._xpath.isManual()):
 			dic = self.getXpathFromMGDB()
 			self._xpath.initXpath(dic)
-		self._log.i("初始化Xpath完成")
+		LogUtil.i("初始化Xpath完成")
 
-	# 初始化rules
+	# void 初始化rules
 	def initRules(self):
 		# 获取url规则数组
 		self._rules = Rules()
@@ -87,13 +87,14 @@ class Crystal:
 			# 如果能获取到数据，说明用户在web前台填写了url规则
 			if arr is not None:
 				self._rules.initRules(arr)
-		self._log.i("初始化Rules完成")
-	# 初始化downloader
+		LogUtil.i("初始化Rules完成")
+
+	# void 初始化downloader
 	def initDownloader(self):
 		self._downloader = Downloader.getInstance()
 		if( self.getIfChromeEnable() ):
 			self._downloader.setChromeEnable(True)
-		self._log.i("初始化Downloader完成")
+		LogUtil.i("初始化Downloader完成")
 
 	# void 初始化过滤器
 	# - int -   number(可选) 过滤器最大过滤数
@@ -103,12 +104,14 @@ class Crystal:
 		# number = 
 		# errorRate =
 		self._bf = Bloomfilter(number,errorRate)
-		self._log.i("初始化Filter完成")
+		LogUtil.i("初始化Filter完成")
 
+	# void 初始化URL队列
 	def initQueue(self):
 		self._queue = Queue()
-		self._log.i("初始化Queue完成")
+		LogUtil.i("初始化Queue完成")
 
+	# void 初始化Parser
 	def initParser(self):
 		self._parser = Parser()
 		#self._parser.setProto("http://") # 默认为https://，最好根据用户的输入智能设置 #
@@ -117,8 +120,12 @@ class Crystal:
 		self._parser.setQueue(self._queue)
 		self._parser.setBF(self._bf)
 		self._parser.setDomainFir(self._hostInfo["fir"]) # 传入一级域名
-		self._log.i("初始化Parser完成")
+		LogUtil.i("初始化Parser完成")
 
+	# {} / False 解析URL
+	# 成功则返回一个字典 内含{"all":协议+host,"fir":一级域名,"sec":二级域名,"proto":协议,"host":host}
+	# 失败则返回 False
+	# - String - url 待解析链接
 	def parseUrl(self,url):
 		reobj = re.compile(r"""(?xi)\A
 		([a-z][a-z0-9+\-.]*://)
@@ -130,10 +137,10 @@ class Crystal:
 		res = {}
 		if match:
 			if match.group(5) is None:
-				res["sub"] = None
+				res["sec"] = None
 				res["fir"] = match.group(3)
 			else:
-				res["sub"] = match.group(3)
+				res["sec"] = match.group(3)
 				res["fir"] = match.group(5)
 			res["all"] = match.group(0)
 			res["proto"] = match.group(1)
@@ -143,33 +150,35 @@ class Crystal:
 		else:
 			return False
 	
-	# 创建工作目录
+	# void 创建工作目录
+	# - String - projectName 工程名
 	def createDir(self,projectName):
 		self.fileTool = File()
 		self.fileTool.setDir(projectName)
-		self._log.i("创建工作目录")
+		LogUtil.i("创建工作目录")
 
 	
-	# 从数据库获取给定的xpath规则
+	# void 从数据库获取给定的xpath规则
 	def getXpathFromMGDB(self):
 		dic = {}
 		dic["商品名"] = '//*[@id="name"]/h1'
 		dic["价格"] = '//*[@id="jd-price"]'
-		self._log.i("从数据库获取给定的xpath规则")
+		LogUtil.i("从数据库获取给定的xpath规则")
 		return dic
 		pass
 
-	# 从数据库获取给定的url规则
+	# void 从数据库获取给定的url规则
 	def getRulesFromMGDB(self):
-		self._log.i("从数据库获取给定的url规则")
+		LogUtil.i("从数据库获取给定的url规则")
 		return None
 		pass
 
-	# 从数据库获取是否使用chrome-headless下载页面
+	# void 从数据库获取是否使用chrome-headless下载页面
 	def getIfChromeEnable(self):
-		self._log.i("从数据库获取是否使用chrome-headless下载页面")
+		LogUtil.i("从数据库获取是否使用chrome-headless下载页面")
 		return True
 		pass
+
 if __name__ == '__main__':
 
 	project = Crystal("京东")

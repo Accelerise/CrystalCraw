@@ -21,7 +21,6 @@ class Parser:
 		self.rules = None
 		self.bf = None
 		self.domainFir = None
-		self.log = LogUtil()
 
 	# Parser 单例模式
 	@classmethod
@@ -55,6 +54,8 @@ class Parser:
 	def setBF(self,bf):
 		self.bf = bf
 
+	# void 传入一级域名
+	# - String -  一级域名
 	def setDomainFir(self,fir):
 		self.domainFir = fir
 		
@@ -69,26 +70,31 @@ class Parser:
 			raise QueueNotInit
 		if self.bf is None:
 			raise BFNotInit
-		self.log.i("开始解析页面："+pagelink)
+		LogUtil.i("开始解析页面："+pagelink)
 		dom = etree.HTML(page)
 		self.collectURLs(dom=dom,pagelink=pagelink,host=host)
-		self.log.i("该页面收集URL结束："+pagelink)
+		LogUtil.i("该页面收集URL结束："+pagelink)
 		self.parseDetail(dom=dom,pagelink=pagelink,host=host)
-		self.log.i("该页面详细分析结束："+pagelink)
+		LogUtil.i("该页面详细分析结束："+pagelink)
 
-		
-
-
+	# void 收集URL
+	# - String -  dom html文档
+	# - String -  pagelink 本页链接，用于调试时参考
+	# - String -  host 本页host，用于拼接URL
 	def collectURLs(self,dom,pagelink,host):
 		urls = dom.xpath('//a[not(contains(@href,"javasc"))]/@href')
 		for url in urls:
 			url = self.standardizeUrl(host,url)
 			if url is not False:
 				if(not self.bf.isContain(url)):
-					self.log.n("put in url:"+url+'\n')
+					LogUtil.n("put in url:"+url+'\n')
 					self.bf.add(url)
 					self.queue.put(url)
 
+	# void 详细解析
+	# - String -  dom html文档
+	# - String -  pagelink 本页链接，用于调试时参考
+	# - String -  host 本页host，用于拼接URL
 	def parseDetail(self,dom,pagelink,host):
 		item = {}
 		item["xpath_fail_url"] = None
@@ -102,7 +108,7 @@ class Parser:
 				elif len(res) > 1:
 					item[key] = res
 				else:
-					self.log.n("第一个就找不到，判定该页非详情页")
+					LogUtil.n("第一个就找不到，判定该页非详情页")
 					# 第一个就找不到，判定该页非详情页
 					return
 			else:
@@ -112,22 +118,25 @@ class Parser:
 				elif len(res) > 1:
 					item[key] = res
 				else:
-					self.log.n("找不到后面的，判断为xpath不够完善")
+					LogUtil.n("找不到后面的，判断为xpath不够完善")
 					# 找不到后面的，判断为xpath不够完善
 					item["xpath_fail_url"] = pagelink
 		if item["xpath_fail_url"] is None:
 			# 数据库操作，插入数据item
-			self.log.n("数据库操作，插入数据item")
+			LogUtil.n("数据库操作，插入数据item")
 			for key in item:
-				self.log.n(key+' '+item[key])
+				LogUtil.n(key+' '+item[key])
 			raw_input("我等等你")
 		else:
 			# 错误处理
-			self.log.e("xpath提取错误处理")
+			LogUtil.e("xpath提取错误处理")
 			for key in item:
-				self.log.n(key+' '+item[key])
+				LogUtil.n(key+' '+item[key])
 			raw_input("我等等你")
-	# String 清洗Url，使其标准化
+
+	# String / False 清洗Url，使其标准化
+	# - String -  host 本页host，用于拼接URL
+	# - String -  url 要清洗的URL
 	def standardizeUrl(self,host,url):
 		# 清洗掉一级域名错误的url
 		# 如 要爬取 （京东）www.jd.com 的数据 那么像 www.baidu.com 的url不会通过
