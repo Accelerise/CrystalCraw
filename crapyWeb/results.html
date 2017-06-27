@@ -63,27 +63,19 @@
 		</div>
 		<div>
 			<ul class="nav navbar-nav ">
-				<li class="active"><a href="" id="detail">DETAIL</a></li>
-				<li class="dropdown">
-					<a href="" class="dropdown-toggle" data-toggle="dropdown">
-						ASSORTMENT
-						<b class="caret"></b>
-					</a>
-					<ul class="dropdown-menu">
-						<li><a href="" id="classify">1</a></li>
-						<li><a href="" id="classify">2</a></li>
-						<li><a href="" id="classify">3</a></li>
-					</ul>
-				</li>
+				<li class="active"><a href="results.html" id="detail">DETAIL</a></li>
 				<li><a href="">About us</a></li>
 			</ul>
 		</div>
 		<div>
 			<form action="" class="navbar-form navbar-left" role="search">
 				<div class="form-group">
-					<input type="text" class="form-control" placeholder="Search">					
+					<input type="text" class="form-control" placeholder="col name" id="colName" required>					
 				</div>
-				<button type="submit" class="btn btn-default">Submit</button> 
+				<div class="form-group">
+					<input type="text" class="form-control" placeholder="Search" id="searchName" required>					
+				</div>
+				<button type="submit" class="btn btn-default" id="search">Submit</button> 
 			</form>
 		</div>
 	</nav>
@@ -94,8 +86,8 @@
 	<div class="container">
 		<div class="col-sm-offset-4 col-sm-3 text-center">	
 			<ul class="pagination">
-				<li class="moveLi"><a>&laquo;</a></li>
-				<li class="moveLi"><a>&raquo;</a></li>
+				<li class="moveLi disabled" id="left"><a>&laquo;</a></li>
+				<li class="moveLi" id="right"><a>&raquo;</a></li>
 			</ul>
 		</div>
 	</div>
@@ -109,8 +101,11 @@
 		</div>
 	</footer>
     <script type="text/javascript">
+    	var currentId = 1;
+    	var count = 1;
 		//获取到数据后调用此函数
 		function show(data){ 
+			$("div.messageContainer").empty();
 			var curLineMessageNum = 0; //第几行
     		var curLineMessageId = 0; //每行第几个 
     		for (var key in data)   // 每一个
@@ -153,11 +148,12 @@
 		function getData(message){
 			if(message === null || message === undefined)
 				message = "";
+			console.log(message);
 			$.ajax({
 				url: '/path/to/file', //url
 				type: 'default GET (Other values: POST)', // 选择方式 GET/POST
 				dataType: 'json', // 选择返回数据类型为json格式
-				data:message, // POST请求下发送过去的数据
+				data:{"index":message}, // POST请求下发送过去的数据
 				success:function(data){
 					if(typeof data === String)
 						data = JSON.parse(data);
@@ -169,15 +165,73 @@
 			});
 		}
 
-
-		$("li.moveLi").each(function(index, el) {
-			$(this).click(function(){
-				getData();
+		$(document).ready(function(){
+			//获取详情数量
+			$.ajax({
+				url: '/path/to/file',
+				type: 'default GET (Other values: POST)',
+				dataType: 'json',
+				success:function(data){
+					if(typeof data === String)
+						data = JSON.parse(data);
+					count = Math.ceil(number/30);
+					getData(currentId);
+				},
+				error:function(data){
+					console.log(data);
+				}
 			});
+			
 		});
 
+		$("#left").click(function(event) {
+			
+			if(currentId === 1)
+					return;
+			currentId --;
+			if(currentId === 1)
+				$("left").addClass('disabled');
+			else 
+				$("left").removeClass('disabled');
+			if(currentId === count)
+				$("right").addClass('disabled');
+			else 
+				$("right").removeClass('disabled');
+			getData(currentId);
+		});
+		$("#right").click(function(event) {
+			if(currentId === count)
+				return;
+			currentId ++;
+			if(currentId === 1)
+				$("left").addClass('disabled');
+			else 
+				$("left").removeClass('disabled');
+			if(currentId === count)
+				$("right").addClass('disabled');
+			else 
+				$("right").removeClass('disabled');
+			getData(currentId);
+		});
 
-		getData();
+		$("#search").click(function(event) {
+			$.ajax({
+				url: '/path/to/file',
+				type: 'POST',
+				dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
+				data: {
+					"col": $('#colName').val(),
+					"searchName":$('#searchName').val()
+				},
+				success:function(data){
+
+				},
+				error:function(data){
+					console.error(data);
+				}
+			});
+			
+		});
     </script>
 </body>
 </html>
