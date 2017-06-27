@@ -6,7 +6,8 @@ import re
 class Rules:
 	# 构造函数
 	def __init__(self):
-		self.rules = [".*"]
+		all = re.compile(".*")
+		self.rules = [all]
 		#如要手动编写rules，请在构造函数中实现
 		#self.rules.append("url_reg")
 
@@ -22,6 +23,7 @@ class Rules:
 	def initRules(self,arr):
 		self.rules = []
 		for rule in arr:
+			rule = re.compile(rule)
 			self.rules.append(rule)
 
 	# Array 得到rules数组
@@ -32,15 +34,17 @@ class Rules:
 	# - String - url 待匹配url
 	def match(self,url):
 		for rule in self.rules:
-			pat = re.compile(rule)
-			if pat.match(url):
+			match = rule.match(url)
+			if match:
 				return True
 		return False
 
 if __name__ == '__main__':
-	url = "www.jd."
-	pat = re.compile("jd"+r"\.")
-	match = pat.search(url)
+	url = "https://item.jd.com/5025518.html"
+	pat = re.compile("https://item.jd.com/\d+.html")
+	rules = Rules()
+	rules.initRules(["https://item.jd.com/\d+.html"])
+	match = rules.match(url)
 	if not match:
 		print "不匹配"
 	else:

@@ -103,6 +103,7 @@ class Parser:
 			if first:
 				first = False
 				res = dom.xpath(self.xpathBox[key])
+				
 				if len(res) is 1:
 					item[key] = res[0]
 				elif len(res) > 1:
@@ -111,6 +112,7 @@ class Parser:
 					LogUtil.n("第一个就找不到，判定该页非详情页")
 					# 第一个就找不到，判定该页非详情页
 					return
+				LogUtil.d("提取xpath："+self.xpathBox[key]+"，获取结果："+item[key])
 			else:
 				res = dom.xpath(self.xpathBox[key])
 				if len(res) is 1:
@@ -121,16 +123,21 @@ class Parser:
 					LogUtil.n("找不到后面的，判断为xpath不够完善")
 					# 找不到后面的，判断为xpath不够完善
 					item["xpath_fail_url"] = pagelink
+				LogUtil.d("提取xpath："+self.xpathBox[key]+"，获取结果："+item[key])
 		if item["xpath_fail_url"] is None:
 			# 数据库操作，插入数据item
 			LogUtil.n("数据库操作，插入数据item")
 			for key in item:
+				if item[key] is None:
+					item[key] = 'None'
 				LogUtil.n(key+' '+item[key])
 			raw_input("我等等你")
 		else:
 			# 错误处理
 			LogUtil.e("xpath提取错误处理")
 			for key in item:
+				if item[key] is None:
+					item[key] = 'None'
 				LogUtil.n(key+' '+item[key])
 			raw_input("我等等你")
 
@@ -159,6 +166,8 @@ class Parser:
 		# 使用给定的url规则匹配，默认所有url都会通过，即(.*)
 		noProto = url[len(self.proto):]
 		if self.rules.match(noProto):
+			return url
+		elif self.rules.match(url):
 			return url
 		else:
 			return False
