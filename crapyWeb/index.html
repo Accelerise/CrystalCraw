@@ -13,7 +13,15 @@
 	.error{
 		color: #FF6666
 	}
-
+	.showDiv{
+		font-size: 20px;
+		height: 89px;
+		line-height: 49px;
+		border: 1px solid #cccccc;
+		padding: 20px;
+		width: 290px;
+		display: none;
+	}
 	</style>
 </head>
 <body>
@@ -30,14 +38,24 @@
 			<div class="form-group">
 				<label for="mainUrl" class=" col-sm-2 control-label"> THE MAIN URL</label>
 				<div class="col-sm-8">
-					<input type="url" name="mainUrl" id="mainUrl" class="form-control" placeholder="Please input the URL">				
+					<input type="text" name="mainUrl" id="mainUrl" class="form-control" placeholder="Please input the URL">				
 				</div>
 			</div>
 			<div class="form-group ">
-				<label for="dataUrl" class=" col-sm-2 control-label"> THE DATA URL</label>
+				<label for="dataUrl1" class=" col-sm-2 control-label"> THE DATA URL 1</label>
 				<div class="col-sm-8">
-					<input type="url" name="dataUrl" id="dataUrl" class="form-control" placeholder="Please input the URL">				
+					<input type="text" name="dataUrl1" id="dataUrl1" class="form-control" placeholder="Please input the URL">				
 				</div>
+			</div>
+				<div class="form-group " id = "Btn2">
+				<div class="col-sm-offset-2 col-sm-8">
+					<button class="btn btn-default btn-md" id="addUrl" type="button">
+						<span class="glyphicon glyphicon-plus"></span>
+					</button>
+					<button class="btn btn-default btn-md" id="cutUrl" type="button">
+						<span class="glyphicon glyphicon-minus"></span>
+					</button>
+				</div>					
 			</div>
 			<div class="form-group ">
 				<label for="attName0" class=" col-sm-2 control-label"> ATTRIBUTE1 NAME</label>
@@ -57,8 +75,7 @@
 					<button class="btn btn-default btn-md" id="cutAttr" type="button">
 						<span class="glyphicon glyphicon-minus"></span>
 					</button>
-				</div>
-					
+				</div>					
 			</div>
 			
 			<hr>
@@ -84,11 +101,16 @@
 			</div>
 
 		</form>
-		<button type="button" class="btn btn-default" id="testbtn">test</button>
+		<div class="showDiv col-sm-offset-2"> 
+			<span>爬虫过程详情-请点击</span>
+			<button type="button" class="btn btn-info "   id="testbtn">进入</button>
+		</div>
+		
 	</div>
 
 	<script type="text/javascript">
 		var currentId = 1,
+			currentUrlId = 1,
 			validateForm;
 		$("#addAttr").click(addA);
 		$("#cutAttr").click(cutA);
@@ -97,14 +119,15 @@
 		$("#testbtn").click(function() {
 			self.location='loading.html'; 
 		});
+		$('#addUrl').click(addU);
+		$('#cutUrl').click(cutU);
+
+
 		$().ready(function() {
 			validateForm = $("form.form-horizontal").validate({
 				rules:{
 				mainUrl:{
 					required:true,					
-				},
-				dataUrl:{
-					required:true
 				},
 				attName0:"required",
 				Xpath0:"required"
@@ -153,6 +176,9 @@
 						postData += ",";
 				});
 				 postData += "}";
+				 $("#subBtn").addClass('disabled');
+				 $('div.showDiv').show('400');
+				console.log(postData);
 				$.ajax({
 					url: '/index',
 					type: 'POST',
@@ -166,12 +192,44 @@
 					error:function(data){	
 						console.log(data);
 						$("div.alert-danger").show('400');
+						$('#subBtn').removeClass('disabled');
 					}
 				});
 			}
 		}
-		
-
+		/*<div class="form-group ">
+				<label for="dataUrl" class=" col-sm-2 control-label"> THE DATA URL 1</label>
+				<div class="col-sm-8">
+					<input type="url" name="dataUrl" id="dataUrl" class="form-control" placeholder="Please input the URL">				
+				</div>
+			</div>*/
+		//添加URl
+		function addU(){
+			currentUrlId ++;
+			var div = document.createElement("div");
+			$(div).addClass('form-group');
+			var label = document.createElement("label");
+			$(label).addClass('col-sm-2 control-label').text('THE DATA URL '+ currentUrlId);
+			var div2 = document.createElement("div");
+			$(div2).addClass('col-sm-8');
+			var input = document.createElement("input");
+			$(input).attr({
+				name: 'dataUrl'+currentUrlId,
+				type: 'text',
+				placeholder:'Please input the URL'
+			}).addClass('form-control');
+			$(div2).append(input);
+			$(div).append(label);
+			$(div).append(div2);
+			$("#Btn2").before(div);
+		}
+		function cutU(){
+			if(currentUrlId<=1)
+				return;
+			var $cut = $("#Btn2").prev();
+			$($cut).remove();
+			currentUrlId--;
+		}
 	</script>
 </body>
 </html>

@@ -17,20 +17,15 @@
 			background-color: rgb(28, 39, 42);
 			width: 100%;
 			height: 100%;
-			padding: 50px;
 		}
 		.top{
 			height: 356px;
 			width: 100%;
 		}
 		.img{
-			float: left;
 			height: 356px;
-			width: 500px;
 		}
 		.showTest{
-			float: left;
-			width: 550px;
 			height: 356px;
 			/* line-height: 356px; */
 			color: rgb(213, 221, 226);
@@ -44,32 +39,46 @@
 			top: 0;
 			right: 0;
 		}
-		.xia{
-			height: 500px;
-		}
 		.move{
-			margin-top: 100px;
+			margin-top: 50px;
 			transition: left 0.3s;
 			background-color: #666666;
-			height: 400px;
-			padding: 20px;
-			position: fixed;
+			padding: 50px;
+			position: absolute;
 			border-radius: 5px;
-			box-shadow:  4px 4px 4px 4px;
+			font-size: 20px;
+			color: white;
+			word-wrap:break-word; 
+			word-break:break-all; 
+		}
+		.middle{
+			height: 50px;
+			border-top: 1px solid #cccccc;
+			color: white;
 		}
 	</style>
 </head>
 <body id="body">
+	<button class="btn btn-danger stopBtn">停止并获取结果</button>
 <!-- <button class="btn btn-danger" id="test">test</button> -->
 	<div class="back">
-		<div class="top">
-			<div class="img">
+		<div class="container">
+			<div class="col-sm-6">
 				<img src="./img/loading.gif">
 			</div>	
-			<div class="showTest">
-				<h1 class=" Lheight pull-right">已爬取<span id="number">1346233</span>个网页</h1>	
+			<div class="showTest col-sm-6 ">
+				<h1 class=" Lheight text-center ">
+					<p>已收集<span id="number">0</span>个网页</p>
+					<p>已爬取<span id="dataNumber">0</span>个详情页</p>
+				</h1>
 			</div>
-			<button class="btn btn-danger stopBtn">停止并获取结果</button>
+
+			<div class="middle col-sm-12">
+				<div class="center-block" style="width: 30px">
+					详情
+					<span class="glyphicon glyphicon-chevron-down" style="font-size: 30px"></span>
+				</div>
+			</div>
 		</div>
 		<div class="xia">
 			
@@ -81,8 +90,10 @@
 		var getAjax = {};
 
 		var data = {
-			"name":"name",
-			"value":"value"
+			"easdas":"Dasda",
+			"easda2s":"DasdaDasda",
+			"easda23s":"DasdaDasdaDasda",
+			"easda23seasda23seasda23s":"DasdaDasdaDasdaDasdaDasdaDasdaDasdaDasdaDasda"
 		};
 		 function getNumber(){
 			$.ajax({
@@ -94,6 +105,7 @@
 					if(typeof data === String)
 						data = JSON.parse(data);
 					$('#number').text(data.number);
+					$('#dataNumber').text(data.dataNumber);
 				},
 				error:function(xhr,status,error){
 					console.error(xhr);
@@ -112,6 +124,11 @@
 				success:function(data){
 					if(typeof data === String)
 						data = JSON.parse(data);
+					if(data === null || data === {} || data === undefined)
+					{
+						
+						return ;
+					}
 					show(data);
 				},
 				error:function(xhr,status,error){
@@ -147,7 +164,7 @@
 			$(div).css('left', '-'+ $(window).width()/3 + 'px');
 			var test = "";
 			for(var key in data){
-				 test += key +':' +data[key]+'\n';
+				 test += '<p>'+key +':' +data[key]+'</p>';
 			}
 			$(div).html(test);
 			$("div.xia").append(div);
@@ -157,12 +174,12 @@
 		$(document).ready(function() {
 			curHeight = $(window).height();
 			$("#body").height(Number(curHeight) > 906?curHeight:"906px"); // 设置页面高度
-			if(Number($(window).width()) < 1150)
+			if(Number($(window).width()) < 1200)
 			{
-				$("div.showTest").css("margin-left",'0px');
+				$("div.img").hide("1");
 			}
 			setInterval(function(){show(data);},2000); // 每2s获取一次数据
-			setInterval(function(){getNumber();},500); // 每0.5s查询一次数量
+			//setInterval(function(){getNumber();},500); // 每0.5s查询一次数量
 		});
 		//点击按钮后
 		$("button.stopBtn").click(function(event) {
