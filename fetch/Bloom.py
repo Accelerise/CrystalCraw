@@ -1,7 +1,12 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+
 import math
 import mmh3
 from bitarray import bitarray
-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 def ln(number):
 	return math.log(number,math.e)
