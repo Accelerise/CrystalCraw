@@ -65,7 +65,7 @@ class Crystal:
 	# void 初始化起始URL
 	def initStartUrl(self):
 		# 修改这里获取起始URL的途径
-		self.start_url = ["https://www.jd.com"]
+		self.start_url = ["https://list.jd.com/list.html?cat=670,671,672"]
 		self._hostInfo = self.parseUrl(self.start_url[0])
 		LogUtil.i("初始化起始URL完成")
 
@@ -161,8 +161,7 @@ class Crystal:
 	# void 从数据库获取给定的xpath规则
 	def getXpathFromMGDB(self):
 		dic = {}
-		dic["商品名"] = '//*[@id="name"]/h1'
-		dic["价格"] = '//*[@id="jd-price"]'
+		dic["电影名"] = '//*[@id="content"]/h1/span[1]/text()'
 		LogUtil.i("从数据库获取给定的xpath规则")
 		return dic
 		pass
@@ -170,7 +169,7 @@ class Crystal:
 	# void 从数据库获取给定的url规则
 	def getRulesFromMGDB(self):
 		LogUtil.i("从数据库获取给定的url规则")
-		return None
+		return ["https://list.jd.com/list.html?cat=670,671,672.*","https://item.jd.com/\d+.html"]
 		pass
 
 	# void 从数据库获取是否使用chrome-headless下载页面
