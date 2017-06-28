@@ -39,6 +39,7 @@ class Rules:
 				return True
 		return False
 
+
 	def matchDetail(self,url,detailUrl):
 		pat=re.compile(detailUrl)
 		match = pat.match(url)

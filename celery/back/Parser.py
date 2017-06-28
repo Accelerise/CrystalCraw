@@ -77,8 +77,9 @@ class Parser:
 	# - String -  pagelink 本页链接，用于调试时参考
 	# - String -  host 本页host，用于拼接URL
 	def collectURLs(self,dom,pagelink,host):
-		db = DB('127.0.0.1',27017)
+		db = DB('172.29.53.124',27017)
 		db.createDB("UrlCollect")
+		db.createId()
 		LogUtil.i("开始初始化爬出url："+pagelink)
 		urls = dom.xpath('//a[not(contains(@href,"javasc"))]/@href')
 		for url in urls:
@@ -97,8 +98,9 @@ class Parser:
 			raise XpathNotInit
 		if self.bf is None:
 			raise BFNotInit
-		db = DB('127.0.0.1',27017)
+		db = DB('172.29.53.124',27017)
 		db.createDB("UrlCollect")
+		db.createId()
 		LogUtil.i("开始初始化爬出url："+pagelink)
 		dom = etree.HTML(page)
 		urls = dom.xpath('//a[not(contains(@href,"javasc"))]/@href')
@@ -126,6 +128,7 @@ class Parser:
 			if(flag==False):
 				return
 		for key in self.xpathBox:
+			print key
 			if first:
 				first = False
 				res = dom.xpath(self.xpathBox[key])
@@ -150,7 +153,7 @@ class Parser:
 					# 找不到后面的，判断为xpath不够完善
 					item["xpath_fail_url"] = pagelink
 		if item["xpath_fail_url"] is None:
-			db = DB('127.0.0.1', 27017)
+			db = DB('172.29.53.124', 27017)
 			db.createDB("CrystalCraw")
 			id = db.incId()
 			document = {"id":id,"url":pagelink}

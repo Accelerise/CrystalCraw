@@ -4,8 +4,8 @@ from celery import Celery
 
 
 app = Celery('craw',
-             broker='redis://172.16.244.250:6379/5',
-             backend='redis://172.16.244.250:6379/5')
+             broker='redis://127.0.0.1:6379/5',
+             backend='redis://127.0.0.1:6379/5')
 
 
 @app.task

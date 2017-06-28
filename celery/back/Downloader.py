@@ -12,12 +12,12 @@ class Downloader:
 	# 构造函数
 	def __init__(self):
 		options = webdriver.ChromeOptions()
-		#options.binary_location = '/opt/google/chrome-unstable/google-chrome-unstable'
-		options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+		options.binary_location = '/opt/google/chrome-unstable/google-chrome-unstable'
+		#options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 		options.add_argument('headless')
 		options.add_argument('window-size=1200x600')
 		self.driver = webdriver.Chrome(chrome_options=options)
-		self.driver.get("http://localhost")
+		#self.driver.get("http://localhost")
 
 	# 单例模式
 	@classmethod

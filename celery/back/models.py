@@ -27,12 +27,6 @@ class DB(object):
         self._db[table].insert(document)
 
 
-    def motify(self,table,need,document):
-        self._db[table].update(need, {"$set": document})
-
-    def deleteAll(self,table):
-        self._db[table].delete_many({})
-
     def searchDataByRange(self,table,start,end):
         resData = self._db[table].find({"id": {"$gte": start, "$lte": end}},{"_id":0})
         return resData
@@ -54,8 +48,3 @@ class DB(object):
     def searchId(self):
         row = self._db["ids"].find({"name":"user"})
         return row[0]['id']
-
-
-    def searchByName(self,table,col,name):
-        row = self._db[table].find({col:{"$regex":name}},{"_id":0})
-        return row

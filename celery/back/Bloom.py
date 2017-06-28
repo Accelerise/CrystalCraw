@@ -21,7 +21,7 @@ class SimpleHash(object):
 
 
 class BloomFilter(object):
-    def __init__(self, host='172.16.244.250', port=6379, db=0, blockNum=1, key='bloomfilter'):
+    def __init__(self, host='127.0.0.1', port=6379, db=0, blockNum=1, key='bloomfilter'):
         """
         :param host: the host of Redis
         :param port: the port of Redis

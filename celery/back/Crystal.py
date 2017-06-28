@@ -173,7 +173,7 @@ class Crystal:
 
 
 	def getXpathFromMGDB(self):
-		db = DB("127.0.0.1",27017)
+		db = DB("172.29.53.124",27017)
 		db.createDB("CrystalCraw")
 		res = db.searchData("Target")
 		dict = {}
@@ -191,17 +191,14 @@ class Crystal:
 
 	# void 从数据库获取给定的url规则
 	def getRulesFromMGDB(self):
-		db = DB("127.0.0.1",27017)
+		db = DB("172.29.53.124",27017)
 		db.createDB("CrystalCraw")
 		res = db.searchData("dataUrl")
 		dict = []
 		for keyword in res:
 			dict.append(keyword["dataUrl"])
 		LogUtil.i("从数据库获取给定的url规则")
-		if (dict):
-			return dict
-		else:
-			return None
+		return dict
 		pass
 
 	# void 从数据库获取是否使用chrome-headless下载页面

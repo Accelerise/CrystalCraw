@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>RESULTS PAGE</title>
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+	<script src="../js/jquery-3.2.1.min.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+	<style>
+		.lineMessage{
+
+		}
+		.messageDiv{
+			margin-bottom: 10px;
+			height: 40px;
+			transition:background-color 0.8s,height 0.8s;
+			overflow: hidden;
+			background-color: rgb(248, 248, 248);
+			font-family: "Hiragino Sans GB", "Microsoft YaHei",
+             "WenQuanYi Micro Hei", sans-serif;
+             /* box-shadow: 2px 2px 6px; */
+             border: 1px solid transparent;
+             border-color:#ccc;
+ 			 border-radius: 4px;
+ 			 transition-delay: 0.05s;
+ 			 transition-duration:0.5s;
+		}
+		.messageDiv:hover,
+		.messageDiv:active{
+			background-color:rgb(51,122,188);
+			height: 300px;
+
+		}
+		.messageDiv:hover>.messageName{
+			color: rgb(255, 255, 255);
+		}
+		.clear{
+			clear: both;
+		}
+		@-webkit-keyframes myfirst /* Safari and Chrome */
+		{
+			from {}
+			to {background:#00CC99;}
+		}
+		.messageName{
+			line-height: 40px;
+			font-size: 25px;
+			transition: font-size 0.8s,color 0.8s ;
+			transition-delay: 0.2s;
+		}
+		.list-group-item{
+			color: #003333;
+            word-wrap:break-word;
+            word-break:break-all;
+		}
+		.moveLi{
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="navbar-header">
+			<a href="../index/" class="navbar-brand ">Automatic crawler</a>
+		</div>
+		<div>
+			<ul class="nav navbar-nav ">
+				<li class="active"><a href="../results/" id="detail">DETAIL</a></li>
+				<li><a href="">About us</a></li>
+			</ul>
+		</div>
+		<div>
+			<form class="navbar-form navbar-left" role="search">
+				<div class="form-group">
+					<input type="text" class="form-control" placeholder="col name" id="colName" required>
+				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" placeholder="Search" id="searchName" required>
+				</div>
+				<a class="btn btn-default" id="search">Submit</a>
+			</form>
+		</div>
+	</nav>
+	<div class="container messageContainer">
+
+	</div>
+
+	<div class="container">
+		<div class="col-sm-offset-4 col-sm-3 text-center">
+			<ul class="pagination">
+				<li class="moveLi disabled" id="left"><a>&laquo;</a></li>
+				<li class="moveLi" id="right"><a>&raquo;</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<footer>
+		<div class="container">
+			<hr>
+			<div class="col-sm-offset-4 col-sm-3 text-center">
+			Copyright <span class="glyphicon glyphicon-copyright-mark"></span> 2017 宝石结晶虫
+			</div>
+		</div>
+	</footer>
+    <script type="text/javascript">
+    	var currentId = 1;
+    	var count = 1;
+		//获取到数据后调用此函数
+		function show(data){
+			$("div.messageContainer").empty();
+			var curLineMessageNum = 0; //第几行
+    		var curLineMessageId = 0; //每行第几个
+    		for (var key in data)   // 每一个
+    		{
+				var $draw = ''; // 记录展示HTML
+				if(curLineMessageNum === 0)
+					$draw += '<div class="lineMessage"><div class="col-sm-3  messageDiv clear">';
+				else
+					$draw += '<div class="col-sm-offset-1 col-sm-3  messageDiv">';
+
+				$draw += '<p class="text-center messageName">'+ key + '</p><ul class="list-group">';
+
+				for (var i in data[key])
+				{
+					$draw += '<li class="list-group-item">'+i+':'+data[key][i]+'</li>';
+				}
+
+				$draw += '</ul></div>';
+				if(curLineMessageNum === 0)
+				{
+					$draw += '</div>';
+					$('div.messageContainer').append($draw);
+					curLineMessageNum++;
+				}
+				else if(curLineMessageNum === 2)
+				{
+					$now = $('div.lineMessage')[curLineMessageId];
+					$($now).append($draw);
+					curLineMessageNum = 0;
+					curLineMessageId++;
+				}else{
+					$now = $('div.lineMessage')[curLineMessageId] ;
+					$($now).append($draw);
+					curLineMessageNum++;
+				}
+			}
+		}
+
+		//将ajax封装成函数 message：POST请求下发送过去的数据
+		function getData(message){
+			if(message === null || message === undefined)
+				message = "";
+			$.ajax({
+				url: '/searchDataByRange/', //url
+				type: 'POST', // 选择方式 GET/POST
+				dataType: 'json', // 选择返回数据类型为json格式
+				data:"{\"index\":"+message+"}", // POST请求下发送过去的数据
+				success:function(data){
+					if(typeof data === String)
+						data = JSON.parse(data);
+					show(data);
+				},
+				error:function(errdata){
+					console.error(errdata);
+				}
+			});
+		}
+
+		$(document).ready(function(){
+			//获取详情数量
+			$.ajax({
+				url: '/getCount/',
+				type: 'GET',
+				dataType: 'json',
+				success:function(data){
+					if(typeof data === String)
+						data = JSON.parse(data);
+					count = Math.ceil(data.number/48);
+					getData(currentId);
+				},
+				error:function(data){
+					console.log(data);
+				}
+			});
+
+		});
+
+		$("#left").click(function(event) {
+
+			if(currentId === 1)
+					return;
+			currentId --;
+			if(currentId === 1)
+				$("#left").addClass('disabled');
+			else
+				$("#left").removeClass('disabled');
+			if(currentId === count)
+				$("#right").addClass('disabled');
+			else
+				$("#right").removeClass('disabled');
+			getData(currentId);
+		});
+		$("#right").click(function(event) {
+			if(currentId === count)
+				return;
+			currentId ++;
+			if(currentId === 1)
+				$("#left").addClass('disabled');
+			else
+				$("#left").removeClass('disabled');
+			if(currentId === count)
+				$("#right").addClass('disabled');
+			else
+				$("#right").removeClass('disabled');
+			getData(currentId);
+		});
+
+		$("#search").click(function(event) {
+		    var jsondata = {
+		        "col":$('#colName').val(),
+                "searchName":$('#searchName').val()
+            };
+		    var data=JSON.stringify(jsondata);
+			$.ajax({
+				url: '/searchByCol/',
+				type: 'POST',
+				dataType: 'json',
+				data: data,
+				success:function(data){
+                    show(data);
+				},
+				error:function(data){
+					console.error(data);
+				}
+			});
+
+		});
+    </script>
+</body>
+</html>
