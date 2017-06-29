@@ -103,12 +103,16 @@ CrystalCrawler是一个分布式的爬虫框架。
 6.	安装requests，sudo pip install requests
 7.	安装selenium，sudo pip install selenium
 8.	安装celery，sudo pip install celery
-9.	安装chrome，下载chrome开发版，下载地址：
-10.	https://www.google.com/chrome/browser/desktop/index.html?extra=devchannel，下载需要翻墙，安装后可以在/opt/google/chrome-unstable/google-chrome-unstable处看到已经安装
+9.	安装chrome，下载chrome开发版，下载地址：[chrome开发版](https://www.google.com/chrome/browser/desktop/index.html?extra=devchannel)
+下载需要翻墙，安装后可以在/opt/google/chrome-unstable/google-chrome-unstable处看到已经安装
 11.	安装chromedricer至python执行文件的目录，如/usr/bin。先安装bsdtar，sudo apt-get install bsdtar。
-12.	运行PLATFORM=linux64
-13.	VERSION=$(curl http://chromedriver.storage.googleapis.com/LATEST_RELEASE.
-14.	curl http://chromedriver.storage.googleapis.com/$VERSION/chromedriver_$PLATFORM.zip -o ~/1.zip 先安装到桌面，解压后，运行sudo cp ~/Desktop/chromedriver /usr/bin/chromedriver
+12.	运行
+```
+PLATFORM=linux64 \
+VERSION=$(curl http://chromedriver.storage.googleapis.com/LATEST_RELEASE. \
+curl http://chromedriver.storage.googleapis.com/$VERSION/chromedriver_$PLATFORM.zip -o ~/1.zip 
+```
+先安装到桌面，解压后，运行sudo cp ~/Desktop/chromedriver /usr/bin/chromedriver
 15.	配置数据库地址，在Crystal.py中的 getXpathFromMGDB和getRulesFromMGDB函数中需要配置存储数据的MongoDB的ip地址信息。
 16.	在Parser.py中的 collectURLs和initCollectURLs函数中需要配置任务队列的MongoDB的ip信息。同时在parseDetail函数中需要配置存储数据的MongoDB的ip地址信息。
 17.	在view.py中多处需要配置数据库地址，其中CrystalCraw相关的是存储数据的数据库，UrlCollect相关的是任务队列的数据库。
