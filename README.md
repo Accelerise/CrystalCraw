@@ -113,6 +113,7 @@ VERSION=$(curl http://chromedriver.storage.googleapis.com/LATEST_RELEASE. \
 curl http://chromedriver.storage.googleapis.com/$VERSION/chromedriver_$PLATFORM.zip -o ~/1.zip 
 ```
 先安装到桌面，解压后，运行sudo cp ~/Desktop/chromedriver /usr/bin/chromedriver
+
 15.	配置数据库地址，在Crystal.py中的 getXpathFromMGDB和getRulesFromMGDB函数中需要配置存储数据的MongoDB的ip地址信息。
 16.	在Parser.py中的 collectURLs和initCollectURLs函数中需要配置任务队列的MongoDB的ip信息。同时在parseDetail函数中需要配置存储数据的MongoDB的ip地址信息。
 17.	在view.py中多处需要配置数据库地址，其中CrystalCraw相关的是存储数据的数据库，UrlCollect相关的是任务队列的数据库。
