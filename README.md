@@ -10,7 +10,7 @@ CrystalCrawler是一个分布式的爬虫框架。
 + python 2.7
 
 ## 架构设计
-<img src="screenshots/system.jpg" width="561" height="810"/>
+<img src="screenshots/system.jpg" width="810" height="561"/>
 
 总体工作流程
 
