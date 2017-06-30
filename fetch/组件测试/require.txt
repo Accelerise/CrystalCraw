@@ -8,7 +8,7 @@ https://www.google.com/chrome/browser/desktop/index.html?extra=devchannel
 PLATFORM=linux64
 VERSION=$(curl http://chromedriver.storage.googleapis.com/LATEST_RELEASE)
 curl http://chromedriver.storage.googleapis.com/$VERSION/chromedriver_$PLATFORM.zip \
-| bsdtar -xvf - -C ~/pyenv/versions/2.7.12/bin
+| bsdtar -xvf - -C /usr/bin
 
 sudo apt-get install libnss3-dev
 
