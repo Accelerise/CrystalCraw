@@ -6,6 +6,11 @@ from selenium.webdriver.common.action_chains import ActionChains
 import requests
 from LogUtil import LogUtil
 
+import threading
+import time
+import os
+from Tool import Queue 
+
 class Downloader:
 	# 下载页面，提供两种方法 1.requests  2.chrome-headless
 	_downloader = None
@@ -19,7 +24,6 @@ class Downloader:
 		self.options.add_argument('headless')
 		self.options.add_argument('window-size=1200x600')
 		self.driver = webdriver.Chrome(chrome_options=self.options)
-		self.cnt = 0
 
 	# 单例模式
 	@classmethod
@@ -50,8 +54,6 @@ class Downloader:
 
 	# String 2.chrome-headless
 	def getByChrome(self,url):
-		print self.cnt,url
-		self.cnt = self.cnt + 1
 		self.driver.get(url)
 		self.driver.quit()
 		self.driver = webdriver.Chrome(chrome_options=self.options)
@@ -62,18 +64,62 @@ class Downloader:
 	def closeDownloader(self):
 		self.driver.quit()
 
+	# void 设置线程锁
+	def setClock(lock):
+		self.lock = lock
+
+def doChore():
+    time.sleep(0.5)
+
+# Function for each thread
+class multiDownload():
+	# 构造函数
+	def __init__(self,num,lock):
+		self.max = num;
+		self.options = webdriver.ChromeOptions()
+		self.options.binary_location = '/opt/google/chrome-unstable/google-chrome-unstable'
+		self.options.add_argument('headless')
+		self.options.add_argument('window-size=1200x600')
+		self.cnt = 0
+		self.lock = lock
+		self.queue = Queue()
+		# self.queue.put('http://www.accelerise.site')
+		# self.queue.put('http://www.jd.com')
+
+	def run(self):
+		self.lock.acquire()
+		LogUtil.start_log()
+		self.lock.release()
+		downloader = Downloader.getInstance()
+		downloader.setChromeEnable(True)
+		self.lock.acquire()
+		url = self.queue.pop()
+		if not url:
+			self.lock.release()
+			return
+		self.cnt = self.cnt + 1
+		print self.cnt,url
+		self.lock.release()
+		downloader.get(url)
+		downloader.closeDownloader()
+		self.lock.acquire()
+		LogUtil.end_log()
+		self.lock.release()
+
+	def start(self):
+		for i in range(self.max):
+			threading.Thread(target=self.run).start()
 
 
 if __name__ == '__main__':
-	LogUtil.start_log()
-	downloader = Downloader.getInstance()
-	downloader.setChromeEnable(True)
-	downloader.get("http://localhost")
-	downloader.get("http://localhost")
-	downloader.get("http://www.accelerise.site")
-	downloader.get("http://www.jd.com")
-	downloader.get("http://www.sina.com.cn/")
+	# Start 5 threads
 
-	downloader.closeDownloader()
-	LogUtil.end_log()
+	lock = threading.Lock()
+	multi = multiDownload(5,lock)
+	multi.queue.put('http://localhost')
+	multi.queue.put('http://localhost')
+	multi.queue.put('http://localhost')
+
+	multi.start()
+	
 
