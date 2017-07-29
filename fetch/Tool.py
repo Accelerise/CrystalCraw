@@ -24,7 +24,11 @@ class Queue:
         '''
         时间复杂度为O(1)
         '''
-        return self.items.pop()
+        if self.empty():
+            return None
+        else:
+            return self.items.pop()
+        
 
     # int 队列长度
     def size(self):
@@ -47,3 +51,14 @@ class File:
 		path = self.save_path + filename
 		with open(path, "w+") as fp:
 			fp.write(content)
+
+if __name__ == '__main__':
+    queue = Queue()
+    queue.put("1dgdfg")
+    queue.put("22222")
+    queue.put("3sdjkf")
+
+    print queue.pop()
+    print queue.pop()
+    print queue.pop()
+    print queue.pop()
