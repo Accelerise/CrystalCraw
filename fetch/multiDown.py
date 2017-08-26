@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
+
 import requests
 from LogUtil import LogUtil
 
@@ -24,6 +23,8 @@ class Downloader:
 		self.options.add_argument('headless')
 		self.options.add_argument('window-size=1200x600')
 		self.driver = webdriver.Chrome(chrome_options=self.options)
+		# self.driver.set_page_load_timeout(10)  
+		# self.driver.set_script_timeout(10)
 
 	# 单例模式
 	@classmethod
@@ -57,6 +58,8 @@ class Downloader:
 		self.driver.get(url)
 		self.driver.quit()
 		self.driver = webdriver.Chrome(chrome_options=self.options)
+		self.driver.set_page_load_timeout(10)  
+		self.driver.set_script_timeout(10)
 		page = self.driver.find_elements_by_xpath("/html")[0].get_attribute("innerHTML")
 		return page
 
@@ -91,7 +94,7 @@ class multiDownload():
 		LogUtil.start_log()
 		self.lock.release()
 		downloader = Downloader.getInstance()
-		downloader.setChromeEnable(True)
+		# downloader.setChromeEnable(True)
 		self.lock.acquire()
 		url = self.queue.pop()
 		if not url:
@@ -116,9 +119,12 @@ if __name__ == '__main__':
 
 	lock = threading.Lock()
 	multi = multiDownload(5,lock)
+
 	multi.queue.put('http://localhost')
 	multi.queue.put('http://localhost')
-	multi.queue.put('http://localhost')
+	multi.queue.put('http://www.accelerise.site')
+	multi.queue.put('http://www.jd.com')
+	multi.queue.put('http://www.sina.com.cn/')
 
 	multi.start()
 	

@@ -35,30 +35,39 @@ class Queue:
         return len(self.items)
 
 class File:
-	def __init__(self):
-		pass
-	# void 创建文件夹
+    def __init__(self):
+        pass
+    # void 创建文件夹
     # - String - folder 文件夹路径
-	def setDir(self,folder):
-	    if not os.path.exists(folder):
-	        os.makedirs(folder)
-	    self.save_path = folder+"/"
+    def setDir(self,folder):
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        self.save_path = folder+"/"
 
-	# void 文件写入
+    # void 文件写入
     # - String - filename 文件名
     # - String - content 写入内容
-	def fileIn(self,filename,content):
-		path = self.save_path + filename
-		with open(path, "w+") as fp:
-			fp.write(content)
+    def fileIn(self,filename,content):
+        path = self.save_path + filename
+        with open(path, "w+") as fp:
+            fp.write(content)
+
+    def fileRead(self,filename):
+        path = self.save_path + filename
+        with open(path, "r") as fp:
+            return fp.read()
 
 if __name__ == '__main__':
     queue = Queue()
-    queue.put("1dgdfg")
-    queue.put("22222")
-    queue.put("3sdjkf")
+    file = File()
+    file.setDir(".")
 
-    print queue.pop()
-    print queue.pop()
-    print queue.pop()
-    print queue.pop()
+    print file.fileRead("sample")
+    # queue.put("1dgdfg")
+    # queue.put("22222")
+    # queue.put("3sdjkf")
+
+    # print queue.pop()
+    # print queue.pop()
+    # print queue.pop()
+    # print queue.pop()
