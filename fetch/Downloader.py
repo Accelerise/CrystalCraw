@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
 import requests
 from LogUtil import LogUtil
 
@@ -18,7 +16,10 @@ class Downloader:
 		self.options.binary_location = '/opt/google/chrome-unstable/google-chrome-unstable'
 		self.options.add_argument('headless')
 		self.options.add_argument('window-size=1200x600')
+		self.options.add_argument('load-images=no')  ##关闭图片加载
 		self.driver = webdriver.Chrome(chrome_options=self.options)
+		self.driver.set_page_load_timeout(8)  
+		self.driver.set_script_timeout(8)
 		self.cnt = 0
 
 	# 单例模式
@@ -45,6 +46,7 @@ class Downloader:
 
 	# String 1.requests
 	def getByRequests(self,url):
+		print self.cnt,url
 		page = requests.get(url).content.decode("utf-8")
 		return page
 
@@ -55,6 +57,8 @@ class Downloader:
 		self.driver.get(url)
 		self.driver.quit()
 		self.driver = webdriver.Chrome(chrome_options=self.options)
+		self.driver.set_page_load_timeout(10)  
+		self.driver.set_script_timeout(10)
 		page = self.driver.find_elements_by_xpath("/html")[0].get_attribute("innerHTML")
 		return page
 
@@ -67,7 +71,7 @@ class Downloader:
 if __name__ == '__main__':
 	LogUtil.start_log()
 	downloader = Downloader.getInstance()
-	downloader.setChromeEnable(True)
+	# downloader.setChromeEnable(True)
 	downloader.get("http://localhost")
 	downloader.get("http://localhost")
 	downloader.get("http://www.accelerise.site")

@@ -12,3 +12,7 @@ class Configer:
 	@classmethod
 	def getConfig(cls):
 		return vars(settings)
+
+if __name__ == '__main__':
+	res = Configer.getConfig()
+	print res

@@ -131,7 +131,7 @@ class Parser:
 				if item[key] is None:
 					item[key] = 'None'
 				LogUtil.n(key+' '+item[key])
-			raw_input("我等等你")
+			# raw_input("我等等你")
 		else:
 			# 错误处理
 			LogUtil.e("xpath提取错误处理")
@@ -139,7 +139,7 @@ class Parser:
 				if item[key] is None:
 					item[key] = 'None'
 				LogUtil.n(key+' '+item[key])
-			raw_input("我等等你")
+			# raw_input("我等等你")
 
 	# String / False 清洗Url，使其标准化
 	# - String -  host 本页host，用于拼接URL
@@ -203,8 +203,38 @@ class BFNotInit(Exception):
 		return repr(self.value)
 
 if __name__ == '__main__':
+	from Bloom import Bloomfilter
+	from Tool import Queue,File
+	from Xpath import Xpath
+	from Rules import Rules
+
+	_xpath = Xpath()
+	dic = {}
+	dic["名"] = '/html/body/div[7]/div/div[2]/div[1]/text()'
+	dic["价格"] = '/html/body/div[7]/div/div[2]/div[3]/div/div[1]/div[2]/span/span[2]/text()'
+	_xpath.initXpath(dic)
+
+	arr = ["https://list.jd.com/list.html?cat=670,671,672.*","https://item.jd.com/\d+.html"]
+	_rules = Rules()
+	_rules.initRules(arr)
+
+	_queue = Queue()
+	_bf = Bloomfilter(1000000,0.0001)
+
 	parser = Parser()
+	parser.setXpathBox(_xpath.getXpath())
+	parser.setRules(_rules)
+	parser.setQueue(_queue)
+	parser.setBF(_bf)
+	parser.setDomainFir("jd") # 传入一级域名
+
 	host = "www.jd.com"
-	pagelink = "http://"
-	page = ""
+	pagelink = "https://www.jd.com"
+
+	file = File()
+	file.setDir(".")
+
+	page = file.fileRead("sample")
+	LogUtil.start_log()
 	parser.process_item(host,pagelink,page)
+	LogUtil.end_log()
