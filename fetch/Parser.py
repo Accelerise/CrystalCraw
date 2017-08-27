@@ -24,6 +24,13 @@ class Parser:
 		self.domainFir = crystal._hostInfo["fir"]
 		self.lock = crystal._lock
 
+		if self.xpathBox is None:
+			raise XpathNotInit
+		if self.queue is None:
+			raise QueueNotInit
+		if self.bf is None:
+			raise BFNotInit
+
 	# Parser 单例模式
 	@classmethod
 	def getInstance(cls,crystal):
@@ -41,12 +48,6 @@ class Parser:
 	# - String - pagelink 页面源链接
 	# - String - page 页面文档内容
 	def process_item(self,host,pagelink,page):
-		if self.xpathBox is None:
-			raise XpathNotInit
-		if self.queue is None:
-			raise QueueNotInit
-		if self.bf is None:
-			raise BFNotInit
 		LogUtil.i("开始解析页面："+pagelink)
 		dom = etree.HTML(page)
 		self.collectURLs(dom=dom,pagelink=pagelink,host=host)
@@ -91,10 +92,10 @@ class Parser:
 				elif len(res) > 1:
 					item[key] = res
 				else:
-					LogUtil.n("第一个就找不到，判定该页非详情页")
+					LogUtil.i("第一个就找不到，判定该页非详情页")
 					# 第一个就找不到，判定该页非详情页
 					return
-				LogUtil.d("提取xpath："+self.xpathBox[key]+"，获取结果："+item[key])
+				
 			else:
 				res = dom.xpath(self.xpathBox[key])
 				if len(res) is 1:
@@ -102,10 +103,11 @@ class Parser:
 				elif len(res) > 1:
 					item[key] = res
 				else:
-					LogUtil.n("找不到后面的，判断为xpath不够完善")
+					LogUtil.i("找不到后面的，判断为xpath不够完善")
 					# 找不到后面的，判断为xpath不够完善
 					item["xpath_fail_url"] = pagelink
-				LogUtil.d("提取xpath："+self.xpathBox[key]+"，获取结果："+item[key])
+			LogUtil.i("提取xpath："+self.xpathBox[key]+"，获取结果："+item[key])
+		
 		if item["xpath_fail_url"] is None:
 			# 数据库操作，插入数据item
 			LogUtil.n("数据库操作，插入数据item")
@@ -155,7 +157,7 @@ class Parser:
 			return False
 
 class XpathNotInit(Exception):
-	value="You have not initialized XpathBox,please call setXpathBox(dic) and pass a Xpath in"
+	value="You have not initialized XpathBox,please construct Parser with a complete Crystal instance"
 	"""docstring for XpathNotInit"""
 	def __init__(self, value=""):
 		super(Exception, self).__init__()
@@ -163,9 +165,9 @@ class XpathNotInit(Exception):
 			self.value = value
 	def __str__(self):
 		return repr(self.value)
-		
+
 class QueueNotInit(Exception):
-	value="You have not initialized Queue,please call setQueue(queue) and pass a Queue in"
+	value="You have not initialized Queue,please construct Parser with a complete Crystal instance"
 	"""docstring for XpathNotInit"""
 	def __init__(self, value=""):
 		super(Exception, self).__init__()
@@ -175,7 +177,7 @@ class QueueNotInit(Exception):
 		return repr(self.value)
 
 class BFNotInit(Exception):
-	value="You have not initialized BloomFilter,please call setBF(bf) and pass a BloomFilter in"
+	value="You have not initialized BloomFilter,please construct Parser with a complete Crystal instance"
 	"""docstring for XpathNotInit"""
 	def __init__(self, value=""):
 		super(Exception, self).__init__()

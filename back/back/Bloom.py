@@ -51,7 +51,7 @@ class BloomFilter(object):
             ret = ret & self.server.getbit(name, loc)
         return ret
 
-    def insert(self, str_input):
+    def add(self, str_input):
         m5 = md5()
         m5.update(str_input)
         str_input = m5.hexdigest()

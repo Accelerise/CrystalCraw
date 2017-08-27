@@ -25,8 +25,7 @@ class Crystal:
 		self._xpath = None
 		self._rules = None
 		self._parser = None
-		self._downloader = None
-		self._configer = None
+		self._config = None
 		self._bf = None
 		self._queue = None
 		self._hostInfo = None
@@ -36,8 +35,7 @@ class Crystal:
 
 	# void 初始化各组件
 	def initComponents(self):
-		self._config = Configer.getConfig()
-		self.initStartUrl()
+		self.initConfig()
 		self.initXpath()
 		self.initRules()
 		
@@ -51,7 +49,7 @@ class Crystal:
 	# void 运行
 	def run(self):
 		LogUtil.start_log()
-		TIMEOUT_COUNT = 0
+		empty_count = 0
 		_downloader = self.newDownloader()
 		while True:
 			self._lock.acquire()
@@ -69,8 +67,8 @@ class Crystal:
 				self._parser.process_item(host=host,pagelink=pagelink,page=page)
 			else:
 				self._lock.release()
-				if TIMEOUT_COUNT < 3:
-					TIMEOUT_COUNT = TIMEOUT_COUNT + 1
+				if empty_count < 3:
+					empty_count = empty_count + 1
 					time.sleep(3)
 		LogUtil.end_log()
 
@@ -101,6 +99,15 @@ class Crystal:
 				self._rules.initRules(arr)
 		LogUtil.i("初始化Rules完成")
 
+	# void 读取本地配置
+	def initConfig(self):
+		self._config = {}
+
+		# 本地配置
+		localConfig = Configer.getConfig()
+		for row in localConfig:
+			self._config[row] = localConfig[row]
+
 	# void 初始化downloader
 	def newDownloader(self):
 		downloader = Downloader()
@@ -126,12 +133,8 @@ class Crystal:
 	# void 初始化Parser
 	def initParser(self):
 		self._parser = Parser.getInstance(self)
-		# self._parser.setProto("http://") # 默认为https://，最好根据用户的输入智能设置 #
-		# self._parser.setXpathBox(self._xpath.getXpath())
-		# self._parser.setRules(self._rules)
-		# self._parser.setQueue(self._queue)
-		# self._parser.setBF(self._bf)
-		# self._parser.setDomainFir(self._hostInfo["fir"]) # 传入一级域名
+		proto = self._hostInfo["proto"]
+		self._parser.setProto(proto) # 默认为https://，最好根据用户的输入智能设置 
 		LogUtil.i("初始化Parser完成")
 
 	# {} / False 解析URL
@@ -183,13 +186,9 @@ class Crystal:
 		LogUtil.i("从数据库获取给定的url规则")
 		return ["https://list.jd.com/list.html?cat=670,671,672.*","https://item.jd.com/\d+.html"]
 
-	# void 从数据库获取是否使用chrome-headless下载页面
-	def getIfChromeEnable(self):
-		LogUtil.i("从数据库获取是否使用chrome-headless下载页面")
-		return True
-
 	def start(self):
-		print "线程数 4"
+		self.initStartUrl()
+		print "线程数 "+str(self._config["TREADING_COUNT"])
 		for i in range(self._config["TREADING_COUNT"]):
 			threading.Thread(target=self.run).start()
 
