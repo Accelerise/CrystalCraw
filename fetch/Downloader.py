@@ -52,14 +52,14 @@ class Downloader:
 
 	# String 2.chrome-headless
 	def getByChrome(self,url):
-		print self.cnt,url
+		LogUtil.n( str(self.cnt)+' '+url)
 		self.cnt = self.cnt + 1
 		self.driver.get(url)
+		page = self.driver.find_elements_by_xpath("/html")[0].get_attribute("innerHTML")
 		self.driver.quit()
 		self.driver = webdriver.Chrome(chrome_options=self.options)
 		self.driver.set_page_load_timeout(10)  
 		self.driver.set_script_timeout(10)
-		page = self.driver.find_elements_by_xpath("/html")[0].get_attribute("innerHTML")
 		return page
 
 	# void 关闭Chrome下载器
@@ -71,6 +71,7 @@ class Downloader:
 if __name__ == '__main__':
 	LogUtil.start_log()
 	downloader = Downloader.getInstance()
+
 	# downloader.setChromeEnable(True)
 	downloader.get("http://localhost")
 	downloader.get("http://localhost")

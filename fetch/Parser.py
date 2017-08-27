@@ -14,50 +14,27 @@ class Parser:
 
 	# 构造函数
 	# - String - proto(可选) 网站使用的协议 http:// / https://
-	def __init__(self,proto="https://"):
+	def __init__(self,crystal,proto="https://"):
 		self.proto = proto
-		self.xpathBox = None
-		self.queue = None
-		self.rules = None
-		self.bf = None
-		self.domainFir = None
+		self.crystal = crystal
+		self.xpathBox = crystal._xpath.getXpath()
+		self.queue = crystal._queue
+		self.rules = crystal._rules
+		self.bf = crystal._bf
+		self.domainFir = crystal._hostInfo["fir"]
+		self.lock = crystal._lock
 
 	# Parser 单例模式
 	@classmethod
-	def getInstance(cls):
+	def getInstance(cls,crystal):
 		if cls._parser is None:
-			cls._parser = Parser()
+			cls._parser = Parser(crystal)
 		return cls._parser
 
 	# void 修改协议
 	# - String - proto 协议
 	def setProto(self,proto):
 		self.proto = proto
-
-	# void 设置xpath规则
-	# - {} -     dic xpath字典
-	def setXpathBox(self,dic):
-		self.xpathBox = dic
-
-	# void 设置url规则
-	# - {} -     dic url规则字典
-	def setRules(self,dic):
-		self.rules = dic
-
-	# void 传入队列
-	# - Queue -  queue 项目使用的url队列 
-	def setQueue(self,queue):
-		self.queue = queue
-
-	# void 传入查重过滤器
-	# - Queue -  queue 项目使用的url队列 
-	def setBF(self,bf):
-		self.bf = bf
-
-	# void 传入一级域名
-	# - String -  一级域名
-	def setDomainFir(self,fir):
-		self.domainFir = fir
 		
 	# void 通用页面解析
 	# - String - host 页面host，url
@@ -86,10 +63,15 @@ class Parser:
 		for url in urls:
 			url = self.standardizeUrl(host,url)
 			if url is not False:
+				self.lock.acquire()
 				if(not self.bf.isContain(url)):
 					LogUtil.n("put in url:"+url+'\n')
 					self.bf.add(url)
+					self.lock.release()
 					self.queue.put(url)
+				else:
+					self.lock.release()
+				
 
 	# void 详细解析
 	# - String -  dom html文档

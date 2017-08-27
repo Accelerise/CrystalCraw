@@ -4,6 +4,8 @@
 import os
 import sys
 import re
+import threading
+import time
 
 from lxml import etree
 from Bloom import Bloomfilter
@@ -28,38 +30,48 @@ class Crystal:
 		self._bf = None
 		self._queue = None
 		self._hostInfo = None
+		self._lock = threading.Lock()
 
 		self.initComponents()
 
 	# void 初始化各组件
 	def initComponents(self):
-		self._configer = Configer.getConfig()
+		self._config = Configer.getConfig()
 		self.initStartUrl()
 		self.initXpath()
 		self.initRules()
-		self.initDownloader()
+		
 		self.initBF()
 		self.initQueue()
 		self.initParser()
+		self.createDir(self._projectName)
+		for each in self.start_url:
+			self._queue.put(each)
 
 	# void 运行
 	def run(self):
 		LogUtil.start_log()
-		self.createDir(self._projectName)
-		for each in self.start_url:
-			self._queue.put(each)
-		
-		while not self._queue.empty():
-			pagelink = self._queue.pop()
-			parseRes = self.parseUrl(pagelink)
-			if parseRes is None:
-				host = None
-				# 该url不合法
+		TIMEOUT_COUNT = 0
+		_downloader = self.newDownloader()
+		while True:
+			self._lock.acquire()
+			if not self._queue.empty():
+				pagelink = self._queue.pop()
+				self._lock.release()
+
+				parseRes = self.parseUrl(pagelink)
+				if parseRes is None:
+					host = None
+					# 该url不合法
+				else:
+					host = parseRes["host"]
+				page = _downloader.get(pagelink)
+				self._parser.process_item(host=host,pagelink=pagelink,page=page)
 			else:
-				host = parseRes["host"]
-			page = self._downloader.get(pagelink)
-			self._parser.process_item(host=host,pagelink=pagelink,page=page)
-		
+				self._lock.release()
+				if TIMEOUT_COUNT < 3:
+					TIMEOUT_COUNT = TIMEOUT_COUNT + 1
+					time.sleep(3)
 		LogUtil.end_log()
 
 	# void 初始化起始URL
@@ -90,11 +102,11 @@ class Crystal:
 		LogUtil.i("初始化Rules完成")
 
 	# void 初始化downloader
-	def initDownloader(self):
-		self._downloader = Downloader.getInstance()
-		if( self.getIfChromeEnable() ):
-			self._downloader.setChromeEnable(True)
+	def newDownloader(self):
+		downloader = Downloader()
+		downloader.setChromeEnable(True)
 		LogUtil.i("初始化Downloader完成")
+		return downloader
 
 	# void 初始化过滤器
 	# - int -   number(可选) 过滤器最大过滤数
@@ -113,13 +125,13 @@ class Crystal:
 
 	# void 初始化Parser
 	def initParser(self):
-		self._parser = Parser()
-		#self._parser.setProto("http://") # 默认为https://，最好根据用户的输入智能设置 #
-		self._parser.setXpathBox(self._xpath.getXpath())
-		self._parser.setRules(self._rules)
-		self._parser.setQueue(self._queue)
-		self._parser.setBF(self._bf)
-		self._parser.setDomainFir(self._hostInfo["fir"]) # 传入一级域名
+		self._parser = Parser.getInstance(self)
+		# self._parser.setProto("http://") # 默认为https://，最好根据用户的输入智能设置 #
+		# self._parser.setXpathBox(self._xpath.getXpath())
+		# self._parser.setRules(self._rules)
+		# self._parser.setQueue(self._queue)
+		# self._parser.setBF(self._bf)
+		# self._parser.setDomainFir(self._hostInfo["fir"]) # 传入一级域名
 		LogUtil.i("初始化Parser完成")
 
 	# {} / False 解析URL
@@ -164,21 +176,24 @@ class Crystal:
 		dic["电影名"] = '//*[@id="content"]/h1/span[1]/text()'
 		LogUtil.i("从数据库获取给定的xpath规则")
 		return dic
-		pass
+
 
 	# void 从数据库获取给定的url规则
 	def getRulesFromMGDB(self):
 		LogUtil.i("从数据库获取给定的url规则")
 		return ["https://list.jd.com/list.html?cat=670,671,672.*","https://item.jd.com/\d+.html"]
-		pass
 
 	# void 从数据库获取是否使用chrome-headless下载页面
 	def getIfChromeEnable(self):
 		LogUtil.i("从数据库获取是否使用chrome-headless下载页面")
 		return True
-		pass
+
+	def start(self):
+		print "线程数 4"
+		for i in range(self._config["TREADING_COUNT"]):
+			threading.Thread(target=self.run).start()
 
 if __name__ == '__main__':
 
 	project = Crystal("京东")
-	project.run()
+	project.start()
