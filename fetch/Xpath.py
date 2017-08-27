@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-
 class Xpath:
 	# 构造函数
 	def __init__(self):

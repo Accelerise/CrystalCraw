@@ -94,7 +94,8 @@ class multiDownload():
 		LogUtil.start_log()
 		self.lock.release()
 		downloader = Downloader.getInstance()
-		# downloader.setChromeEnable(True)
+		print Downloader.getInstance()
+		downloader.setChromeEnable(True)
 		self.lock.acquire()
 		url = self.queue.pop()
 		if not url:
@@ -104,6 +105,7 @@ class multiDownload():
 		print self.cnt,url
 		self.lock.release()
 		downloader.get(url)
+
 		downloader.closeDownloader()
 		self.lock.acquire()
 		LogUtil.end_log()
@@ -113,11 +115,14 @@ class multiDownload():
 		for i in range(self.max):
 			threading.Thread(target=self.run).start()
 
+	def getMax(self):
+		return self.max
 
 if __name__ == '__main__':
 	# Start 5 threads
 
 	lock = threading.Lock()
+	# lock = LogUtil.lock
 	multi = multiDownload(5,lock)
 
 	multi.queue.put('http://localhost')
