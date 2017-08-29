@@ -6,6 +6,7 @@ import sys
 import re
 import threading
 import time
+import signal
 
 from lxml import etree
 from Bloom import Bloomfilter
@@ -33,6 +34,8 @@ class Crystal:
 
 		self.initComponents()
 
+		self.firstState()
+
 	# void 初始化各组件
 	def initComponents(self):
 		self.initConfig()
@@ -43,15 +46,16 @@ class Crystal:
 		self.initQueue()
 		self.initParser()
 		self.createDir(self._projectName)
-		for each in self.start_url:
-			self._queue.put(each)
+
+		signal.signal(signal.SIGINT, self.monitor_stop)
 
 	# void 运行
 	def run(self):
+		self.threadAdd()
 		LogUtil.start_log()
 		empty_count = 0
 		_downloader = self.newDownloader()
-		while True:
+		while self.getState() == "running":
 			self._lock.acquire()
 			if not self._queue.empty():
 				pagelink = self._queue.pop()
@@ -65,18 +69,39 @@ class Crystal:
 					host = parseRes["host"]
 				page = _downloader.get(pagelink)
 				self._parser.process_item(host=host,pagelink=pagelink,page=page)
+				time.sleep(self._config["DOWNLOAD_DELAY"])
 			else:
 				self._lock.release()
 				if empty_count < 3:
 					empty_count = empty_count + 1
 					time.sleep(3)
+				else:
+					break
+
+		if self.getThreadCount() == 1:
+			if self.getState() == "stop":
+				self.saveQueue()
+				self.setState("end")
+			elif self.getState() == "running":
+				self.setState("end")
+		self.threadReduce()
 		LogUtil.end_log()
+
 
 	# void 初始化起始URL
 	def initStartUrl(self):
 		# 修改这里获取起始URL的途径
-		self.start_url = ["https://list.jd.com/list.html?cat=670,671,672"]
+
+		if self.getState() == "restart":
+			self.start_url = self.loadQueue()
+		else:
+			self.start_url = ["https://list.jd.com/list.html?cat=670,671,672","https://list.jd.com/list.html?cat=145,146,147"]
+
 		self._hostInfo = self.parseUrl(self.start_url[0])
+		self._parser.setProto(self._hostInfo["proto"]) # 默认为https://
+		self._parser.setDomain(self._hostInfo["fir"])
+		for each in self.start_url:
+			self._queue.put(each)
 		LogUtil.i("初始化起始URL完成")
 
 	# void 初始化xpath
@@ -89,14 +114,14 @@ class Crystal:
 		LogUtil.i("初始化Xpath完成")
 
 	# void 初始化rules
-	def initRules(self):
+	def initRules(self,detailUrl = None):
 		# 获取url规则数组
 		self._rules = Rules()
 		if(not self._rules.isManual()):
 			arr = self.getRulesFromMGDB()
 			# 如果能获取到数据，说明用户在web前台填写了url规则
 			if arr is not None:
-				self._rules.initRules(arr)
+				self._rules.initRules(arr,detailUrl)
 		LogUtil.i("初始化Rules完成")
 
 	# void 读取本地配置
@@ -133,8 +158,7 @@ class Crystal:
 	# void 初始化Parser
 	def initParser(self):
 		self._parser = Parser.getInstance(self)
-		proto = self._hostInfo["proto"]
-		self._parser.setProto(proto) # 默认为https://，最好根据用户的输入智能设置 
+		
 		LogUtil.i("初始化Parser完成")
 
 	# {} / False 解析URL
@@ -164,6 +188,19 @@ class Crystal:
 			return res
 		else:
 			return False
+
+	def setState(self,state):
+		self._state = state
+		# init running stop restart end
+
+	def getState(self):
+		return self._state
+
+	def firstState(self):
+		if self.fileTool.fileExist("queue") :
+			self.setState("restart")
+		else:
+			self.setState("init")
 	
 	# void 创建工作目录
 	# - String - projectName 工程名
@@ -172,7 +209,32 @@ class Crystal:
 		self.fileTool.setDir(projectName)
 		LogUtil.i("创建工作目录")
 
+
+	def saveQueue(self):
+		while not self._queue.empty():
+			url = self._queue.pop()
+			self.fileTool.fileAppend("queue",url + "\n")
+
+	def loadQueue(self):
+		return self.fileTool.fileReadLine("queue")
 	
+	def threadAdd(self):
+		self._lock.acquire()
+		self._threadCount = self._threadCount + 1
+		self._lock.release()
+
+	def threadReduce(self):
+		self._lock.acquire()
+		self._threadCount = self._threadCount - 1
+		self._lock.release()
+
+	def getThreadCount(self):
+		self._lock.acquire()
+		res = self._threadCount
+		self._lock.release()
+		return res
+
+
 	# void 从数据库获取给定的xpath规则
 	def getXpathFromMGDB(self):
 		dic = {}
@@ -188,11 +250,20 @@ class Crystal:
 
 	def start(self):
 		self.initStartUrl()
-		print "线程数 "+str(self._config["TREADING_COUNT"])
+		self.setState("running")
+		self._threadCount = 0
+		print "开启线程数 "+str(self._config["TREADING_COUNT"])
 		for i in range(self._config["TREADING_COUNT"]):
 			threading.Thread(target=self.run).start()
 
+	def monitor_stop(self, signal, frame):
+		LogUtil.d('正在停止本次爬取，之后您再次开启时可接着上一次继续爬取')
+		self.setState("stop")
+	
 if __name__ == '__main__':
 
 	project = Crystal("京东")
 	project.start()
+	# project.initStartUrl()
+	# project.saveQueue()
+	# project.loadQueue()

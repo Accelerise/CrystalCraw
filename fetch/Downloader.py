@@ -18,8 +18,8 @@ class Downloader:
 		self.options.add_argument('window-size=1200x600')
 		self.options.add_argument('load-images=no')  ##关闭图片加载
 		self.driver = webdriver.Chrome(chrome_options=self.options)
-		self.driver.set_page_load_timeout(8)  
-		self.driver.set_script_timeout(8)
+		# self.driver.set_page_load_timeout(8)  
+		# self.driver.set_script_timeout(8)
 		self.cnt = 0
 
 	# 单例模式
@@ -58,8 +58,8 @@ class Downloader:
 		page = self.driver.find_elements_by_xpath("/html")[0].get_attribute("innerHTML")
 		self.driver.quit()
 		self.driver = webdriver.Chrome(chrome_options=self.options)
-		self.driver.set_page_load_timeout(10)  
-		self.driver.set_script_timeout(10)
+		# self.driver.set_page_load_timeout(10)  
+		# self.driver.set_script_timeout(10)
 		return page
 
 	# void 关闭Chrome下载器

@@ -11,7 +11,7 @@ import CrawSetting
 class Configer:
 	@classmethod
 	def getConfig(cls):
-		return vars(settings)
+		return vars(CrawSetting)
 
 if __name__ == '__main__':
 	res = Configer.getConfig()

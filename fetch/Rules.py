@@ -20,11 +20,12 @@ class Rules:
 
 	# void 传入参数初始化
 	# - Array - arr url规则数组
-	def initRules(self,arr):
+	def initRules(self,arr,detailUrl=None):
 		self.rules = []
 		for rule in arr:
 			rule = re.compile(rule)
 			self.rules.append(rule)
+		self.detailUrl = detailUrl
 
 	# Array 得到rules数组
 	def getRules(self):
@@ -37,6 +38,15 @@ class Rules:
 			match = rule.match(url)
 			if match:
 				return True
+		return False
+
+	# Bool 判断url是否匹配detailUrl
+	# - String - url 待匹配url
+	def matchDetail(self,url):
+		pat=re.compile(self.detailUrl)
+		match = pat.match(url)
+		if match:
+			return True
 		return False
 
 if __name__ == '__main__':

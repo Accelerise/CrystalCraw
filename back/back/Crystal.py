@@ -55,8 +55,11 @@ class Crystal:
 		_downloader = self.newDownloader()
 
 		while True:
+			self._lock.acquire()
 			if not self._queue.empty():
 				pagelink = self._queue.pop()
+				self._lock.release()
+
 				parseRes = self.parseUrl(pagelink)
 				if parseRes is None:
 					host = None
@@ -70,6 +73,7 @@ class Crystal:
 				elif flag=="master":
 					self._parser.initCollectURLs(host=host, pagelink=pagelink, page=page)
 			else:
+				self._lock.release()
 				if empty_count < 3:
 					empty_count = empty_count + 1
 					time.sleep(3)
@@ -80,6 +84,8 @@ class Crystal:
 	def initStartUrl(self, targetUrl):
 		self.start_url = targetUrl
 		self._hostInfo = self.parseUrl(self.start_url[0])
+		self._parser.setProto(self._hostInfo["proto"]) # 默认为https://
+		self._parser.setDomain(self._hostInfo["fir"])
 		for each in self.start_url:
 			self._queue.put(each)
 		LogUtil.i("设置URL完成")
@@ -143,8 +149,6 @@ class Crystal:
 	# void 初始化Parser
 	def initParser(self):
 		self._parser = Parser(self)
-		proto = self._hostInfo["proto"]
-		self._parser.setProto(proto) # 默认为https://，最好根据用户的输入智能设置 #
 		LogUtil.i("初始化Parser完成")
 
 	# {} / False 解析URL
@@ -216,8 +220,12 @@ class Crystal:
 			return None
 		pass
 
-def start(self,targetUrl):
+def start(self,flag,targetUrl):
 	self.initStartUrl(targetUrl)
 	print "线程数 "+str(self._config["TREADING_COUNT"])
-	for i in range(self._config["TREADING_COUNT"]):
-		threading.Thread(target=self.run).start()
+	if flag=="work":
+		for i in range(self._config["TREADING_COUNT"]):
+			threading.Thread(target=self.run,args=("work")).start()
+	elif flag=="master":
+		threading.Thread(target=self.run,args=("master")).start()
+	

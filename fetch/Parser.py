@@ -21,7 +21,7 @@ class Parser:
 		self.queue = crystal._queue
 		self.rules = crystal._rules
 		self.bf = crystal._bf
-		self.domainFir = crystal._hostInfo["fir"]
+
 		self.lock = crystal._lock
 
 		if self.xpathBox is None:
@@ -42,6 +42,9 @@ class Parser:
 	# - String - proto 协议
 	def setProto(self,proto):
 		self.proto = proto
+
+	def setDomain(self,domainFir):
+		self.domainFir = domainFir
 		
 	# void 通用页面解析
 	# - String - host 页面host，url
@@ -79,33 +82,52 @@ class Parser:
 	# - String -  pagelink 本页链接，用于调试时参考
 	# - String -  host 本页host，用于拼接URL
 	def parseDetail(self,dom,pagelink,host):
+
+		def isXpath(str):
+			if str[0:1] == "/":
+				return True
+			else:
+				return False
+
+		def extractElement(key):
+			if isXpath(self.xpathBox[key]):
+				res = dom.xpath(self.xpathBox[key])
+			else:
+				tmp = dom.cssselect(self.xpathBox[key])
+				res = []
+				for each in tmp:
+					res.append(each.text)
+				
+			if len(res) is 1:
+				return res[0]
+			elif len(res) > 1:
+				return res
+			else:
+				# 第一个就找不到，判定该页非详情页
+				return None
+
 		item = {}
 		item["xpath_fail_url"] = None
 		first = True
+		if(self.rules.detailUrl!=None):
+			flag = self.rules.matchDetail(pagelink)
+			if(flag==False):
+				return
 		for key in self.xpathBox:
 			if first:
 				first = False
-				res = dom.xpath(self.xpathBox[key])
-				
-				if len(res) is 1:
-					item[key] = res[0]
-				elif len(res) > 1:
-					item[key] = res
-				else:
+				item[key] = extractElement(key)
+				if not item[key]:
 					LogUtil.i("第一个就找不到，判定该页非详情页")
-					# 第一个就找不到，判定该页非详情页
 					return
 				
 			else:
-				res = dom.xpath(self.xpathBox[key])
-				if len(res) is 1:
-					item[key] = res[0]
-				elif len(res) > 1:
-					item[key] = res
-				else:
+				item[key] = extractElement(key)
+				if not item[key]:
 					LogUtil.i("找不到后面的，判断为xpath不够完善")
 					# 找不到后面的，判断为xpath不够完善
 					item["xpath_fail_url"] = pagelink
+
 			LogUtil.i("提取xpath："+self.xpathBox[key]+"，获取结果："+item[key])
 		
 		if item["xpath_fail_url"] is None:
