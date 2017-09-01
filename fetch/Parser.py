@@ -17,6 +17,7 @@ class Parser:
 	def __init__(self,crystal,proto="https://"):
 		self.proto = proto
 		self.crystal = crystal
+		self.xpath = crystal._xpath
 		self.xpathBox = crystal._xpath.getXpath()
 		self.queue = crystal._queue
 		self.rules = crystal._rules
@@ -83,20 +84,16 @@ class Parser:
 	# - String -  host 本页host，用于拼接URL
 	def parseDetail(self,dom,pagelink,host):
 
-		def isXpath(str):
-			if str[0:1] == "/":
-				return True
-			else:
-				return False
-
 		def extractElement(key):
-			if isXpath(self.xpathBox[key]):
-				res = dom.xpath(self.xpathBox[key])
+			res = []
+			if self.xpath.isXpath(self.xpathBox[key]):
+				tmp = dom.xpath(self.xpathBox[key])
+				for each in res:
+					res.append(each.strip())
 			else:
 				tmp = dom.cssselect(self.xpathBox[key])
-				res = []
 				for each in tmp:
-					res.append(each.text)
+					res.append(each.text.strip())
 				
 			if len(res) is 1:
 				return res[0]
@@ -117,13 +114,13 @@ class Parser:
 			if first:
 				first = False
 				item[key] = extractElement(key)
-				if not item[key]:
+				if item[key] is None:
 					LogUtil.i("第一个就找不到，判定该页非详情页")
 					return
 				
 			else:
 				item[key] = extractElement(key)
-				if not item[key]:
+				if item[key] is None:
 					LogUtil.i("找不到后面的，判断为xpath不够完善")
 					# 找不到后面的，判断为xpath不够完善
 					item["xpath_fail_url"] = pagelink
@@ -169,6 +166,9 @@ class Parser:
 		# 如 //channel.jd.com => proto+channel.jd.com
 		pat = re.compile(r'^//',re.S)
 		url = pat.sub(self.proto , url)
+
+		pat = re.compile(r'(.*)(#.*$)',re.S)
+		url = pat.sub(r'\1' , url)
 		# 使用给定的url规则匹配，默认所有url都会通过，即(.*)
 		noProto = url[len(self.proto):]
 		if self.rules.match(noProto):

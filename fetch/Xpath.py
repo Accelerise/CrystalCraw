@@ -18,11 +18,53 @@ class Xpath:
 	# - {} - dic xpath字典
 	def initXpath(self,dic):
 		for key in dic:
+			if self.isXpath(dic[key]):
+				if not self.isValidXpath(dic[key]):
+					raise ValidXpath
+			elif self.isCss(dic[key]):
+				if not self.isValidCss(dic[key]):
+					raise ValidCss
 			self.xpath[key] = dic[key]
 
 	# {} 返回xpath字典
 	def getXpath(self):
 		return self.xpath
+
+	def isXpath(self,str):
+		if str[0:1] == "/":
+			return True
+		else:
+			return False
+	def isValidXpath(self,str):
+		if str[-2:] == "()":
+			return True
+		else:
+			return False
+
+	def isCss(self,str):
+		return False
+	def isValidCss(self,str):
+		return True
+
+class ValidXpath(Exception):
+	value="The Xpath you input is not Valid,Please check if you have add text() or other at the end of rule"
+	"""docstring for XpathNotInit"""
+	def __init__(self, value=""):
+		super(Exception, self).__init__()
+		if value is not "":
+			self.value = value
+	def __str__(self):
+		return repr(self.value)
+
+class ValidCss(Exception):
+	value="The Css you input is not Valid,Please check rules"
+	"""docstring for XpathNotInit"""
+	def __init__(self, value=""):
+		super(Exception, self).__init__()
+		if value is not "":
+			self.value = value
+	def __str__(self):
+		return repr(self.value)
 
 if __name__ == '__main__':
 	xpath = Xpath()

@@ -18,6 +18,7 @@ from Downloader import Downloader
 from Parser import Parser
 from Configer import Configer
 from LogUtil import LogUtil
+from httplib import BadStatusLine
 
 class Crystal:
 	# 构造函数
@@ -67,7 +68,10 @@ class Crystal:
 					# 该url不合法
 				else:
 					host = parseRes["host"]
-				page = _downloader.get(pagelink)
+				try:
+					page = _downloader.get(pagelink)
+				except Exception:
+					continue
 				self._parser.process_item(host=host,pagelink=pagelink,page=page)
 				time.sleep(self._config["DOWNLOAD_DELAY"])
 			else:
@@ -78,12 +82,6 @@ class Crystal:
 				else:
 					break
 
-		if self.getThreadCount() == 1:
-			if self.getState() == "stop":
-				self.saveQueue()
-				self.setState("end")
-			elif self.getState() == "running":
-				self.setState("end")
 		self.threadReduce()
 		LogUtil.end_log()
 
@@ -211,6 +209,7 @@ class Crystal:
 
 
 	def saveQueue(self):
+		self.fileTool.fileRemove("queue")
 		while not self._queue.empty():
 			url = self._queue.pop()
 			self.fileTool.fileAppend("queue",url + "\n")
@@ -238,7 +237,8 @@ class Crystal:
 	# void 从数据库获取给定的xpath规则
 	def getXpathFromMGDB(self):
 		dic = {}
-		dic["电影名"] = '//*[@id="content"]/h1/span[1]/text()'
+		dic["名称"] = '/html/body/div[5]/div/div[2]/div[1]/text()'
+		dic["价格"] = 'body > div:nth-child(7) > div > div.itemInfo-wrap > div.summary.summary-first > div > div.summary-price.J-summary-price > div.dd > span.p-price > span.price.J-p-4335674'
 		LogUtil.i("从数据库获取给定的xpath规则")
 		return dic
 
@@ -253,8 +253,24 @@ class Crystal:
 		self.setState("running")
 		self._threadCount = 0
 		print "开启线程数 "+str(self._config["TREADING_COUNT"])
+		poo = []
 		for i in range(self._config["TREADING_COUNT"]):
-			threading.Thread(target=self.run).start()
+			poo.append(threading.Thread(target=self.run))
+		for task in poo:
+			task.setDaemon('True')
+			task.start()
+		for task in poo:
+			task.join()
+
+		if self.getThreadCount() == 0:
+			if self.getState() == "stop":
+				self.saveQueue()
+				self.setState("end")
+			elif self.getState() == "running":
+				self.setState("end")
+		else:
+			print "线程数不为0"
+
 
 	def monitor_stop(self, signal, frame):
 		LogUtil.d('正在停止本次爬取，之后您再次开启时可接着上一次继续爬取')

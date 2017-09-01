@@ -24,7 +24,7 @@ COOKIES_ENABLED = True
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 LOG_LEVEL='DEBUG'
-DOWNLOAD_DELAY = 2
+DOWNLOAD_DELAY = 1.5
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 TREADING_COUNT = 4
 

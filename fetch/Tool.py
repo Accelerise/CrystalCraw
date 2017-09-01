@@ -85,9 +85,10 @@ class File:
 if __name__ == '__main__':
     queue = Queue()
     file = File()
-    file.setDir(".")
+    file.setDir("京东")
 
-    print file.fileRead("sample")
+    # print file.fileRead("sample")
+    print str(file.fileExist("queue"))
     # queue.put("1dgdfg")
     # queue.put("22222")
     # queue.put("3sdjkf")

@@ -18,6 +18,7 @@ class Parser:
 	def __init__(self,crystal,proto="https://"):
 		self.proto = proto
 		self.crystal = crystal
+		self.xpath = crystal._xpath
 		self.xpathBox = crystal._xpath.getXpath()
 		self.queue = crystal._queue
 		self.rules = crystal._rules
@@ -103,21 +104,18 @@ class Parser:
 	# - String -  dom html文档
 	# - String -  pagelink 本页链接，用于调试时参考
 	# - String -  host 本页host，用于拼接URL
-	def parseDetail(self,dom,pagelink,host,detailUrl=None):
-		def isXpath(str):
-			if str[0:1] == "/":
-				return True
-			else:
-				return False，
+	def parseDetail(self,dom,pagelink,hostsel):
 
 		def extractElement(key):
-			if isXpath(self.xpathBox[key]):
-				res = dom.xpath(self.xpathBox[key])
+			res = []
+			if self.xpath.isXpath(self.xpathBox[key]):
+				tmp = dom.xpath(self.xpathBox[key])
+				for each in res:
+					res.append(each.strip())
 			else:
 				tmp = dom.cssselect(self.xpathBox[key])
-				res = []
 				for each in tmp:
-					res.append(each.text)
+					res.append(each.text.strip())
 				
 			if len(res) is 1:
 				return res[0]
@@ -189,6 +187,9 @@ class Parser:
 		# 如 //channel.jd.com => proto+channel.jd.com
 		pat = re.compile(r'^//',re.S)
 		url = pat.sub(self.proto , url)
+
+		pat = re.compile(r'(.*)(#.*$)',re.S)
+		url = pat.sub(r'\1' , url)
 		# 使用给定的url规则匹配，默认所有url都会通过，即(.*)
 		noProto = url[len(self.proto):]
 		if self.rules.match(noProto):

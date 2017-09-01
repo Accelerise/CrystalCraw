@@ -46,10 +46,10 @@ class Crystal:
 		self.initQueue()
 		self.initParser()
 		self.createDir(self._projectName)
-		#self.initParser()
 
 	# void 运行
 	def run(self,flag):
+		self.threadAdd()
 		LogUtil.start_log()
 		empty_count = 0
 		_downloader = self.newDownloader()
@@ -66,17 +66,25 @@ class Crystal:
 					# 该url不合法
 				else:
 					host = parseRes["host"]
-				page = _downloader.get(pagelink)
+				try:
+					page = _downloader.get(pagelink)
+				except Exception:
+					continue
 				pagelink = pagelink.encode("UTF-8")
 				if flag=="work":
 					self._parser.process_item(host=host,pagelink=pagelink,page=page)
 				elif flag=="master":
 					self._parser.initCollectURLs(host=host, pagelink=pagelink, page=page)
+				time.sleep(self._config["DOWNLOAD_DELAY"])
 			else:
 				self._lock.release()
 				if empty_count < 3:
 					empty_count = empty_count + 1
 					time.sleep(3)
+				else:
+					break
+
+		self.threadReduce()
 		LogUtil.end_log()
 
 
@@ -105,9 +113,10 @@ class Crystal:
 		self._rules = Rules()
 		if(not self._rules.isManual()):
 			arr = self.getRulesFromMGDB()
+			detail = self.getDetailUrlFromMGDB()
 			# 如果能获取到数据，说明用户在web前台填写了url规则
 			if arr is not None:
-				self._rules.initRules(arr)
+				self._rules.initRules(arr,detail)
 		LogUtil.i("初始化Rules完成")
 
 	# void 首先从分布式系统读取配置，然后读取本地配置，本地配置优先
@@ -186,7 +195,21 @@ class Crystal:
 		self.fileTool.setDir(projectName)
 		LogUtil.i("创建工作目录")
 
+	def threadAdd(self):
+		self._lock.acquire()
+		self._threadCount = self._threadCount + 1
+		self._lock.release()
 
+	def threadReduce(self):
+		self._lock.acquire()
+		self._threadCount = self._threadCount - 1
+		self._lock.release()
+
+	def getThreadCount(self):
+		self._lock.acquire()
+		res = self._threadCount
+		self._lock.release()
+		return res
 
 	def getXpathFromMGDB(self):
 		db = DB("127.0.0.1",27017)
@@ -218,14 +241,28 @@ class Crystal:
 			return dict
 		else:
 			return None
-		pass
+
+	def getDetailUrlFromMGDB(self):
+		dict = []
+		if (dict):
+			return dict
+		else:
+			return None
 
 def start(self,flag,targetUrl):
 	self.initStartUrl(targetUrl)
-	print "线程数 "+str(self._config["TREADING_COUNT"])
+	self._threadCount = 0
+	print "开启线程数 "+str(self._config["TREADING_COUNT"])
 	if flag=="work":
+		poo = []
 		for i in range(self._config["TREADING_COUNT"]):
-			threading.Thread(target=self.run,args=("work")).start()
+			poo.append(threading.Thread(target=self.run,args=("work")))
+		for task in poo:
+			task.setDaemon('True')
+			task.start()
+		for task in poo:
+			task.join()
+
 	elif flag=="master":
 		threading.Thread(target=self.run,args=("master")).start()
 	

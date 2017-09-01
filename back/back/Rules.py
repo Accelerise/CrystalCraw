@@ -8,7 +8,6 @@ class Rules:
 	def __init__(self):
 		all = re.compile(".*")
 		self.rules = [all]
-		self.detailUrl = None
 		#如要手动编写rules，请在构造函数中实现
 		#self.rules.append("url_reg")
 
