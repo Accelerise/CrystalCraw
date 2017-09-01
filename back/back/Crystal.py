@@ -249,20 +249,20 @@ class Crystal:
 		else:
 			return None
 
-def start(self,flag,targetUrl):
-	self.initStartUrl(targetUrl)
-	self._threadCount = 0
-	print "开启线程数 "+str(self._config["TREADING_COUNT"])
-	if flag=="work":
-		poo = []
-		for i in range(self._config["TREADING_COUNT"]):
-			poo.append(threading.Thread(target=self.run,args=("work")))
-		for task in poo:
-			task.setDaemon('True')
-			task.start()
-		for task in poo:
-			task.join()
+	def start(self,flag,targetUrl):
+		self.initStartUrl(targetUrl)
+		self._threadCount = 0
+		print "开启线程数 "+str(self._config["TREADING_COUNT"])
+		if flag=="work":
+			poo = []
+			for i in range(self._config["TREADING_COUNT"]):
+				poo.append(threading.Thread(target=self.run,args=("work")))
+			for task in poo:
+				task.setDaemon('True')
+				task.start()
+			for task in poo:
+				task.join()
 
-	elif flag=="master":
-		threading.Thread(target=self.run,args=("master")).start()
+		elif flag=="master":
+			threading.Thread(target=self.run,args=("master")).start()
 	
