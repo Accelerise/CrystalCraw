@@ -48,8 +48,6 @@ class Crystal:
 		self.initParser()
 		self.createDir(self._projectName)
 
-		signal.signal(signal.SIGINT, self.monitor_stop)
-
 	# void 运行
 	def run(self):
 		self.threadAdd()
@@ -62,25 +60,26 @@ class Crystal:
 				pagelink = self._queue.pop()
 				self._lock.release()
 
-				parseRes = self.parseUrl(pagelink)
-				if parseRes is None:
-					host = None
-					# 该url不合法
-				else:
-					host = parseRes["host"]
+				# parseRes = self.parseUrl(pagelink)
+				# if parseRes is None:
+				# 	host = None
+				# 	# 该url不合法
+				# else:
+				host = self._hostInfo["host"]
 				try:
 					page = _downloader.get(pagelink)
 				except Exception:
 					continue
 				self._parser.process_item(host=host,pagelink=pagelink,page=page)
-				time.sleep(self._config["DOWNLOAD_DELAY"])
+				
 			else:
 				self._lock.release()
 				if empty_count < 3:
 					empty_count = empty_count + 1
-					time.sleep(3)
+					time.sleep(5)
 				else:
 					break
+			time.sleep(self._config["DOWNLOAD_DELAY"])
 
 		self.threadReduce()
 		LogUtil.end_log()
@@ -93,7 +92,7 @@ class Crystal:
 		if self.getState() == "restart":
 			self.start_url = self.loadQueue()
 		else:
-			self.start_url = ["https://list.jd.com/list.html?cat=670,671,672","https://list.jd.com/list.html?cat=145,146,147"]
+			self.start_url = ["https://s.taobao.com/search?q=%E6%AF%9B%E8%A1%A3%E7%94%B7"]
 
 		self._hostInfo = self.parseUrl(self.start_url[0])
 		self._parser.setProto(self._hostInfo["proto"]) # 默认为https://
@@ -209,7 +208,8 @@ class Crystal:
 
 
 	def saveQueue(self):
-		self.fileTool.fileRemove("queue")
+		if self.fileTool.fileExist("queue") :
+			self.fileTool.fileRemove("queue")
 		while not self._queue.empty():
 			url = self._queue.pop()
 			self.fileTool.fileAppend("queue",url + "\n")
@@ -237,8 +237,10 @@ class Crystal:
 	# void 从数据库获取给定的xpath规则
 	def getXpathFromMGDB(self):
 		dic = {}
-		dic["名称"] = '/html/body/div[5]/div/div[2]/div[1]/text()'
-		dic["价格"] = 'body > div:nth-child(7) > div > div.itemInfo-wrap > div.summary.summary-first > div > div.summary-price.J-summary-price > div.dd > span.p-price > span.price.J-p-4335674'
+
+		dic["名称"] = '//*[@id="J_Title"]/h3/text()'
+		dic["价格"] = '#J_StrPrice > em.tb-rmb-num' 
+		dic["图片地址"] = '//*[@id="J_ShopInfo"]/a/img/@src'
 		LogUtil.i("从数据库获取给定的xpath规则")
 		return dic
 
@@ -246,7 +248,7 @@ class Crystal:
 	# void 从数据库获取给定的url规则
 	def getRulesFromMGDB(self):
 		LogUtil.i("从数据库获取给定的url规则")
-		return ["https://list.jd.com/list.html?cat=670,671,672.*","https://item.jd.com/\d+.html"]
+		return ["https://s.taobao.com/search\?.*q=%E6%AF%9B%E8%A1%A3%E7%94%B7.*","https://item.taobao.com/item.htm\?id=\d+.*"]
 
 	def start(self):
 		self.initStartUrl()
@@ -259,26 +261,25 @@ class Crystal:
 		for task in poo:
 			task.setDaemon('True')
 			task.start()
-		for task in poo:
-			task.join()
+		try:
+			while self.getThreadCount() != 0:
+				time.sleep(2)
+		except KeyboardInterrupt as e:
+			self.setState("stop")
+			for task in poo:
+				task.join()
+			LogUtil.d('正在停止本次爬取，之后您再次开启时可接着上一次继续爬取')
 
-		if self.getThreadCount() == 0:
-			if self.getState() == "stop":
-				self.saveQueue()
-				self.setState("end")
-			elif self.getState() == "running":
-				self.setState("end")
-		else:
-			print "线程数不为0"
+		if self.getState() == "stop":
+			self.saveQueue()
+			self.setState("end")
+		elif self.getState() == "running":
+			self.setState("end")
 
-
-	def monitor_stop(self, signal, frame):
-		LogUtil.d('正在停止本次爬取，之后您再次开启时可接着上一次继续爬取')
-		self.setState("stop")
 	
 if __name__ == '__main__':
 
-	project = Crystal("京东")
+	project = Crystal("淘宝毛衣男")
 	project.start()
 	# project.initStartUrl()
 	# project.saveQueue()

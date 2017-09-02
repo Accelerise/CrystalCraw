@@ -7,6 +7,9 @@ import Xpath
 import re
 from LogUtil import LogUtil
 
+from Tool import Queue,File
+file = File()
+file.setDir(".")
 class Parser:
 	# 解析页面，通用解析过程为1.收集url 2.尝试生成item，成功即插入数据库
 
@@ -88,10 +91,14 @@ class Parser:
 			res = []
 			if self.xpath.isXpath(self.xpathBox[key]):
 				tmp = dom.xpath(self.xpathBox[key])
-				for each in res:
+				# file.fileIn("wtf",etree.tostring(dom))
+				# print "写入了"+pagelink
+				for each in tmp:
 					res.append(each.strip())
 			else:
 				tmp = dom.cssselect(self.xpathBox[key])
+				# file.fileIn("wtf",etree.tostring(dom))
+				# print "写入了"+pagelink
 				for each in tmp:
 					res.append(each.text.strip())
 				
@@ -129,11 +136,15 @@ class Parser:
 		
 		if item["xpath_fail_url"] is None:
 			# 数据库操作，插入数据item
-			LogUtil.n("数据库操作，插入数据item")
+			db = DB('127.0.0.1', 27017)
+			db.createDB("craw")
+			id = db.incId()
+			document = {"id":id,"url":pagelink}
 			for key in item:
-				if item[key] is None:
-					item[key] = 'None'
-				LogUtil.n(key+' '+item[key])
+				if (key!="xpath_fail_url"):
+					document[key] = item[key]
+			print document
+			db.insertDBforOne("Result",document)
 			# raw_input("我等等你")
 		else:
 			# 错误处理
@@ -209,38 +220,21 @@ class BFNotInit(Exception):
 		return repr(self.value)
 
 if __name__ == '__main__':
-	from Bloom import Bloomfilter
 	from Tool import Queue,File
-	from Xpath import Xpath
-	from Rules import Rules
-
-	_xpath = Xpath()
-	dic = {}
-	dic["名"] = '/html/body/div[7]/div/div[2]/div[1]/text()'
-	dic["价格"] = '/html/body/div[7]/div/div[2]/div[3]/div/div[1]/div[2]/span/span[2]/text()'
-	_xpath.initXpath(dic)
-
-	arr = ["https://list.jd.com/list.html?cat=670,671,672.*","https://item.jd.com/\d+.html"]
-	_rules = Rules()
-	_rules.initRules(arr)
-
-	_queue = Queue()
-	_bf = Bloomfilter(1000000,0.0001)
-
-	parser = Parser()
-	parser.setXpathBox(_xpath.getXpath())
-	parser.setRules(_rules)
-	parser.setQueue(_queue)
-	parser.setBF(_bf)
-	parser.setDomainFir("jd") # 传入一级域名
-
-	host = "www.jd.com"
-	pagelink = "https://www.jd.com"
+	import weakref
+	a = Queue()
+	a_ref = weakref.ref(a)
+	print a_ref
 
 	file = File()
 	file.setDir(".")
-
-	page = file.fileRead("sample")
-	LogUtil.start_log()
-	parser.process_item(host,pagelink,page)
-	LogUtil.end_log()
+	xpathBox = {}
+	xpathBox["名称"] = '//*[@id="J_ShopInfo"]/a/img/@src'
+	page = file.fileRead("wtf")
+	dom = etree.HTML(page)
+	res = []
+	tmp = dom.xpath(xpathBox["名称"])
+	
+	for each in tmp:
+		res.append(each.strip())
+	print res

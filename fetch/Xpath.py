@@ -38,6 +38,8 @@ class Xpath:
 	def isValidXpath(self,str):
 		if str[-2:] == "()":
 			return True
+		elif str.find("/@") != -1:
+			return True
 		else:
 			return False
 

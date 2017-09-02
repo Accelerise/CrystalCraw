@@ -50,10 +50,9 @@ class Rules:
 		return False
 
 if __name__ == '__main__':
-	url = "https://item.jd.com/5025518.html"
-	pat = re.compile("https://item.jd.com/\d+.html")
+	url = "https://item.taobao.com/item.htm?id=557598393787&ns=1&abbucket=0"
 	rules = Rules()
-	rules.initRules(["https://item.jd.com/\d+.html"])
+	rules.initRules(["https://item.taobao.com/item.htm\?id=\d+.*"])
 	match = rules.match(url)
 	if not match:
 		print "不匹配"
