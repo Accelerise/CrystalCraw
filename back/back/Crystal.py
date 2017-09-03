@@ -123,14 +123,14 @@ class Crystal:
 	def initConfig(self):
 		self._config = {}
 
-		# 分布式配置
-		remoteConfig = {}
-		for row in remoteConfig:
-			self._config[row] = remoteConfig[row]
 		# 本地配置
 		localConfig = Configer.getConfig()
 		for row in localConfig:
 			self._config[row] = localConfig[row]
+		# 分布式配置
+		remoteConfig = {}
+		for row in remoteConfig:
+			self._config[row] = remoteConfig[row]
 
 	# void 初始化downloader
 	def newDownloader(self):
