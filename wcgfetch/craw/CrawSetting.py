@@ -1,0 +1,5 @@
+# -*- coding: utf-8 -*-
+DOWNLOAD_DELAY = 1.5
+TREADING_COUNT = 4
+CHROME_ENABLE = True
+REDIS_IP = "192.168.1.104"
