@@ -36,9 +36,10 @@ class File:
     # void 创建文件夹
     # - String - folder 文件夹路径
     def setDir(self,folder):
-        if not os.path.exists(folder):
-            os.makedirs(folder)
+        # if not os.path.exists(folder):
+        #     os.makedirs(folder)
         self.save_path = folder+"/"
+        pass
 
     # void 文件写入
     # - String - filename 文件名

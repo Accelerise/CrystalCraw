@@ -25,6 +25,7 @@ class Parser:
         self.rules = crystal._rules
         self.bf = crystal._bf
         self.lock = crystal._lock
+        self.db = WCG()
 
         if self.xpathBox is None:
             raise XpathNotInit
@@ -53,53 +54,51 @@ class Parser:
     # - String - pagelink 页面源链接
     # - String - page 页面文档内容
     def process_item(self,host,pagelink,page):
-        LogUtil.i("开始解析页面："+pagelink)
+        LogUtil.n("开始解析页面："+pagelink,self.crystal()._taskId)
         dom = etree.HTML(page)
         self.collectURLs(dom=dom,pagelink=pagelink,host=host)
-        LogUtil.i("该页面收集URL结束："+pagelink)
+        LogUtil.n("该页面收集URL结束："+pagelink,self.crystal()._taskId)
         self.parseDetail(dom=dom,pagelink=pagelink,host=host)
-        LogUtil.i("该页面详细分析结束："+pagelink)
+        LogUtil.n("该页面详细分析结束："+pagelink,self.crystal()._taskId)
 
     # void 收集URL
     # - String -  dom html文档
     # - String -  pagelink 本页链接，用于调试时参考
     # - String -  host 本页host，用于拼接URL
     def collectURLs(self,dom,pagelink,host):
-        LogUtil.i("开始初始化爬出url："+pagelink)
+        LogUtil.n("开始初始化爬出url："+pagelink,self.crystal()._taskId)
         urls = dom.xpath('//a[not(contains(@href,"javasc"))]/@href')
-        db = WCG()
         for url in urls:
             url = self.standardizeUrl(host,url)
             if url is not False:
                 self.lock.acquire()
                 if(not self.bf.isContains(url)):
-                    LogUtil.n("put in url:" + url + '\n')
+                    LogUtil.i("put in url:" + url + '\n')
                     self.bf.add(url)
-                    db.incId("collectUrl_task"+str(self.crystal()._taskId))
+                    self.db.incId("collectUrl_task"+str(self.crystal()._taskId))
                     self.lock.release()
                     collection = 'url_task'+str(self.crystal()._taskId)
-                    id = db.incId(collection)
+                    id = self.db.incId(collection)
                     document = {"id":id,"url":url}
-                    db.insertDBforOne(collection, document)
+                    self.db.insertDBforOne(collection, document)
                 else:
                     self.lock.release()
 
     def initCollectURLs(self, host, pagelink, page):
-        LogUtil.i("开始初始化爬出url："+pagelink)
+        LogUtil.n("开始初始化爬出url："+pagelink,self.crystal()._taskId)
         dom = etree.HTML(page)
         urls = dom.xpath('//a[not(contains(@href,"javasc"))]/@href')
-        db = WCG()
         for url in urls:
             url = self.standardizeUrl(host, url)
             if url is not False:
                 if (not self.bf.isContains(url)):
                     LogUtil.n("put in url:" + url + '\n')
                     self.bf.add(url)
-                    db.incId("collectUrl_task"+str(self.crystal()._taskId))
+                    self.db.incId("collectUrl_task"+str(self.crystal()._taskId))
                     collection = 'url_task'+str(self.crystal()._taskId)
-                    id = db.incId(collection)
+                    id = self.db.incId(collection)
                     document = {"id":id,"url":url}
-                    db.insertDBforOne(collection, document)
+                    self.db.insertDBforOne(collection, document)
 
 
     # void 详细解析
@@ -107,8 +106,7 @@ class Parser:
     # - String -  pagelink 本页链接，用于调试时参考
     # - String -  host 本页host，用于拼接URL
     def parseDetail(self,dom,pagelink,host):
-        db = WCG()
-        db.incId("anlysisUrl_task"+str(self.crystal()._taskId))
+        self.db.incId("anlysisUrl_task"+str(self.crystal()._taskId))
         def extractElement(key):
             res = []
             if self.xpath.isXpath(self.xpathBox[key]):
@@ -140,28 +138,29 @@ class Parser:
                 first = False
                 item[key] = extractElement(key)
                 if item[key] is None:
-                    LogUtil.i("第一个就找不到，判定该页非详情页")
+                    LogUtil.n("第一个就找不到，判定该页非详情页",self.crystal()._taskId)
+                    #LogUtil.i("提取xpath："+self.xpathBox[key]+"，获取结果：")
                     return
             else:
                 item[key] = extractElement(key)
                 if item[key] is None:
-                    LogUtil.i("找不到后面的，判断为xpath不够完善")
+                    LogUtil.n("找不到后面的，判断为xpath不够完善",self.crystal()._taskId)
+                    item[key] = ""
                     # 找不到后面的，判断为xpath不够完善
                     item["xpath_fail_url"] = pagelink
 
-            LogUtil.i("提取xpath："+self.xpathBox[key]+"，获取结果："+item[key])
+            LogUtil.n("提取xpath："+self.xpathBox[key]+"，获取结果："+item[key],self.crystal()._taskId)
 
         if item["xpath_fail_url"] is None:
             collection = "result_task" + str(self.crystal()._taskId)
-            id = db.incId(collection)
+            id = self.db.incId(collection)
             document = {"id":id,"url":pagelink}
             for key in item:
                 if (key!="xpath_fail_url"):
                     document[key] = item[key]
-            print document
-            db.insertDBforOne(collection,document)
-            db.incId("dataNumber_task"+str(self.crystal()._taskId))
-            LogUtil.n("数据库操作，插入数据item")
+            self.db.insertDBforOne(collection,document)
+            self.db.incId("dataNumber_task"+str(self.crystal()._taskId))
+            LogUtil.i("数据库操作，插入数据item")
             #raw_input("我等等你")
         else:
             # 错误处理

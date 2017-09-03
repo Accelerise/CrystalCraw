@@ -10,7 +10,7 @@ class WCG(object):
         ip = '127.0.0.1'
         port = 27017
         dbName = 'wcgfetch'
-        self._conn = pymongo.MongoClient(host = ip, port = port)
+        self._conn = pymongo.MongoClient(host = ip, port = port, connect= False)
         self._db = self._conn[dbName]
 
     def createId(self, collection):
