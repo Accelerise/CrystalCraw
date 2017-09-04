@@ -7,6 +7,7 @@ import re
 import threading
 import time
 import signal
+import random
 
 from lxml import etree
 from Bloom import Bloomfilter
@@ -19,7 +20,13 @@ from Parser import Parser
 from Configer import Configer
 from LogUtil import LogUtil
 from httplib import BadStatusLine
+from models import DB
 
+M_xpathBox = {}
+M_rules = []
+M_starturl = []
+M_table = ""
+M_detail = ""
 class Crystal:
 	# 构造函数
 	def __init__(self,projectName):
@@ -32,6 +39,14 @@ class Crystal:
 		self._queue = None
 		self._hostInfo = None
 		self._lock = threading.Lock()
+		self._db = DB()
+		self._db.createCollection("ids")
+		self._table = M_table
+		self._db.createId(self._table)
+		self._db.createCollection(self._table)
+		self._db.createId("collectUrl_task"+str(self._table))
+		self._db.createId("anlysisUrl_task"+str(self._table))
+		self._db.createId("dataNumber_task"+str(self._table))
 
 		self.initComponents()
 
@@ -41,7 +56,7 @@ class Crystal:
 	def initComponents(self):
 		self.initConfig()
 		self.initXpath()
-		self.initRules()
+		self.initRules(M_detail)
 		
 		self.initBF()
 		self.initQueue()
@@ -79,7 +94,8 @@ class Crystal:
 					time.sleep(5)
 				else:
 					break
-			time.sleep(self._config["DOWNLOAD_DELAY"])
+			ran = 0.5 - random.random()
+			time.sleep(self._config["DOWNLOAD_DELAY"]*(1+ran))
 
 		self.threadReduce()
 		LogUtil.end_log()
@@ -92,7 +108,8 @@ class Crystal:
 		if self.getState() == "restart":
 			self.start_url = self.loadQueue()
 		else:
-			self.start_url = ["https://s.taobao.com/search?q=%E6%AF%9B%E8%A1%A3%E7%94%B7"]
+			# self.start_url = ["https://s.taobao.com/search?q=%E6%AF%9B%E8%A1%A3%E7%94%B7"]
+			self.start_url = M_starturl
 
 		self._hostInfo = self.parseUrl(self.start_url[0])
 		self._parser.setProto(self._hostInfo["proto"]) # 默认为https://
@@ -236,11 +253,12 @@ class Crystal:
 
 	# void 从数据库获取给定的xpath规则
 	def getXpathFromMGDB(self):
-		dic = {}
+		dic = M_xpathBox
 
-		dic["名称"] = '//*[@id="J_Title"]/h3/text()'
-		dic["价格"] = '#J_StrPrice > em.tb-rmb-num' 
-		dic["图片地址"] = '//*[@id="J_ShopInfo"]/a/img/@src'
+		# dic["名称"] = '/html/body/div[5]/div/div[2]/div[1]/text()'
+		# dic["价格"] = '#J_StrPrice > em.tb-rmb-num' 
+		# dic["价格"] = "/html/body/div[5]/div/div[2]/div[3]/div/div[1]/div[2]/span/span[2]/text()"
+		# dic["图片地址"] = '//*[@id="J_ShopInfo"]/a/img/@src'
 		LogUtil.i("从数据库获取给定的xpath规则")
 		return dic
 
@@ -248,8 +266,8 @@ class Crystal:
 	# void 从数据库获取给定的url规则
 	def getRulesFromMGDB(self):
 		LogUtil.i("从数据库获取给定的url规则")
-		return ["https://s.taobao.com/search\?.*q=%E6%AF%9B%E8%A1%A3%E7%94%B7.*","https://item.taobao.com/item.htm\?id=\d+.*"]
-
+		# return ["https://s.taobao.com/search\?.*q=%E6%AF%9B%E8%A1%A3%E7%94%B7.*","https://item.taobao.com/item.htm\?id=\d+.*"]
+		return M_rules
 	def start(self):
 		self.initStartUrl()
 		self.setState("running")
@@ -279,7 +297,14 @@ class Crystal:
 	
 if __name__ == '__main__':
 
-	project = Crystal("淘宝毛衣男")
+	M_xpathBox["名称"] = '/html/body/div[5]/div/div[2]/div[1]/text() | /html/body/div[7]/div/div[2]/div[1]/text()'
+	M_xpathBox["价格"] = 'span.p-price span.price'
+	M_rules.append("https://list.jd.com/list.html\?cat=670,671,672.*")
+	M_rules.append("https://item.jd.com/\d+.html")
+	M_starturl.append("https://list.jd.com/list.html?cat=670,671,672")
+	M_table = "notebook2"
+	M_detail = ""
+	project = Crystal("京东笔记本2")
 	project.start()
 	# project.initStartUrl()
 	# project.saveQueue()
