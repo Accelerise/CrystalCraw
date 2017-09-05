@@ -274,4 +274,10 @@ class Crystal:
 
         elif flag=="master":
             self.run("master")
+    def start_single(self,flag,targetUrl):
+        self.initStartUrl(targetUrl)
+        if flag == "work":
+            self.run("worker")
+        elif flag == "master":
+            self.run("master")
 
