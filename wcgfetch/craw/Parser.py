@@ -168,12 +168,7 @@ class Parser:
     # - String -  host 本页host，用于拼接URL
     # - String -  url 要清洗的URL
     def standardizeUrl(self,host,url):
-        # 清洗掉一级域名错误的url
-        # 如 要爬取 （京东）www.jd.com 的数据 那么像 www.baidu.com 的url不会通过
-        pat = re.compile(self.domainFir+r"\.")
-        match = pat.search(url)
-        if not match:
-            return False
+        
         # 给host拼接协议
         # 如 www.amazon.cn => proto+www.amazon.cn
         pat = re.compile(r'^(\w+?(\.\w+?))',re.S)
@@ -189,6 +184,12 @@ class Parser:
 
         pat = re.compile(r'(.*)(#.*$)',re.S)
         url = pat.sub(r'\1' , url)
+        # 清洗掉一级域名错误的url
+        # 如 要爬取 （京东）www.jd.com 的数据 那么像 www.baidu.com 的url不会通过
+        pat = re.compile(self.domainFir+r"\.")
+        match = pat.search(url)
+        if not match:
+            return False
         # 使用给定的url规则匹配，默认所有url都会通过，即(.*)
         noProto = url[len(self.proto):]
         if self.rules.match(noProto):
