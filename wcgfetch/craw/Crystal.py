@@ -55,17 +55,10 @@ class Crystal:
         _downloader = self.newDownloader()
 
         while True:
-            self._lock.acquire()
             if not self._queue.empty():
                 pagelink = self._queue.pop()
-                self._lock.release()
 
-                parseRes = self.parseUrl(pagelink)
-                if parseRes is None:
-                    host = None
-                    # 该url不合法
-                else:
-                    host = parseRes["host"]
+                host = self._hostInfo["host"]
                 try:
                     page = _downloader.get(pagelink)
                 except Exception:
@@ -76,7 +69,6 @@ class Crystal:
                 elif flag=="master":
                     self._parser.initCollectURLs(host=host, pagelink=pagelink, page=page)
             else:
-                self._lock.release()
                 if empty_count < 3:
                     empty_count = empty_count + 1
                     time.sleep(3)
