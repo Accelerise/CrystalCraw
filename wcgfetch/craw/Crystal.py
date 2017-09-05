@@ -54,7 +54,7 @@ class Crystal:
         LogUtil.start_log()
         #empty_count = 0
         _downloader = self.newDownloader()
-
+        db = WCG()
         while True:
             if not self._queue.empty():
                 pagelink = self._queue.pop()
@@ -64,7 +64,10 @@ class Crystal:
                 try:
                     page = _downloader.get(pagelink)
                 except Exception,e:
-                    LogUtil.e(traceback.format_exc())
+                    collection = 'url_task'+str(self._taskId)
+                    id = db.incId(collection)
+                    document = {"id":id,"url":pagelink}
+                    db.insertDBforOne(collection, document)
                     continue
                 LogUtil.n("下载页面完成："+pagelink,self._taskId)
                 pagelink = pagelink.encode("UTF-8")
