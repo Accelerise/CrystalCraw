@@ -145,7 +145,7 @@ class Parser:
                     # 找不到后面的，判断为xpath不够完善
                     item["xpath_fail_url"] = pagelink
             if type(item[key]) == list:
-                item[key] == item[key][0]
+                item[key] = item[key][0]
             LogUtil.n("提取xpath："+self.xpathBox[key]+"，获取结果："+item[key],self.crystal()._taskId)
 
         if item["xpath_fail_url"] is None:
