@@ -37,10 +37,13 @@ class Xpath:
 		else:
 			return False
 	def isValidXpath(self,str):
-		if str[-2:] == "()":
-			return True
-		else:
-			return False
+		# if str[-2:] == "()":
+		# 	return True
+		# elif str.find("/@") != -1:
+		# 	return True
+		# else:
+		# 	return False
+		return True
 
 	def isCss(self,str):
 		return False

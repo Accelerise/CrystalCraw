@@ -49,7 +49,8 @@ class Downloader:
 
 	# String 1.requests
 	def getByRequests(self,url):
-		print self.cnt,url
+		LogUtil.n( str(self.cnt)+' '+url)
+		self.cnt = self.cnt + 1
 		page = requests.get(url).content.decode("utf-8")
 		return page
 

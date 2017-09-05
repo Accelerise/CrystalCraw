@@ -103,6 +103,11 @@ class Parser:
     # - String -  host 本页host，用于拼接URL
     def parseDetail(self,dom,pagelink,host):
         self.db.incId("anlysisUrl_task"+str(self.crystal()._taskId))
+        def innerHTML(node): 
+            buildString = ''
+            for child in node:
+                buildString += etree.tostring(child)
+            return buildString
         def extractElement(key):
             res = []
             if self.xpath.isXpath(self.xpathBox[key]):
@@ -112,7 +117,10 @@ class Parser:
             else:
                 tmp = dom.cssselect(self.xpathBox[key])
                 for each in tmp:
-                    res.append(each.text.strip())
+                    if each.text.strip() == "":
+                        res.append(innerHTML(each).strip())
+                    else:
+                        res.append(each.text.strip())
 
             if len(res) is 1:
                 return res[0]

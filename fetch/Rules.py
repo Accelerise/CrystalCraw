@@ -51,9 +51,9 @@ class Rules:
 
 if __name__ == '__main__':
 	print random.random()
-	url = "https://list.jd.com/list.html?cat=9987,653,655&ev=559_78025&sort=sort_rank_asc&trans=1&JL=3_%E7%83%AD%E7%82%B9_%E5%8F%8C%E5%8D%A1%E5%8F%8C%E5%BE%85#J_crumbsBar"
+	url = "https://s.taobao.com/search?q=%E6%81%92%E6%BA%90%E7%A5%A5%E6%AF%9B%E8%A1%A3%E7%94%B7&rs=up&rsclick=14&preq=%E6%AF%9B%E8%A1%A3%E7%94%B7"
 	rules = Rules()
-	rules.initRules(["https://list.jd.com/list.html\?cat=9987,653,655.*"])
+	rules.initRules(["https://item.taobao.com/item.htm\?id=\d+.*"])
 	match = rules.match(url)
 	if not match:
 		print "不匹配"

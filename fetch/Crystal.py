@@ -133,6 +133,8 @@ class Crystal:
 		self._rules = Rules()
 		if(not self._rules.isManual()):
 			arr = self.getRulesFromMGDB()
+			if detailUrl is not None:
+				arr.append(detailUrl)
 			# 如果能获取到数据，说明用户在web前台填写了url规则
 			if arr is not None:
 				self._rules.initRules(arr,detailUrl)
@@ -150,7 +152,7 @@ class Crystal:
 	# void 初始化downloader
 	def newDownloader(self):
 		downloader = Downloader()
-		downloader.setChromeEnable(True)
+		downloader.setChromeEnable(self._config["CHROME_ENABLE"])
 		LogUtil.i("初始化Downloader完成")
 		return downloader
 
@@ -297,14 +299,13 @@ class Crystal:
 	
 if __name__ == '__main__':
 
-	M_xpathBox["名称"] = '/html/body/div[5]/div/div[2]/div[1]/text() | /html/body/div[7]/div/div[2]/div[1]/text()'
-	M_xpathBox["价格"] = 'span.p-price span.price'
-	M_rules.append("https://list.jd.com/list.html\?cat=670,671,672.*")
-	M_rules.append("https://item.jd.com/\d+.html")
-	M_starturl.append("https://list.jd.com/list.html?cat=670,671,672")
-	M_table = "notebook2"
-	M_detail = ""
-	project = Crystal("京东笔记本2")
+	M_xpathBox["价格"] = '#J_StrPrice > em.tb-rmb-num'
+	M_xpathBox["名称"] = '//*[@id="J_Title"]/h3/text()'
+	M_rules.append("https://s.taobao.com/search\?.*q=%E6%AF%9B%E8%A1%A3%E7%94%B7.*")
+	M_starturl.append("https://s.taobao.com/search?q=%E6%AF%9B%E8%A1%A3%E7%94%B7")
+	M_table = "jianshu"
+	M_detail = "https://item.taobao.com/item.htm\?id=\d+.*"
+	project = Crystal("简书")
 	project.start()
 	# project.initStartUrl()
 	# project.saveQueue()

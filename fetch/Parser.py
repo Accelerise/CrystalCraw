@@ -71,6 +71,7 @@ class Parser:
 		urls = dom.xpath('//a[not(contains(@href,"javasc"))]/@href')
 		for url in urls:
 			url = self.standardizeUrl(host,url)
+			
 			if url is not False:
 				self.lock.acquire()
 				if(not self.bf.isContain(url)):
@@ -89,6 +90,11 @@ class Parser:
 	# - String -  host 本页host，用于拼接URL
 	def parseDetail(self,dom,pagelink,host):
 		self.db.incId("anlysisUrl_task"+str(self.crystal()._table))
+		def innerHTML(node): 
+			buildString = ''
+			for child in node:
+				buildString += etree.tostring(child)
+			return buildString
 		def extractElement(key):
 			res = []
 			if self.xpath.isXpath(self.xpathBox[key]):
@@ -102,7 +108,11 @@ class Parser:
 				# file.fileIn("wtf",etree.tostring(dom))
 				# print "写入了"+pagelink
 				for each in tmp:
-					res.append(each.text.strip())
+					if each.text.strip() == "":
+						res.append(innerHTML(each).strip())
+					else:
+						res.append(each.text.strip())
+					# res.append(each.text.strip())
 				
 			if len(res) is 1:
 				return res[0]
@@ -118,6 +128,7 @@ class Parser:
 		if(self.rules.detailUrl!=None):
 			flag = self.rules.matchDetail(pagelink)
 			if(flag==False):
+				LogUtil.i("不符合详情页正则"+pagelink)
 				return
 		for key in self.xpathBox:
 			if first:
@@ -162,12 +173,7 @@ class Parser:
 	# - String -  host 本页host，用于拼接URL
 	# - String -  url 要清洗的URL
 	def standardizeUrl(self,host,url):
-		# 清洗掉一级域名错误的url
-		# 如 要爬取 （京东）www.jd.com 的数据 那么像 www.baidu.com 的url不会通过
-		pat = re.compile(self.domainFir+r"\.")
-		match = pat.search(url)
-		if not match:
-			return False
+		
 		# 给host拼接协议 
 		# 如 www.amazon.cn => proto+www.amazon.cn
 		pat = re.compile(r'^(\w+?(\.\w+?))',re.S)
@@ -183,6 +189,12 @@ class Parser:
 
 		pat = re.compile(r'(.*)(#.*$)',re.S)
 		url = pat.sub(r'\1' , url)
+		# 清洗掉一级域名错误的url
+		# 如 要爬取 （京东）www.jd.com 的数据 那么像 www.baidu.com 的url不会通过
+		pat = re.compile(self.domainFir+r"\.")
+		match = pat.search(url)
+		if not match:
+			return False
 		# 使用给定的url规则匹配，默认所有url都会通过，即(.*)
 		noProto = url[len(self.proto):]
 		if self.rules.match(noProto):
