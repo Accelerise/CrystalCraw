@@ -92,6 +92,7 @@ class Crystal:
         self._parser.setDomain(self._hostInfo["fir"])
         for each in self.start_url:
             self._queue.put(each)
+            print each
         LogUtil.i("设置URL完成")
 
     # void 初始化xpath
