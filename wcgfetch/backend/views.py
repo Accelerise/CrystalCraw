@@ -172,8 +172,14 @@ def startSpider(request):
             db.createCollection("url_task" + str(ids['id']))
             db.createCollection("result_task" + str(ids['id']))
             db.createCollection("log_task" + str(ids['id']))
+            db.createCollection("config_task" + str(ids['id']))
             task = Task(ids['id'])
             task.getTaskFromMGDB()
+            collection = "config_task" + str(ids['id'])
+            if task.method == "chrome":
+                db.insertDBforOne(collection, {"CHROME_ENABLE":True})
+            else:
+                db.insertDBforOne(collection, {"CHROME_ENABLE":False})
             db.motify("task", {"id": ids['id']}, {"status": "doing"})
             task.initTask()
             task.startTask()

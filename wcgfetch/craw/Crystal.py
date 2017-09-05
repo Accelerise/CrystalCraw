@@ -132,7 +132,7 @@ class Crystal:
             self._config[row] = localConfig[row]
         # 分布式配置
         db = WCG()
-        resData = db.searchData('config') #读数据库配置
+        resData = db.searchData('config_task' + str(self._taskId)) #读数据库配置
         remoteConfig = {}
         for res in resData:
             for key in res:
