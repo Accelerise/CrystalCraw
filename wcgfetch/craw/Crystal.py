@@ -272,7 +272,7 @@ class Crystal:
         if flag=="work":
             poo = []
             for i in range(self._config["TREADING_COUNT"]):
-                poo.append(threading.Thread(target=self.run,args=("work")))
+                poo.append(threading.Thread(target=self.run,args=("work",)))
             for task in poo:
                 task.start()
             for task in poo:

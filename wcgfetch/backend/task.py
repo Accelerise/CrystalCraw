@@ -63,6 +63,7 @@ class Task(object):
         while cur < end:
             end = db.searchId(collection)
             status = db.searchKeyById("task", "status", self.id)
+            self.workNum = db.searchKeyById("task", "selectWorker", self.id)
             flag = False
             if (status == "success"):
                 flag = True
@@ -79,7 +80,6 @@ class Task(object):
                     url.append(document['url'])
                     i = i + 1
                     if (i % 10 ==0):
-                        print self.workNum
                         if (self.workNum == "1"):
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work3',routing_key='work3')
                             craw.append(tmpcraw)
@@ -112,7 +112,6 @@ class Task(object):
                     url.append(document['url'])
                     i = i + 1
                     if (i % 10 ==0 or i == lenth):
-                        print self.workNum
                         if (self.workNum == "1"):
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work3',routing_key='work3')
                             craw.append(tmpcraw)

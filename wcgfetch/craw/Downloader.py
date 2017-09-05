@@ -12,9 +12,10 @@ class Downloader:
 	# 构造函数
 	def __init__(self):
 		self.options = webdriver.ChromeOptions()
-		#self.options.binary_location = '/opt/google/chrome-unstable/google-chrome-unstable'
-		self.options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+		self.options.binary_location = '/opt/google/chrome-unstable/google-chrome-unstable'
+		#self.options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 		self.options.add_argument('headless')
+		self.options.add_argument('no-sandbox')
 		self.options.add_argument('window-size=1200x600')
 		self.options.add_argument('load-images=no')  ##关闭图片加载
 		self.driver = webdriver.Chrome(chrome_options=self.options)
