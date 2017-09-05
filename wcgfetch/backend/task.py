@@ -53,7 +53,7 @@ class Task(object):
         #startTime = time.strftime('%Z', time.localtime())
         db = WCG()
         db.motify("task", {"id": self.id}, {"startTime": startTime})
-        self.crystal.start_single("master",[self.mainUrl])
+        self.crystal.start("master",[self.mainUrl])
 
     def startTask(self):
         db = WCG()
