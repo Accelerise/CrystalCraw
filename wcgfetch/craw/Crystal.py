@@ -81,6 +81,7 @@ class Crystal:
             time.sleep(self._config["DOWNLOAD_DELAY"] * (1 + ran))
 
         #self.threadReduce()
+        _downloader.closeDownloader()
         LogUtil.end_log()
 
 
