@@ -63,6 +63,7 @@ class Crystal:
                 try:
                     page = _downloader.get(pagelink)
                 except Exception:
+                    LogUtil.e(str(Exception))
                     continue
                 LogUtil.n("下载页面完成："+pagelink,self._taskId)
                 pagelink = pagelink.encode("UTF-8")
