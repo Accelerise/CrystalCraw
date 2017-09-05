@@ -49,9 +49,9 @@ class Crystal:
 
     # void 运行
     def run(self,flag):
-        #self.threadAdd()
+        self.threadAdd()
         LogUtil.start_log()
-        #empty_count = 0
+        empty_count = 0
         _downloader = self.newDownloader()
 
         while True:
@@ -71,16 +71,16 @@ class Crystal:
                 elif flag=="master":
                     self._parser.initCollectURLs(host=host, pagelink=pagelink, page=page)
             else:
-                # if empty_count < 3:
-                #     empty_count = empty_count + 1
-                #     time.sleep(3)
-                # else:
-                #     break
-                break
+                if empty_count < 3:
+                    empty_count = empty_count + 1
+                    time.sleep(3)
+                else:
+                    break
+                #break
             ran = 0.5 - random.random()
             time.sleep(self._config["DOWNLOAD_DELAY"] * (1 + ran))
 
-        #self.threadReduce()
+        self.threadReduce()
         LogUtil.end_log()
 
 
@@ -92,7 +92,6 @@ class Crystal:
         self._parser.setDomain(self._hostInfo["fir"])
         for each in self.start_url:
             self._queue.put(each)
-            print each
         LogUtil.i("设置URL完成")
 
     # void 初始化xpath
