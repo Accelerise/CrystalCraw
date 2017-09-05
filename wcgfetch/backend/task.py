@@ -69,9 +69,9 @@ class Task(object):
                 flag = True
             if (flag):
                 break
-            if (cur + 50 <= end):
-                resData = db.searchDataByRange(collection, cur, cur + 50)
-                cur = cur + 50
+            if (cur + 40 <= end):
+                resData = db.searchDataByRange(collection, cur, cur + 40)
+                cur = cur + 40
                 print "当前链接数"+str(cur)
                 url = []
                 i = 0
