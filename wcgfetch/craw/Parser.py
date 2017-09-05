@@ -71,18 +71,14 @@ class Parser:
         for url in urls:
             url = self.standardizeUrl(host,url)
             if url is not False:
-                self.lock.acquire()
                 if(not self.bf.isContains(url)):
                     LogUtil.i("put in url:" + url + '\n')
                     self.bf.add(url)
                     self.db.incId("collectUrl_task"+str(self.crystal()._taskId))
-                    self.lock.release()
                     collection = 'url_task'+str(self.crystal()._taskId)
                     id = self.db.incId(collection)
                     document = {"id":id,"url":url}
                     self.db.insertDBforOne(collection, document)
-                else:
-                    self.lock.release()
 
     def initCollectURLs(self, host, pagelink, page):
         LogUtil.n("开始初始化爬出url："+pagelink,self.crystal()._taskId)
