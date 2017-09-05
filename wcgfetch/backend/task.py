@@ -60,6 +60,7 @@ class Task(object):
         collection = "url_task" + str(self.id)
         cur = 0
         end = db.searchId(collection)
+        gap = 40
         while cur < end:
             end = db.searchId(collection)
             status = db.searchKeyById("task", "status", self.id)
@@ -69,9 +70,9 @@ class Task(object):
                 flag = True
             if (flag):
                 break
-            if (cur + 40 <= end):
-                resData = db.searchDataByRange(collection, cur, cur + 40)
-                cur = cur + 40
+            if (cur + gap <= end):
+                resData = db.searchDataByRange(collection, cur, cur + gap)
+                cur = cur + gap
                 print "当前链接数"+str(cur)
                 url = []
                 i = 0
@@ -79,7 +80,7 @@ class Task(object):
                 for document in resData:
                     url.append(document['url'])
                     i = i + 1
-                    if (i % 5 ==0):
+                    if (i % 10 ==0):
                         if (self.workNum == "1"):
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work3',routing_key='work3')
                             craw.append(tmpcraw)
@@ -112,7 +113,7 @@ class Task(object):
                 for document in resData:
                     url.append(document['url'])
                     i = i + 1
-                    if (i % 5 ==0 or i == lenth):
+                    if (i % 10 ==0 or i == lenth):
                         if (self.workNum == "1"):
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work3',routing_key='work3')
                             craw.append(tmpcraw)
