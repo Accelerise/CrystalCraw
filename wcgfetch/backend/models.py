@@ -7,7 +7,7 @@ import json
 
 class WCG(object):
     def __init__(self):
-        ip = '127.0.0.1'
+        ip = '172.31.191.252'
         port = 27017
         dbName = 'wcgfetch'
         self._conn = pymongo.MongoClient(host = ip, port = port)
