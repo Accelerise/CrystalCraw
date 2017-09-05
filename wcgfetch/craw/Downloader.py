@@ -21,8 +21,8 @@ class Downloader:
 		self.options.add_argument('window-size=1200x600')
 		self.options.add_argument('load-images=no')  ##关闭图片加载
 		self.driver = webdriver.Chrome(chrome_options=self.options)
-		self.driver.set_page_load_timeout(page_load_time)
-		self.driver.set_script_timeout(script_time)
+		self.driver.set_page_load_timeout(self.page_load_time)
+		self.driver.set_script_timeout(self.script_time)
 		self.cnt = 0
 
 	# 单例模式
