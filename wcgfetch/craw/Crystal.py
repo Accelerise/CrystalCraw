@@ -280,7 +280,7 @@ class Crystal:
     def start_single(self,flag,targetUrl):
         self.initStartUrl(targetUrl)
         if flag == "work":
-            self.run("worker")
+            self.run("work")
         elif flag == "master":
             self.run("master")
 
