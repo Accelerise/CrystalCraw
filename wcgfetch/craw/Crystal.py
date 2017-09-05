@@ -59,12 +59,12 @@ class Crystal:
                 pagelink = self._queue.pop()
 
                 host = self._hostInfo["host"]
-                LogUtil.n("开始下载页面："+pagelink,self.crystal()._taskId)
+                LogUtil.n("开始下载页面："+pagelink,self._taskId)
                 try:
                     page = _downloader.get(pagelink)
                 except Exception:
                     continue
-                LogUtil.n("下载页面完成："+pagelink,self.crystal()._taskId)
+                LogUtil.n("下载页面完成："+pagelink,self._taskId)
                 pagelink = pagelink.encode("UTF-8")
                 if flag=="work":
                     self._parser.process_item(host=host,pagelink=pagelink,page=page)
