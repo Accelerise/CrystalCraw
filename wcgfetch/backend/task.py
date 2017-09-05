@@ -53,7 +53,7 @@ class Task(object):
         #startTime = time.strftime('%Z', time.localtime())
         db = WCG()
         db.motify("task", {"id": self.id}, {"startTime": startTime})
-        self.crystal.start("master",[self.mainUrl])
+        self.crystal.start_single("master",[self.mainUrl])
 
     def startTask(self):
         db = WCG()
@@ -79,7 +79,7 @@ class Task(object):
                 for document in resData:
                     url.append(document['url'])
                     i = i + 1
-                    if (i % 10 ==0):
+                    if (i % 5 ==0):
                         if (self.workNum == "1"):
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work3',routing_key='work3')
                             craw.append(tmpcraw)
@@ -112,7 +112,7 @@ class Task(object):
                 for document in resData:
                     url.append(document['url'])
                     i = i + 1
-                    if (i % 10 ==0 or i == lenth):
+                    if (i % 5 ==0 or i == lenth):
                         if (self.workNum == "1"):
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work3',routing_key='work3')
                             craw.append(tmpcraw)
