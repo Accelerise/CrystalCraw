@@ -19,6 +19,7 @@ from Configer import Configer
 from LogUtil import LogUtil
 from Model import WCG
 import random
+import traceback
 
 
 class Crystal:
@@ -62,8 +63,8 @@ class Crystal:
                 LogUtil.n("开始下载页面："+pagelink,self._taskId)
                 try:
                     page = _downloader.get(pagelink)
-                except Exception:
-                    LogUtil.e(str(Exception))
+                except Exception,e:
+                    LogUtil.e(traceback.format_exc())
                     continue
                 LogUtil.n("下载页面完成："+pagelink,self._taskId)
                 pagelink = pagelink.encode("UTF-8")
