@@ -81,12 +81,15 @@ class Task(object):
                     i = i + 1
                     if (i % 10 ==0):
                         if (self.workNum == "1"):
+                            print url
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work3',routing_key='work3')
                             craw.append(tmpcraw)
                         elif (self.workNum == "2"):
+                            print url
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work2',routing_key='work2')
                             craw.append(tmpcraw)
                         else:
+                            print url
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work1',routing_key='work1')
                             craw.append(tmpcraw)
                     url = []
@@ -113,12 +116,15 @@ class Task(object):
                     i = i + 1
                     if (i % 10 ==0 or i == lenth):
                         if (self.workNum == "1"):
+                            print url
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work3',routing_key='work3')
                             craw.append(tmpcraw)
                         elif (self.workNum == "2"):
+                            print url
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work2',routing_key='work2')
                             craw.append(tmpcraw)
                         else:
+                            print url
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work1',routing_key='work1')
                             craw.append(tmpcraw)
                     url = []
