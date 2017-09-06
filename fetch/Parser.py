@@ -93,7 +93,7 @@ class Parser:
 		def innerHTML(node): 
 			buildString = ''
 			for child in node:
-				buildString += etree.tostring(child)
+				buildString += etree.tostring(child, encoding="utf-8")
 			return buildString
 		def extractElement(key):
 			res = []

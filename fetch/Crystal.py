@@ -299,12 +299,12 @@ class Crystal:
 	
 if __name__ == '__main__':
 
-	M_xpathBox["价格"] = '#J_StrPrice > em.tb-rmb-num'
-	M_xpathBox["名称"] = '//*[@id="J_Title"]/h3/text()'
-	M_rules.append("https://s.taobao.com/search\?.*q=%E6%AF%9B%E8%A1%A3%E7%94%B7.*")
-	M_starturl.append("https://s.taobao.com/search?q=%E6%AF%9B%E8%A1%A3%E7%94%B7")
+	M_xpathBox["正文"] = 'div.show-content'
+	M_xpathBox["名称"] = 'div.article > h1'
+	# M_rules.append("https://s.taobao.com/search\?.*q=%E6%AF%9B%E8%A1%A3%E7%94%B7.*")
+	M_starturl.append("http://www.jianshu.com/c/f63dac4d430e")
 	M_table = "jianshu"
-	M_detail = "https://item.taobao.com/item.htm\?id=\d+.*"
+	M_detail = "http://www.jianshu.com/p/\w+"
 	project = Crystal("简书")
 	project.start()
 	# project.initStartUrl()

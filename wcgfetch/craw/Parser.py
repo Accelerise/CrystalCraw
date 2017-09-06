@@ -106,7 +106,7 @@ class Parser:
         def innerHTML(node): 
             buildString = ''
             for child in node:
-                buildString += etree.tostring(child)
+                buildString += etree.tostring(child, encoding="utf-8")
             return buildString
         def extractElement(key):
             res = []
@@ -117,10 +117,11 @@ class Parser:
             else:
                 tmp = dom.cssselect(self.xpathBox[key])
                 for each in tmp:
-                    if each.text.strip() == "":
-                        res.append(innerHTML(each).strip())
-                    else:
-                        res.append(each.text.strip())
+                    if each.text is not None:
+                        if each.text.strip() == "":
+                            res.append(innerHTML(each).strip())
+                        else:
+                            res.append(each.text.strip())
 
             if len(res) is 1:
                 return res[0]
