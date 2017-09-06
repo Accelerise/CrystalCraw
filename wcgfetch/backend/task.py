@@ -81,11 +81,11 @@ class Task(object):
                     url.append(document['url'])
                     i = i + 1
                     if (i % 10 ==0):
-                        if (self.workNum == "1"):
+                        if (self.workNum == "1" or self.workNum==1):
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work3',routing_key='work3')
                             craw.append(tmpcraw)
                             url = []
-                        elif (self.workNum == "2"):
+                        elif (self.workNum == "2" or self.workNum==2):
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work2',routing_key='work2')
                             craw.append(tmpcraw)
                             url = []
