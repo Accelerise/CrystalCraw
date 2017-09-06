@@ -62,8 +62,8 @@ class Downloader:
 		page = self.driver.find_elements_by_xpath("/html")[0].get_attribute("innerHTML")
 		self.driver.quit()
 		self.driver = webdriver.Chrome(chrome_options=self.options)
-		self.driver.set_page_load_timeout(page_load_time)
-		self.driver.set_script_timeout(script_time)
+		self.driver.set_page_load_timeout(self.page_load_time)
+		self.driver.set_script_timeout(self.script_time)
 		return page
 
 	# void 关闭Chrome下载器
