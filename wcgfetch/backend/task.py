@@ -60,7 +60,7 @@ class Task(object):
         collection = "url_task" + str(self.id)
         cur = 0
         end = db.searchId(collection)
-        gap = 40
+        gap = 30
         while cur < end:
             end = db.searchId(collection)
             status = db.searchKeyById("task", "status", self.id)
