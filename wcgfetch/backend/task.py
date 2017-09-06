@@ -62,7 +62,6 @@ class Task(object):
         end = db.searchId(collection)
         gap = 30
         while cur < end:
-            end = db.searchId(collection)
             status = db.searchKeyById("task", "status", self.id)
             self.workNum = db.searchKeyById("task", "selectWorker", self.id)
             flag = False
@@ -134,6 +133,7 @@ class Task(object):
                     if (flag):
                         break
                     time.sleep(1)
+            end = db.searchId(collection)
         endTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         db.motify("task", {"id": self.id}, {"endTime": endTime})
 
