@@ -67,7 +67,7 @@ def getAllData(request):
     try:
         if request.method == 'POST':
             ids = json.loads(request.body,object_pairs_hook=OrderedDict)
-            if ids=="" or ids is None:
+            if ids=={} or ids is None:
                 return HttpResponse(json.dumps([]), content_type='application/json')
             db = WCG()
             collection = "result_task" + str(ids['id'])
@@ -87,7 +87,7 @@ def getSpiderData(request):
     try:
         if request.method == 'POST':
             ids = json.loads(request.body,object_pairs_hook=OrderedDict)
-            if ids=="" or ids is None:
+            if ids=={} or ids is None:
                 return HttpResponse(json.dumps([]), content_type='application/json')
             db = WCG()
             resData = db.searchDataByRange("task", ids['id'], ids['id'])
@@ -113,7 +113,7 @@ def getMessageFromId(request):
     try:
         if request.method == 'POST':
             ids = json.loads(request.body, object_pairs_hook=OrderedDict)
-            if ids=="" or ids is None:
+            if ids=={} or ids is None:
                 return HttpResponse(json.dumps([]), content_type='application/json')
             db = WCG()
             collection = "log_task" + str(ids['id'])
