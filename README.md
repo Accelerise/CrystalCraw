@@ -39,35 +39,20 @@ CrystalCraw是一个分布式的爬虫平台。
 ## 项目目录
 ```
 |-- wcgfetch						//分布式爬虫
-|   |--backend						//后端调度
-|      |--static				//前端静态资源
-|      |--Bloom.py				//URL查重器
-|      |--Configer.py			//配置文件读取类
-|      |--craw.py
-|      |--Crystal.py			//爬虫类
-|      |--Downloader.py			//下载器
-|      |--LogUtil.py			//日志工具
-|      |--models.py				//
-|      |--Parser.py				//页面分析类
-|      |--Rules.py				//URL匹配规则
-|      |--settings.py			//配置文件
-|      |--Tool.py				//通用工具类
-|      |--urls.py
-|      |--view.py
-|      |--wsgi.py
-|      |--Xpath.py				//Xpath规则容器
+|   |--backend						//web后端模块
+|      |--models,py					//数据库封装
+|      |--task.py					//任务分发
+|      |--urls.py					//web路由
+|      |--views.py 					//后端接口
 |   |--frontend
-|      |--index.html			//首页模板
-|      |--loading.html			//监控爬虫页模板
-|      |--results.html			//结果查看页模板
-|   |--craw
-|   |--myapp
-|   |--wcgfetch
-
+|      |--dist 						//前端页面
+|   |--craw 						//爬虫模块         
+|   |--myapp						//celery启动模块
+|-- fetch							//单例爬虫
 ```
 
 
-## 使用方法
+## 参数详解
 
 + 起始URL ：作为初始链接，需要一个完整的url，完整至http。（必填）
 + 详情页URL：详情页链接url的正则表达示（可选），不填即把所有链接都当详情页搜索数据
@@ -82,6 +67,13 @@ CrystalCraw是一个分布式的爬虫平台。
 给定想要抓取的元素的Xpath，爬虫就会在遍历过程中将匹配到的数据存入数据库。
 如果用户指定了详情页的URL正则，那么爬虫就能更加精准地找到详情页。
 如果用户指定了爬虫应该检索的URL正则，那么宽度优先搜索时的路径将更加准确，减少无关商品的录入。
+
+## 使用方法
+
+### 单例爬虫
+
+进入fetch目录，打开Crystal.py文件，修改__main__方法中的参数，运行Crystal.py文件启动单例爬虫
+同目录下打开CrawSetting.py文件可修改爬虫配置，目前只有DOWNLOAD_DELAY（下载延时），TREADING_COUNT（线程数），CHROME_ENABLE（启用chrome浏览器）三项配置可用
 
 
 ## 环境依赖
@@ -98,7 +90,7 @@ CrystalCraw是一个分布式的爬虫平台。
 ### 消费者节点
 消费者节点的生产环境部署参考python后端的部署
 
-### Python后端：
+### 依赖安装：
 1.	安装pip，sudo apt install python-pip
 2.	安装Django，sudo pip install Django
 3.	安装pymongo，sudo pip install pymongo

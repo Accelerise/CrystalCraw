@@ -156,7 +156,6 @@ class Parser:
 			for key in item:
 				if (key!="xpath_fail_url"):
 					document[key] = item[key]
-			print document
 			self.db.insertDBforOne(self.crystal()._table,document)
 			self.db.incId("dataNumber_task"+str(self.crystal()._table))
 			# raw_input("我等等你")
