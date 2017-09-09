@@ -1,0 +1,462 @@
+<html><head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no"/>
+
+  <!-- Start of Baidu Transcode -->
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+  <meta http-equiv="Cache-Control" content="no-transform"/>
+  <meta name="applicable-device" content="pc,mobile"/>
+  <meta name="MobileOptimized" content="width"/>
+  <meta name="HandheldFriendly" content="true"/>
+  <meta name="mobile-agent" content="format=html5;url=http://www.jianshu.com/p/7636512e534e"/>
+  <!-- End of Baidu Transcode -->
+
+    <meta name="description" content="&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335; &#24120;&#29992;&#30340;&#26041;&#27861;&#65306;for&#12289;for in&#12289;for of&#65288;es6&#35821;&#27861;&#65289;&#12289;forEach&#12289;map&#12289;filter&#12289;$.each&#12289;$.map&#27880;&#65306;&#26412;&#31687;&#25991;&#31456;demo&#21482;&#28041;&#21450;&#36941;&#21382;&#25968;&#32452;&#20803;&#32032;&#65292;&#38500;&#20102;for&#19981;&#33021;&#36941;&#21382;&#38750;&#25968;&#32452;&#23545;&#35937;&#20854;&#23427;&#26041;&#27861;&#37117;&#21487;&#20197; // &#22768;&#26126;&#20960;&#20010;&#38656;&#35201;&#29992;&#21040;&#30340;&#21464;&#37327;var arr = [1, 78, 90, &quot;hello&quot;, 22], results = []; 1&#12289; &#20351;&#29992;for&#24490;&#29615;&#36941;&#21382; &#27880;&#65306;&#29992;..."/>
+
+  <meta name="360-site-verification" content="604a14b53c6b871206001285921e81d8"/>
+  <meta property="wb:webmaster" content="294ec9de89e7fadb"/>
+  <meta property="qc:admins" content="104102651453316562112116375"/>
+  <meta property="qc:admins" content="11635613706305617"/>
+  <meta property="qc:admins" content="1163561616621163056375"/>
+  <meta name="google-site-verification" content="cV4-qkUJZR6gmFeajx_UyPe47GW9vY6cnCrYtCHYNh4"/>
+  <meta name="google-site-verification" content="HF7lfF8YEGs1qtCE-kPml8Z469e2RHhGajy6JPVy5XI"/>
+  <meta http-equiv="mobile-agent" content="format=html5; url=http://www.jianshu.com/p/7636512e534e"/>
+
+  <!-- Apple -->
+  <meta name="apple-mobile-web-app-title" content="&#31616;&#20070;"/>
+
+    <!--  Meta for Smart App Banner -->
+  <meta name="apple-itunes-app" content="app-id=888237539, app-argument=jianshu://notes/16373632"/>
+  <!-- End -->
+
+  <!--  Meta for Twitter Card -->
+  <meta content="summary" property="twitter:card"/>
+  <meta content="@jianshucom" property="twitter:site"/>
+  <meta content="js/jq-&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335;" property="twitter:title"/>
+  <meta content="&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335; &#24120;&#29992;&#30340;&#26041;&#27861;&#65306;for&#12289;for in&#12289;for of&#65288;es6&#35821;&#27861;&#65289;&#12289;forEach&#12289;map&#12289;filter&#12289;$.each&#12289;$.map&#27880;&#65306;&#26412;&#31687;&#25991;&#31456;demo&#21482;&#28041;&#21450;&#36941;&#21382;&#25968;&#32452;&#20803;&#32032;&#65292;&#38500;&#20102;for&#19981;&#33021;&#36941;&#21382;&#38750;&#25968;&#32452;&#23545;&#35937;&#20854;&#23427;&#26041;&#27861;&#37117;&#21487;&#20197; // &#22768;&#26126;&#20960;&#20010;&#38656;&#35201;&#29992;&#21040;&#30340;&#21464;&#37327;var arr = [1, 78, 90, \&quot;hello\&quot;, 22], results = []; 1&#12289; &#20351;&#29992;for&#24490;&#29615;&#36941;&#21382; &#27880;&#65306;&#29992;for&#24490;&#29615;&#36941;&#21382;&#65292;&#20351;&#29992;&#20020;&#26102;&#21464;&#37327;&#65292;&#23558;&#38271;&#24230;&#32531;&#23384;&#36215;&#26469;&#65292;&#36991;&#20813;&#37325;&#22797;&#33719;&#21462;&#25968;&#32452;&#38271;&#24230;&#65292;&#25552;&#39640;&#25928;&#29575; 2&#12289;&#20351;&#29992;for in&#24490;&#29615;&#36941;&#21382; &#27880;&#65306;&#25454;&#35828;&#36825;&#20010;&#25928;&#29575;&#26159;&#24490;&#29615;&#36941;&#21382;&#20013;&#25928;&#29575;&#26368;&#20302;&#30340; 3&#12289;&#20351;&#29992;for of&#24490;&#29615;&#36941;&#21382;[es6&#35821;&#27861;] &#27880;&#65306;&#24615;&#33021;..." property="twitter:description"/>
+  <meta content="http://www.jianshu.com/p/7636512e534e" property="twitter:url"/>
+  <!-- End -->
+
+  <!--  Meta for OpenGraph -->
+  <meta property="fb:app_id" content="865829053512461"/>
+  <meta property="og:site_name" content="&#31616;&#20070;"/>
+  <meta property="og:title" content="js/jq-&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335;"/>
+  <meta property="og:type" content="article"/>
+  <meta property="og:url" content="http://www.jianshu.com/p/7636512e534e"/>
+  <meta property="og:description" content="&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335; &#24120;&#29992;&#30340;&#26041;&#27861;&#65306;for&#12289;for in&#12289;for of&#65288;es6&#35821;&#27861;&#65289;&#12289;forEach&#12289;map&#12289;filter&#12289;$.each&#12289;$.map&#27880;&#65306;&#26412;&#31687;&#25991;&#31456;demo&#21482;&#28041;&#21450;&#36941;&#21382;&#25968;&#32452;&#20803;&#32032;&#65292;&#38500;&#20102;..."/>
+  <!-- End -->
+
+  <!--  Meta for Facebook Applinks -->
+  <meta property="al:ios:url" content="jianshu://notes/16373632"/>
+  <meta property="al:ios:app_store_id" content="888237539"/>
+  <meta property="al:ios:app_name" content="&#31616;&#20070;"/>
+
+  <meta property="al:android:url" content="jianshu://notes/16373632"/>
+  <meta property="al:android:package" content="com.jianshu.haruki"/>
+  <meta property="al:android:app_name" content="&#31616;&#20070;"/>
+  <!-- End -->
+
+
+    <title>js/jq-&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335; - &#31616;&#20070;</title>
+
+  <meta name="csrf-param" content="authenticity_token"/>
+<meta name="csrf-token" content="H9YzyX3Hyuiz3XiutbulYY57FK1/oU5RyH/fM7vuSD4YDiu6EkJkYRzLo5sbQiwR9cznFF+2quucnMU7dTj1Vw=="/>
+
+  <link rel="stylesheet" media="all" href="//cdn2.jianshu.io/assets/web-a272073c5fdb4e0f1abb.css"/>
+  
+  <link rel="stylesheet" media="all" href="//cdn2.jianshu.io/assets/web/pages/notes/show/entry-7003f5f273d96dfa9579.css"/>
+
+  <link href="//cdn2.jianshu.io/assets/favicons/favicon-03411b154a430b85d807b4366489c21122fb983a38f3d7ca926f882e6367b13e.ico" rel="icon"/>
+      <link rel="apple-touch-icon-precomposed" href="//cdn2.jianshu.io/assets/apple-touch-icons/57-a6f1f1ee62ace44f6dc2f6a08575abd3c3b163288881c78dd8d75247682a4b27.png" sizes="57x57"/>
+      <link rel="apple-touch-icon-precomposed" href="//cdn2.jianshu.io/assets/apple-touch-icons/72-fb9834bcfce738fd7b9c5e31363e79443e09a81a8e931170b58bc815387c1562.png" sizes="72x72"/>
+      <link rel="apple-touch-icon-precomposed" href="//cdn2.jianshu.io/assets/apple-touch-icons/76-49d88e539ff2489475d603994988d871219141ecaa0b1a7a9a1914f4fe3182d6.png" sizes="76x76"/>
+      <link rel="apple-touch-icon-precomposed" href="//cdn2.jianshu.io/assets/apple-touch-icons/114-24252fe693524ed3a9d0905e49bff3cbd0228f25a320aa09053c2ebb4955de97.png" sizes="114x114"/>
+      <link rel="apple-touch-icon-precomposed" href="//cdn2.jianshu.io/assets/apple-touch-icons/120-1bb7371f5e87f93ce780a5f1a05ff1b176828ee0d1d130e768575918a2e05834.png" sizes="120x120"/>
+      <link rel="apple-touch-icon-precomposed" href="//cdn2.jianshu.io/assets/apple-touch-icons/152-bf209460fc1c17bfd3e2b84c8e758bc11ca3e570fd411c3bbd84149b97453b99.png" sizes="152x152"/>
+
+  <!-- Start of &#35775;&#38382;&#32479;&#35745; -->
+  <script src="http://push.zhanzhang.baidu.com/push.js"/><script src="//hm.baidu.com/hm.js?0c0e9d9b1e7d617b3e6842e85b9fb068"/><script async="" src="https://www.google-analytics.com/analytics.js"/><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-35169517-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0c0e9d9b1e7d617b3e6842e85b9fb068";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+  <!-- End of &#35775;&#38382;&#32479;&#35745; -->
+<style type="text/css">
+@charset "UTF-8";
+/*
+ * &#21464;&#37327;
+*/
+.main {
+  position: relative;
+  margin: 0 auto;
+  padding: 0 0 30px 0;
+  width: 620px;
+}
+.main .title {
+    padding-left: 8px;
+    border-left: 3px solid #EA6F5A;
+    line-height: 1;
+    font-size: 15px;
+}
+.main .collection-settings {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    font-size: 13px;
+    color: #A0A0A0;
+}
+.main .collection-settings span {
+      padding-left: 4px;
+}
+.main .include-collection {
+    width: 100%;
+    padding-top: 20px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-pack: start;
+    -webkit-justify-content: flex-start;
+        -ms-flex-pack: start;
+            justify-content: flex-start;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+}
+.main .include-collection .item {
+      display: inline-block;
+      margin: 0 12px 12px 0;
+      min-height: 32px;
+      background-color: white;
+      border: 1px solid #DCDCDC;
+      border-radius: 4px;
+      vertical-align: top;
+      overflow: hidden;
+}
+.main .include-collection .item img {
+        width: 32px;
+        height: 32px;
+}
+.main .include-collection .item .name {
+        display: inline-block;
+        padding: 0 10px;
+        font-size: 14px;
+}
+.main .include-collection .add-collection-wrap {
+      margin: 0 12px 12px 0;
+}
+.main .include-collection .add-collection {
+      padding: 8px 12px;
+      font-size: 14px;
+      border: 1px solid #DCDCDC;
+      border-radius: 4px;
+}
+.main .include-collection .add-collection i {
+        margin-right: 4px;
+        color: #969696;
+}
+.main .recommend-note a {
+    position: relative;
+    margin: 20px 2px 0 0;
+    width: 200px;
+    height: 160px;
+    display: inline-block;
+}
+.main .recommend-note a:after {
+      content: "";
+      position: absolute;
+      width: 200px;
+      height: 160px;
+      border-radius: 0 0 4px 4px;
+      -webkit-box-shadow: inset 0px -80px 50px -22px rgba(0, 0, 0, 0.6);
+              box-shadow: inset 0px -80px 50px -22px rgba(0, 0, 0, 0.6);
+      top: 0;
+      left: 0;
+      z-index: 1;
+}
+.main .recommend-note .name {
+    position: absolute;
+    bottom: 40px;
+    left: 10px;
+    right: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    color: #ffffff;
+    z-index: 2;
+}
+.main .recommend-note .author {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    z-index: 2;
+}
+.main .recommend-note .avatar {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
+.main .recommend-note .avatar img {
+      border-radius: 50%;
+}
+.main .recommend-note .author-name {
+    font-size: 12px;
+    color: #ffffff;
+    display: inline-block;
+    vertical-align: -1px;
+}
+.main .show-more {
+    margin: 0 12px 12px 0;
+    font-size: 14px;
+    color: #A0A0A0;
+}
+</style></head>
+
+  <body lang="zh-CN" class="reader-black-font">
+    <!-- &#20840;&#23616;&#39030;&#37096;&#23548;&#33322;&#26639; -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="width-limit">
+    <!-- &#24038;&#19978;&#26041; Logo -->
+    <a class="logo" href="/"><img src="//cdn2.jianshu.io/assets/web/logo-58fd04f6f0de908401aa561cda6a0688.png" alt="Logo"/></a>
+
+    <!-- &#21491;&#19978;&#35282; -->
+      <!-- &#26410;&#30331;&#24405;&#26174;&#31034;&#30331;&#24405;/&#27880;&#20876;/&#20889;&#25991;&#31456; -->
+      <a class="btn write-btn" target="_blank" href="/writer#/">
+        <i class="iconfont ic-write"/>&#20889;&#25991;&#31456;
+</a>      <a class="btn sign-up" href="/sign_up">&#27880;&#20876;</a>
+      <a class="btn log-in" href="/sign_in">&#30331;&#24405;</a>
+
+    <!-- &#22914;&#26524;&#29992;&#25143;&#30331;&#24405;&#65292;&#26174;&#31034;&#19979;&#25289;&#33756;&#21333; -->
+
+    <div class="style-mode"><a class="style-mode-btn"><i class="iconfont ic-navigation-mode"/></a> <div class="popover-modal" style="left: 0px; display: none;"><div class="meta"><i class="iconfont ic-navigation-night"/><span>&#22812;&#38388;&#27169;&#24335;</span></div> <div class="switch day-night-group"><a class="switch-btn">&#24320;</a> <a class="switch-btn active">&#20851;</a></div> <hr/> <div class="switch font-family-group"><a class="switch-btn font-song">&#23435;&#20307;</a> <a class="switch-btn font-hei active">&#40657;&#20307;</a></div> <div class="switch"><a class="switch-btn active">&#31616;</a> <a class="switch-btn">&#32321;</a></div></div></div>
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu" aria-expanded="false">
+          <span class="icon-bar"/>
+          <span class="icon-bar"/>
+          <span class="icon-bar"/>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="nav navbar-nav">
+            <li class="">
+              <a href="/">
+                <span class="menu-text">&#39318;&#39029;</span><i class="iconfont ic-navigation-discover menu-icon"/>
+</a>            </li>
+            <li class="">
+              <a class="app-download-btn" href="/apps"><span class="menu-text">&#19979;&#36733;App</span><i class="iconfont ic-navigation-download menu-icon"/></a>
+            </li>
+          <li class="search">
+            <form target="_blank" action="/search" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="&#10003;"/>
+              <input type="text" name="q" id="q" value="" autocomplete="off" placeholder="&#25628;&#32034;" class="search-input"/>
+              <a class="search-btn" href="javascript:void(null)"><i class="iconfont ic-search"/></a>
+</form>          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+<div class="note">
+  <div class="post">
+    <div class="article">
+        <h1 class="title">js/jq-&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335;</h1>
+
+        <!-- &#20316;&#32773;&#21306;&#22495; -->
+        <div class="author">
+          <a class="avatar" href="/u/acb01dde7ec7">
+            <img src="//upload.jianshu.io/users/upload_avatars/7632777/9efc2818-03e0-4ef8-9359-13b52afd630e?imageMogr2/auto-orient/strip|imageView2/1/w/96/h/96" alt="96"/>
+</a>          <div class="info">
+            <span class="tag">&#20316;&#32773;</span>
+            <span class="name"><a href="/u/acb01dde7ec7">&#23478;&#37324;&#26377;&#39063;&#26680;&#26691;&#26641;</a></span>
+            <!-- &#20851;&#27880;&#29992;&#25143;&#25353;&#38062; -->
+            <a class="btn btn-success follow"><i class="iconfont ic-follow"/><span>&#20851;&#27880;</span></a>
+            <!-- &#25991;&#31456;&#25968;&#25454;&#20449;&#24687; -->
+            <div class="meta">
+              <!-- &#22914;&#26524;&#25991;&#31456;&#26356;&#26032;&#26102;&#38388;&#22823;&#20110;&#21457;&#24067;&#26102;&#38388;&#65292;&#37027;&#20040;&#20351;&#29992; tooltip &#26174;&#31034;&#26356;&#26032;&#26102;&#38388; -->
+                <span class="publish-time" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="&#26368;&#21518;&#32534;&#36753;&#20110; 2017.09.01 16:56">2017.08.28 22:15*</span>
+              <span class="wordage">&#23383;&#25968; 509</span>
+            <span class="views-count">&#38405;&#35835; 32</span><span class="comments-count">&#35780;&#35770; 0</span><span class="likes-count">&#21916;&#27426; 1</span><span class="rewards-count ">&#36190;&#36175; 2</span></div>
+          </div>
+          <!-- &#22914;&#26524;&#26159;&#24403;&#21069;&#20316;&#32773;&#65292;&#21152;&#20837;&#32534;&#36753;&#25353;&#38062; -->
+        </div>
+        <!-- -->
+
+        <!-- &#25991;&#31456;&#20869;&#23481; -->
+        <div data-note-content="" class="show-content">
+          <h2>&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335;</h2>
+<blockquote>
+<p>&#24120;&#29992;&#30340;&#26041;&#27861;&#65306;for&#12289;for in&#12289;for of&#65288;es6&#35821;&#27861;&#65289;&#12289;forEach&#12289;map&#12289;filter&#12289;$.each&#12289;$.map<br/>
+<em>&#27880;&#65306;&#26412;&#31687;&#25991;&#31456;demo&#21482;&#28041;&#21450;&#36941;&#21382;&#25968;&#32452;&#20803;&#32032;&#65292;&#38500;&#20102;for&#19981;&#33021;&#36941;&#21382;&#38750;&#25968;&#32452;&#23545;&#35937;&#20854;&#23427;&#26041;&#27861;&#37117;&#21487;&#20197;</em></p>
+</blockquote>
+<p><code>// &#22768;&#26126;&#20960;&#20010;&#38656;&#35201;&#29992;&#21040;&#30340;&#21464;&#37327;</code><br/>
+<code>var arr = [1, 78, 90, "hello", 22], results = [];</code></p>
+<h3>1&#12289; &#20351;&#29992;for&#24490;&#29615;&#36941;&#21382;</h3>
+<pre class="hljs undefined"><code>for (var i, len = arr.length; i &lt; len; i++) {
+    console.log("for=&gt;index=" + i + "/value=" + arr[i]);
+}
+</code></pre>
+<p><em>&#27880;&#65306;&#29992;for&#24490;&#29615;&#36941;&#21382;&#65292;&#20351;&#29992;&#20020;&#26102;&#21464;&#37327;&#65292;&#23558;&#38271;&#24230;&#32531;&#23384;&#36215;&#26469;&#65292;&#36991;&#20813;&#37325;&#22797;&#33719;&#21462;&#25968;&#32452;&#38271;&#24230;&#65292;&#25552;&#39640;&#25928;&#29575;</em></p>
+<h3>2&#12289;&#20351;&#29992;for in&#24490;&#29615;&#36941;&#21382;</h3>
+<pre class="hljs undefined"><code>for (var i in arr) {
+    console.log("for in=&gt;index=" + i + "/value=" + arr[i]);
+}
+</code></pre>
+<p><em>&#27880;&#65306;&#25454;&#35828;&#36825;&#20010;&#25928;&#29575;&#26159;&#24490;&#29615;&#36941;&#21382;&#20013;&#25928;&#29575;&#26368;&#20302;&#30340;</em></p>
+<h3>3&#12289;&#20351;&#29992;for of&#24490;&#29615;&#36941;&#21382;[es6&#35821;&#27861;]</h3>
+<pre class="hljs undefined"><code>for (let value of arr) {
+    console.log("for of=&gt;value=" + value);
+}
+</code></pre>
+<p><em>&#27880;&#65306;&#24615;&#33021;&#20248;&#20110;for in&#65292;value&#20195;&#34920;&#30340;&#26159;&#23646;&#24615;&#20540;</em></p>
+<h3>4&#12289;&#20351;&#29992;forEach&#36941;&#21382;</h3>
+<pre class="hljs undefined"><code>results = arr.forEach(function (value, index, array) {
+    console.log("forEach=&gt;" + index + ": " + value + "/" + array[index]);
+    return value; 
+});
+console.log("forEach=&gt;results=" + results);  // =&gt;undefined
+</code></pre>
+<p><em>&#20854;&#20013;value&#21442;&#25968;&#26159;&#24517;&#39035;&#30340;&#65292;&#20195;&#34920;&#24403;&#21069;&#20803;&#32032;&#30340;&#20540;&#12290;forEach&#36820;&#22238;&#20540;&#20026;undefined</em></p>
+<h3>5&#12289;&#20351;&#29992;map&#36941;&#21382;</h3>
+<pre class="hljs undefined"><code>results = arr.map(function (value, index, array) {
+    console.log("map=&gt;" + index + ": " + value + "/" + array[index]);
+    return value + index;
+});
+console.log("map=&gt;results=" + results); // =&gt;1,79,92,hello3,26
+</code></pre>
+<p><em>&#65288;1&#65289;&#65306;&#20854;&#20013;value&#21442;&#25968;&#26159;&#24517;&#39035;&#30340;&#65292;&#20195;&#34920;&#24403;&#21069;&#20803;&#32032;&#30340;&#20540;<br/>
+&#65288;2&#65289;&#65306;map&#36820;&#22238;&#19968;&#20010;&#26032;&#25968;&#32452;&#65292;&#25968;&#32452;&#20013;&#30340;&#20803;&#32032;&#20026;&#21407;&#22987;&#25968;&#32452;&#20803;&#32032;&#35843;&#29992;&#20989;&#25968;&#22788;&#29702;&#21518;&#30340;&#20540;&#65292;&#19981;&#20250;&#25913;&#21464;&#21407;&#25968;&#32452;</em></p>
+<h3>6&#12289;&#20351;&#29992;filter&#36941;&#21382;</h3>
+<pre class="hljs undefined"><code>results = arr.filter(function (value, index, array) {
+    console.log("filter=&gt;" + index + ": " + value + "/" + array[index]);
+    return isNaN(value) ? "" : value;
+});
+console.log("filter=&gt;results=" + results); // =&gt;1,78,90,22
+</code></pre>
+<p><em>&#65288;1&#65289;&#65306;&#20854;&#20013;value&#21442;&#25968;&#26159;&#24517;&#39035;&#30340;&#65292;&#20195;&#34920;&#24403;&#21069;&#20803;&#32032;&#30340;&#20540;<br/>
+&#65288;2&#65289;&#65306;&#20351;&#29992;filter&#26041;&#27861;&#21019;&#24314;&#19968;&#20010;&#26032;&#30340;&#25968;&#32452;&#65292;&#26032;&#25968;&#32452;&#20013;&#30340;&#20803;&#32032;&#26159;&#36890;&#36807;&#26816;&#26597;&#25351;&#23450;&#25968;&#32452;&#20013;&#31526;&#21512;&#26465;&#20214;&#30340;&#25152;&#26377;&#20803;&#32032;&#65292;&#19981;&#20250;&#25913;&#21464;&#21407;&#25968;&#32452;<br/>
+&#65288;3&#65289;&#65306;jquery&#30340;&#26041;&#27861;filter&#21482;&#26159;&#23545;jQuery&#23545;&#35937;&#36827;&#34892;&#19968;&#20010;&#36807;&#28388;&#65292;&#31579;&#36873;&#20986;&#19982;&#25351;&#23450;&#34920;&#36798;&#24335;&#21305;&#37197;&#30340;&#20803;&#32032;&#38598;&#21512;&#12290;&#22914;&#65306;<code>$("p").filter(".selected"); // &#20445;&#30041;&#24102;&#26377;select&#31867;&#30340;p&#20803;&#32032;</code></em></p>
+<h3>7&#12289;&#20351;&#29992;jQuery&#26680;&#24515;&#26041;&#27861;$.each&#36941;&#21382;&#25968;&#32452;</h3>
+<pre class="hljs undefined"><code> $.each(arr, function (index, value) {
+    console.log("$.each=&gt;index=" + index + "/value=" + value);
+});
+</code></pre>
+<p><em>&#27880;&#65306;&#35813;&#26041;&#27861;&#20063;&#21487;&#20197;&#29992;&#26469;&#25805;&#20316;jQuery&#23545;&#35937;&#65292;&#22914;&#65306;<code>$("div").each(callback)</code> // &#23545;&#21305;&#37197;&#21040;&#30340;div&#20803;&#32032;&#25191;&#34892;&#30456;&#20851;&#25805;&#20316;</em></p>
+<h3>8&#12289;&#20351;&#29992;jQuery&#26680;&#24515;&#26041;&#27861;$.map&#36941;&#21382;&#25968;&#32452;</h3>
+<pre class="hljs undefined"><code>results = $.map(arr, function (value, index) {
+    console.log("$.each=&gt;index=" + index + "/value=" + value);
+    return isNaN(value) ? null : value;
+   // &#36820;&#22238;null&#65288;&#21024;&#38500;&#25968;&#32452;&#20013;&#30340;&#39033;&#30446;&#65289;&#65292;&#19981;&#33021;&#36820;&#22238;""&#65292;&#21482;&#26159;&#23558;&#23545;&#24212;&#30340;&#25968;&#32452;&#20803;&#32032;&#32622;&#20026;&#38271;&#24230;&#20026;0&#30340;&#23383;&#31526;&#20018;
+});
+console.log(arr + "=======" + results); // 1,78,90,hello,22=======1,78,90,22
+</code></pre>
+<p><em>&#35813;&#26041;&#27861;&#20063;&#21487;&#20197;&#29992;&#26469;&#25805;&#20316;jQuery&#23545;&#35937;&#65292;&#22914;&#65306;</em></p>
+<pre class="hljs undefined"><code>$("p").append( $("input").map(function(){
+   return $(this).val();
+ }).get().join(", ") );</code></pre>
+
+        </div>
+        <!--  -->
+
+        <div class="show-foot">
+          <a class="notebook" href="/nb/15917866">
+            <i class="iconfont ic-search-notebook"/> <span>javascript&#30456;&#20851;</span>
+</a>          <div class="copyright" data-toggle="tooltip" data-html="true" data-original-title="&#36716;&#36733;&#35831;&#32852;&#31995;&#20316;&#32773;&#33719;&#24471;&#25480;&#26435;&#65292;&#24182;&#26631;&#27880;&#8220;&#31616;&#20070;&#20316;&#32773;&#8221;&#12290;">
+            &#169; &#33879;&#20316;&#26435;&#24402;&#20316;&#32773;&#25152;&#26377;
+          </div>
+          <div class="modal-wrap" data-report-note="">
+            <a id="report-modal">&#20030;&#25253;&#25991;&#31456;</a>
+          </div>
+        </div>
+    </div>
+
+    <!-- &#25991;&#31456;&#24213;&#37096;&#20316;&#32773;&#20449;&#24687; -->
+      <div class="follow-detail">
+        <div class="info">
+          <a class="avatar" href="/u/acb01dde7ec7">
+            <img src="//upload.jianshu.io/users/upload_avatars/7632777/9efc2818-03e0-4ef8-9359-13b52afd630e?imageMogr2/auto-orient/strip|imageView2/1/w/96/h/96" alt="96"/>
+</a>          <a class="btn btn-success follow"><i class="iconfont ic-follow"/><span>&#20851;&#27880;</span></a>
+          <a class="title" href="/u/acb01dde7ec7">&#23478;&#37324;&#26377;&#39063;&#26680;&#26691;&#26641;</a>
+            <i class="iconfont ic-woman"/>
+        <p>&#20889;&#20102; 1947 &#23383;&#65292;&#34987; 3 &#20154;&#20851;&#27880;&#65292;&#33719;&#24471;&#20102; 3 &#20010;&#21916;&#27426;</p></div>
+          <div class="signature">&#33509;&#27809;&#26377;&#26865;&#35282;&#65292;&#22914;&#20309;&#33258;&#30001;&#31449;&#31435;~</div>
+      </div>
+
+      <div class="support-author"/>
+
+    <div class="meta-bottom">
+      <div class="like"><div class="btn like-group"><div class="btn-like"><a href="/sign_in?utm_source=desktop&amp;utm_medium=not-signed-in-like-button"><i class="iconfont ic-like"/>&#21916;&#27426;</a></div> <div class="modal-wrap"><a>1</a></div></div> <!----></div>
+      <div class="share-group">
+        <a class="share-circle" data-action="weixin-share" data-toggle="tooltip" data-original-title="&#20998;&#20139;&#21040;&#24494;&#20449;">
+          <i class="iconfont ic-wechat"/>
+        </a>
+        <a class="share-circle" data-action="weibo-share" data-toggle="tooltip" href="javascript:void((function(s,d,e,r,l,p,t,z,c){var%20f='http://v.t.sina.com.cn/share/share.php?appkey=1881139527',u=z||d.location,p=['&amp;url=',e(u),'&amp;title=',e(t||d.title),'&amp;source=',e(r),'&amp;sourceUrl=',e(l),'&amp;content=',c||'gb2312','&amp;pic=',e(p||'')].join('');function%20a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=440,height=430,left=',(s.width-440)/2,',top=',(s.height-430)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();})(screen,document,encodeURIComponent,'','','http://cwb.assets.jianshu.io/notes/images/16373632/weibo/image_4a91d431f919.jpg', '&#25512;&#33616; &#23478;&#37324;&#26377;&#39063;&#26680;&#26691;&#26641; &#30340;&#25991;&#31456;&#12298;js/jq-&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335;&#12299;&#65288; &#20998;&#20139;&#33258; @&#31616;&#20070; &#65289;','http://www.jianshu.com/p/7636512e534e?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=weibo','&#39029;&#38754;&#32534;&#30721;gb2312|utf-8&#40664;&#35748;gb2312'));" data-original-title="&#20998;&#20139;&#21040;&#24494;&#21338;">
+          <i class="iconfont ic-weibo"/>
+        </a>
+          <a class="share-circle" data-toggle="tooltip" href="http://cwb.assets.jianshu.io/notes/images/16373632/weibo/image_4a91d431f919.jpg" target="_blank" data-original-title="&#19979;&#36733;&#38271;&#24494;&#21338;&#22270;&#29255;">
+            <i class="iconfont ic-picture"/>
+          </a>
+        <a class="share-circle more-share" tabindex="0" data-toggle="popover" data-placement="top" data-html="true" data-trigger="focus" href="javascript:void(0);" data-content="&#10;          &lt;ul class=&quot;share-list&quot;&gt;&#10;            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r='http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url='+e('http://www.jianshu.com/p/7636512e534e?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=qzone')+'&amp;title='+e('&#25512;&#33616; &#23478;&#37324;&#26377;&#39063;&#26680;&#26691;&#26641; &#30340;&#25991;&#31456;&#12298;js/jq-&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335;&#12299;'),x=function(){if(!window.open(r,'qzone','toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600'))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-zone&quot;&gt;&lt;/i&gt;&lt;span&gt;&#20998;&#20139;&#21040;QQ&#31354;&#38388;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&#10;            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r='https://twitter.com/share?url='+e('http://www.jianshu.com/p/7636512e534e?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=twitter')+'&amp;text='+e('&#25512;&#33616; &#23478;&#37324;&#26377;&#39063;&#26680;&#26691;&#26641; &#30340;&#25991;&#31456;&#12298;js/jq-&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335;&#12299;&#65288; &#20998;&#20139;&#33258; @jianshucom &#65289;')+'&amp;related='+e('jianshucom'),x=function(){if(!window.open(r,'twitter','toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600'))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-twitter&quot;&gt;&lt;/i&gt;&lt;span&gt;&#20998;&#20139;&#21040;Twitter&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&#10;            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r='https://www.facebook.com/dialog/share?app_id=483126645039390&amp;display=popup&amp;href=http://www.jianshu.com/p/7636512e534e?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=facebook',x=function(){if(!window.open(r,'facebook','toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330'))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-facebook&quot;&gt;&lt;/i&gt;&lt;span&gt;&#20998;&#20139;&#21040;Facebook&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&#10;            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r='https://plus.google.com/share?url='+e('http://www.jianshu.com/p/7636512e534e?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=google_plus'),x=function(){if(!window.open(r,'google_plus','toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330'))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-google&quot;&gt;&lt;/i&gt;&lt;span&gt;&#20998;&#20139;&#21040;Google+&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&#10;            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,s1=window.getSelection,s2=d.getSelection,s3=d.selection,s=s1?s1():s2?s2():s3?s3.createRange().text:'',r='http://www.douban.com/recommend/?url='+e('http://www.jianshu.com/p/7636512e534e?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=douban')+'&amp;title='+e('js/jq-&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335;')+'&amp;sel='+e(s)+'&amp;v=1',x=function(){if(!window.open(r,'douban','toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330'))location.href=r+'&amp;r=1'};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})()&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-douban&quot;&gt;&lt;/i&gt;&lt;span&gt;&#20998;&#20139;&#21040;&#35910;&#29923;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&#10;          &lt;/ul&gt;&#10;        " data-original-title="" title="">&#26356;&#22810;&#20998;&#20139;</a>
+      </div>
+    </div>
+    <div id="vue_comment"/>
+  </div>
+
+  <div class="side-tool"><ul><li data-placement="left" data-toggle="tooltip" data-container="body" data-original-title="&#22238;&#21040;&#39030;&#37096;" style="display: none;"><a class="function-button"><i class="iconfont ic-backtop"/></a></li> <!----> <!----> <li data-placement="left" data-toggle="tooltip" data-container="body" data-original-title="&#20998;&#20139;&#25991;&#31456;"><a tabindex="0" role="button" data-toggle="popover" data-placement="left" data-html="true" data-trigger="focus" href="javascript:void(0);" data-content="&lt;ul class='share-list'&gt;&#10;                &lt;li&gt;&lt;a class=&quot;weixin-share&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-weixin&quot;&gt;&lt;/i&gt;&lt;span&gt;&#20998;&#20139;&#21040;&#24494;&#20449;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&#10;                &lt;li&gt;&lt;a href=&quot;javascript:void((function(s,d,e,r,l,p,t,z,c){var%20f='http://v.t.sina.com.cn/share/share.php?appkey=1881139527',u=z||d.location,p=['&amp;url=',e(u),'&amp;title=',e(t||d.title),'&amp;source=',e(r),'&amp;sourceUrl=',e(l),'&amp;content=',c||'gb2312','&amp;pic=',e(p||'')].join('');function%20a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=440,height=430,left=',(s.width-440)/2,',top=',(s.height-430)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();})(screen,document,encodeURIComponent,'','','http://cwb.assets.jianshu.io/notes/images/16373632/weibo/image_4a91d431f919.jpg', '&#25512;&#33616; &#23478;&#37324;&#26377;&#39063;&#26680;&#26691;&#26641; &#30340;&#25991;&#31456;&#12298;js/jq-&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335;&#12299;&#65288; &#20998;&#20139;&#33258; @&#31616;&#20070; &#65289;','http://www.jianshu.com/p/7636512e534e?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=weibo','&#39029;&#38754;&#32534;&#30721;gb2312|utf-8&#40664;&#35748;gb2312'));&quot;&gt;&lt;i class='social-icon-sprite social-icon-weibo'&gt;&lt;/i&gt;&lt;span&gt;&#20998;&#20139;&#21040;&#24494;&#21338;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&#10;                &lt;li&gt;&lt;a href=&quot;http://cwb.assets.jianshu.io/notes/images/16373632/weibo/image_4a91d431f919.jpg&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-picture&quot;&gt;&lt;/i&gt;&lt;span&gt;&#19979;&#36733;&#38271;&#24494;&#21338;&#22270;&#29255;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&#10;                &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r='http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url='+e('http://www.jianshu.com/p/7636512e534e?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=qzone')+'&amp;title='+e('&#25512;&#33616; &#23478;&#37324;&#26377;&#39063;&#26680;&#26691;&#26641; &#30340;&#25991;&#31456;&#12298;js/jq-&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335;&#12299;'),x=function(){if(!window.open(r,'qzone','toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600'))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class='social-icon-sprite social-icon-zone'&gt;&lt;/i&gt;&lt;span&gt;&#20998;&#20139;&#21040;QQ&#31354;&#38388;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&#10;                &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r='https://twitter.com/share?url='+e('http://www.jianshu.com/p/7636512e534e?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=twitter')+'&amp;text='+e('&#25512;&#33616; &#23478;&#37324;&#26377;&#39063;&#26680;&#26691;&#26641; &#30340;&#25991;&#31456;&#12298;js/jq-&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335;&#12299;&#65288; &#20998;&#20139;&#33258; @jianshucom &#65289;')+'&amp;related='+e('jianshucom'),x=function(){if(!window.open(r,'twitter','toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600'))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class='social-icon-sprite social-icon-twitter'&gt;&lt;/i&gt;&lt;span&gt;&#20998;&#20139;&#21040;Twitter&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&#10;                &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r='https://www.facebook.com/dialog/share?app_id=483126645039390&amp;display=popup&amp;href=http://www.jianshu.com/p/7636512e534e?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=facebook',x=function(){if(!window.open(r,'facebook','toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330'))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class='social-icon-sprite social-icon-facebook'&gt;&lt;/i&gt;&lt;span&gt;&#20998;&#20139;&#21040;Facebook&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&#10;                &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r='https://plus.google.com/share?url='+e('http://www.jianshu.com/p/7636512e534e?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=google_plus'),x=function(){if(!window.open(r,'google_plus','toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330'))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class='social-icon-sprite social-icon-google'&gt;&lt;/i&gt;&lt;span&gt;&#20998;&#20139;&#21040;Google+&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&#10;                &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,s1=window.getSelection,s2=d.getSelection,s3=d.selection,s=s1?s1():s2?s2():s3?s3.createRange().text:'',r='http://www.douban.com/recommend/?url='+e('http://www.jianshu.com/p/7636512e534e?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=douban')+'&amp;title='+e('js/jq-&#36941;&#21382;&#25968;&#32452;/&#23545;&#35937;&#30340;&#20960;&#31181;&#26041;&#24335;')+'&amp;sel='+e(s)+'&amp;v=1',x=function(){if(!window.open(r,'douban','toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330'))location.href=r+'&amp;r=1'};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})()&quot;&gt;&lt;i class='social-icon-sprite social-icon-douban'&gt;&lt;/i&gt;&lt;span&gt;&#20998;&#20139;&#21040;&#35910;&#29923;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&#10;              &lt;/ul&gt;" data-original-title="" title="" class="function-button"><i class="iconfont ic-share"/></a> <!----></li></ul></div>
+</div>
+<div class="note-bottom">
+  <div><div class="main"><div class="title">&#34987;&#20197;&#19979;&#19987;&#39064;&#25910;&#20837;&#65292;&#21457;&#29616;&#26356;&#22810;&#30456;&#20284;&#20869;&#23481;</div> <!----> <div class="include-collection"><!----> <a href="/c/f489ec955505?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="//upload.jianshu.io/collections/images/1084/03bcf61363c33043de4728026e5f5128.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/64/h/64"/><div class="name">Web&#21069;&#31471;&#20043;&#36335;</div></a><a href="/c/f63dac4d430e?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="//upload.jianshu.io/collections/images/509759/JS.png?imageMogr2/auto-orient/strip|imageView2/1/w/64/h/64"/><div class="name">JavaScr...</div></a> <!----></div></div> <!----> <!----></div>
+  <div data-vcomp="recommended-notes" data-note-id="16373632"/>
+</div>
+
+    <script type="application/json" data-name="page-data">{"user_signed_in":false,"locale":"zh-CN","os":"linux","read_mode":"day","read_font":"font2","note_show":{"is_author":false,"is_following_author":false,"is_liked_note":false,"uuid":"6649e52e-9bcc-45a5-b785-11d6d902f573"},"note":{"id":16373632,"slug":"7636512e534e","user_id":7632777,"notebook_id":15917866,"commentable":true,"likes_count":1,"views_count":32,"public_wordage":509,"comments_count":0,"total_rewards_count":2,"is_author":false,"author":{"nickname":"&#23478;&#37324;&#26377;&#39063;&#26680;&#26691;&#26641;","total_wordage":1947,"followers_count":3,"total_likes_count":3}}}</script>
+    
+    <script src="//cdn2.jianshu.io/assets/babel-polyfill-8053f0c4c81c27b7aff2.js"/>
+    <script src="//cdn2.jianshu.io/assets/web-base-827055a1a1f5b471062a.js"/>
+<script src="//cdn2.jianshu.io/assets/web-a272073c5fdb4e0f1abb.js"/>
+    
+    <script src="//cdn2.jianshu.io/assets/web/pages/notes/show/entry-7003f5f273d96dfa9579.js"/>
+    <script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+  
+
+<!----><!----></body></html>

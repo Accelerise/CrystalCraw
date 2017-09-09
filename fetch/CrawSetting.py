@@ -26,7 +26,7 @@ ROBOTSTXT_OBEY = True
 LOG_LEVEL='DEBUG'
 DOWNLOAD_DELAY = 2
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-TREADING_COUNT = 4
+TREADING_COUNT = 1
 CHROME_ENABLE = True
 
 # Configure a delay for requests for the same website (default: 0)

@@ -53,24 +53,25 @@ class Task(object):
         #startTime = time.strftime('%Z', time.localtime())
         db = WCG()
         db.motify("task", {"id": self.id}, {"startTime": startTime})
-        self.crystal.start("master",[self.mainUrl])
+        self.crystal.start_single("master",[self.mainUrl])
 
     def startTask(self):
         db = WCG()
         collection = "url_task" + str(self.id)
         cur = 0
         end = db.searchId(collection)
+        gap = 30
         while cur < end:
-            end = db.searchId(collection)
             status = db.searchKeyById("task", "status", self.id)
+            self.workNum = db.searchKeyById("task", "selectWorker", self.id)
             flag = False
             if (status == "success"):
                 flag = True
             if (flag):
                 break
-            if (cur + 50 <= end):
-                resData = db.searchDataByRange(collection, cur, cur + 50)
-                cur = cur + 50
+            if (cur + gap <= end):
+                resData = db.searchDataByRange(collection, cur, cur + gap)
+                cur = cur + gap
                 print "当前链接数"+str(cur)
                 url = []
                 i = 0
@@ -79,17 +80,18 @@ class Task(object):
                     url.append(document['url'])
                     i = i + 1
                     if (i % 10 ==0):
-                        print self.workNum
-                        if (self.workNum == "1"):
+                        if (self.workNum == "1" or self.workNum==1):
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work3',routing_key='work3')
                             craw.append(tmpcraw)
-                        elif (self.workNum == "2"):
+                            url = []
+                        elif (self.workNum == "2" or self.workNum==2):
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work2',routing_key='work2')
                             craw.append(tmpcraw)
+                            url = []
                         else:
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work1',routing_key='work1')
                             craw.append(tmpcraw)
-                    url = []
+                            url = []
                 while True:
                     flag = True
                     for tt in craw:
@@ -107,22 +109,22 @@ class Task(object):
                 i = 0
                 craw = []
                 lenth = resData.count()
-                print lenth
                 for document in resData:
                     url.append(document['url'])
                     i = i + 1
                     if (i % 10 ==0 or i == lenth):
-                        print self.workNum
                         if (self.workNum == "1"):
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work3',routing_key='work3')
                             craw.append(tmpcraw)
+                            url = []
                         elif (self.workNum == "2"):
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work2',routing_key='work2')
                             craw.append(tmpcraw)
+                            url = []
                         else:
                             tmpcraw = spider.apply_async(args=[self.id,url],queue='work1',routing_key='work1')
                             craw.append(tmpcraw)
-                    url = []
+                            url = []
                 while True:
                     flag = True
                     for tt in craw:
@@ -131,6 +133,7 @@ class Task(object):
                     if (flag):
                         break
                     time.sleep(1)
+            end = db.searchId(collection)
         endTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         db.motify("task", {"id": self.id}, {"endTime": endTime})
 

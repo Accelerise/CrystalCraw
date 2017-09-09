@@ -19,6 +19,7 @@ from Configer import Configer
 from LogUtil import LogUtil
 from Model import WCG
 import random
+import traceback
 
 
 class Crystal:
@@ -49,43 +50,43 @@ class Crystal:
 
     # void 运行
     def run(self,flag):
-        self.threadAdd()
+        #self.threadAdd()
         LogUtil.start_log()
-        empty_count = 0
+        #empty_count = 0
         _downloader = self.newDownloader()
-
+        db = WCG()
         while True:
-            self._lock.acquire()
             if not self._queue.empty():
                 pagelink = self._queue.pop()
-                self._lock.release()
 
-                parseRes = self.parseUrl(pagelink)
-                if parseRes is None:
-                    host = None
-                    # 该url不合法
-                else:
-                    host = parseRes["host"]
+                host = self._hostInfo["host"]
+                LogUtil.n("开始下载页面："+pagelink,self._taskId)
                 try:
                     page = _downloader.get(pagelink)
-                except Exception:
+                except Exception,e:
+                    collection = 'url_task'+str(self._taskId)
+                    id = db.incId(collection)
+                    document = {"id":id,"url":pagelink}
+                    db.insertDBforOne(collection, document)
                     continue
+                LogUtil.n("下载页面完成："+pagelink,self._taskId)
                 pagelink = pagelink.encode("UTF-8")
                 if flag=="work":
                     self._parser.process_item(host=host,pagelink=pagelink,page=page)
                 elif flag=="master":
                     self._parser.initCollectURLs(host=host, pagelink=pagelink, page=page)
             else:
-                self._lock.release()
-                if empty_count < 3:
-                    empty_count = empty_count + 1
-                    time.sleep(3)
-                else:
-                    break
+                # if empty_count < 3:
+                #     empty_count = empty_count + 1
+                #     time.sleep(3)
+                # else:
+                #     break
+                break
             ran = 0.5 - random.random()
             time.sleep(self._config["DOWNLOAD_DELAY"] * (1 + ran))
 
-        self.threadReduce()
+        #self.threadReduce()
+        _downloader.closeDownloader()
         LogUtil.end_log()
 
 
@@ -132,7 +133,7 @@ class Crystal:
             self._config[row] = localConfig[row]
         # 分布式配置
         db = WCG()
-        resData = db.searchData('config') #读数据库配置
+        resData = db.searchData('config_task' + str(self._taskId)) #读数据库配置
         remoteConfig = {}
         for res in resData:
             for key in res:
@@ -272,12 +273,19 @@ class Crystal:
         if flag=="work":
             poo = []
             for i in range(self._config["TREADING_COUNT"]):
-                poo.append(threading.Thread(target=self.run,args=("work")))
+                poo.append(threading.Thread(target=self.run,args=("work",)))
             for task in poo:
                 task.start()
             for task in poo:
                 task.join()
 
         elif flag=="master":
+            self.run("master")
+
+    def start_single(self,flag,targetUrl):
+        self.initStartUrl(targetUrl)
+        if flag == "work":
+            self.run("work")
+        elif flag == "master":
             self.run("master")
 

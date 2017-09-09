@@ -8,8 +8,8 @@ import re
 from LogUtil import LogUtil
 
 from Tool import Queue,File
-file = File()
-file.setDir(".")
+import weakref
+
 class Parser:
 	# 解析页面，通用解析过程为1.收集url 2.尝试生成item，成功即插入数据库
 
@@ -19,14 +19,15 @@ class Parser:
 	# - String - proto(可选) 网站使用的协议 http:// / https://
 	def __init__(self,crystal,proto="https://"):
 		self.proto = proto
-		self.crystal = crystal
-		self.xpath = crystal._xpath
-		self.xpathBox = crystal._xpath.getXpath()
-		self.queue = crystal._queue
-		self.rules = crystal._rules
-		self.bf = crystal._bf
+		self.crystal = weakref.ref(crystal)
+		self.xpath = self.crystal()._xpath
+		self.xpathBox = self.crystal()._xpath.getXpath()
+		self.queue = self.crystal()._queue
+		self.rules = self.crystal()._rules
+		self.bf = self.crystal()._bf
+		self.db = self.crystal()._db
 
-		self.lock = crystal._lock
+		self.lock = self.crystal()._lock
 
 		if self.xpathBox is None:
 			raise XpathNotInit
@@ -70,12 +71,14 @@ class Parser:
 		urls = dom.xpath('//a[not(contains(@href,"javasc"))]/@href')
 		for url in urls:
 			url = self.standardizeUrl(host,url)
+			
 			if url is not False:
 				self.lock.acquire()
 				if(not self.bf.isContain(url)):
 					LogUtil.n("put in url:"+url+'\n')
 					self.bf.add(url)
 					self.lock.release()
+					self.db.incId("collectUrl_task"+str(self.crystal()._table))
 					self.queue.put(url)
 				else:
 					self.lock.release()
@@ -86,7 +89,12 @@ class Parser:
 	# - String -  pagelink 本页链接，用于调试时参考
 	# - String -  host 本页host，用于拼接URL
 	def parseDetail(self,dom,pagelink,host):
-
+		self.db.incId("anlysisUrl_task"+str(self.crystal()._table))
+		def innerHTML(node): 
+			buildString = ''
+			for child in node:
+				buildString += etree.tostring(child, encoding="utf-8")
+			return buildString
 		def extractElement(key):
 			res = []
 			if self.xpath.isXpath(self.xpathBox[key]):
@@ -100,7 +108,11 @@ class Parser:
 				# file.fileIn("wtf",etree.tostring(dom))
 				# print "写入了"+pagelink
 				for each in tmp:
-					res.append(each.text.strip())
+					if each.text.strip() == "":
+						res.append(innerHTML(each).strip())
+					else:
+						res.append(each.text.strip())
+					# res.append(each.text.strip())
 				
 			if len(res) is 1:
 				return res[0]
@@ -116,6 +128,7 @@ class Parser:
 		if(self.rules.detailUrl!=None):
 			flag = self.rules.matchDetail(pagelink)
 			if(flag==False):
+				LogUtil.i("不符合详情页正则"+pagelink)
 				return
 		for key in self.xpathBox:
 			if first:
@@ -129,22 +142,23 @@ class Parser:
 				item[key] = extractElement(key)
 				if item[key] is None:
 					LogUtil.i("找不到后面的，判断为xpath不够完善")
+					item[key] = ""
 					# 找不到后面的，判断为xpath不够完善
 					item["xpath_fail_url"] = pagelink
-
+			if type(item[key]) == list:
+				item[key] = item[key][0]
 			LogUtil.i("提取xpath："+self.xpathBox[key]+"，获取结果："+item[key])
 		
 		if item["xpath_fail_url"] is None:
 			# 数据库操作，插入数据item
-			db = DB('127.0.0.1', 27017)
-			db.createDB("craw")
-			id = db.incId()
+			id = self.db.incId(self.crystal()._table)
 			document = {"id":id,"url":pagelink}
 			for key in item:
 				if (key!="xpath_fail_url"):
 					document[key] = item[key]
 			print document
-			db.insertDBforOne("Result",document)
+			self.db.insertDBforOne(self.crystal()._table,document)
+			self.db.incId("dataNumber_task"+str(self.crystal()._table))
 			# raw_input("我等等你")
 		else:
 			# 错误处理
@@ -159,12 +173,7 @@ class Parser:
 	# - String -  host 本页host，用于拼接URL
 	# - String -  url 要清洗的URL
 	def standardizeUrl(self,host,url):
-		# 清洗掉一级域名错误的url
-		# 如 要爬取 （京东）www.jd.com 的数据 那么像 www.baidu.com 的url不会通过
-		pat = re.compile(self.domainFir+r"\.")
-		match = pat.search(url)
-		if not match:
-			return False
+		
 		# 给host拼接协议 
 		# 如 www.amazon.cn => proto+www.amazon.cn
 		pat = re.compile(r'^(\w+?(\.\w+?))',re.S)
@@ -180,6 +189,12 @@ class Parser:
 
 		pat = re.compile(r'(.*)(#.*$)',re.S)
 		url = pat.sub(r'\1' , url)
+		# 清洗掉一级域名错误的url
+		# 如 要爬取 （京东）www.jd.com 的数据 那么像 www.baidu.com 的url不会通过
+		pat = re.compile(self.domainFir+r"\.")
+		match = pat.search(url)
+		if not match:
+			return False
 		# 使用给定的url规则匹配，默认所有url都会通过，即(.*)
 		noProto = url[len(self.proto):]
 		if self.rules.match(noProto):
@@ -225,13 +240,14 @@ if __name__ == '__main__':
 	a = Queue()
 	a_ref = weakref.ref(a)
 	print a_ref
+	from lxml.html import fromstring
 
 	file = File()
 	file.setDir(".")
 	xpathBox = {}
-	xpathBox["名称"] = '//*[@id="J_ShopInfo"]/a/img/@src'
+	xpathBox["名称"] = '//*[@id="J_Title"]/h3/text()'
 	page = file.fileRead("wtf")
-	dom = etree.HTML(page)
+	dom = fromstring(page)
 	res = []
 	tmp = dom.xpath(xpathBox["名称"])
 	

@@ -67,6 +67,8 @@ def getAllData(request):
     try:
         if request.method == 'POST':
             ids = json.loads(request.body,object_pairs_hook=OrderedDict)
+            if ids=={} or ids is None:
+                return HttpResponse(json.dumps([]), content_type='application/json')
             db = WCG()
             collection = "result_task" + str(ids['id'])
             resData = db.searchData(collection)
@@ -85,6 +87,8 @@ def getSpiderData(request):
     try:
         if request.method == 'POST':
             ids = json.loads(request.body,object_pairs_hook=OrderedDict)
+            if ids=={} or ids is None:
+                return HttpResponse(json.dumps([]), content_type='application/json')
             db = WCG()
             resData = db.searchDataByRange("task", ids['id'], ids['id'])
             dict = {}
@@ -109,6 +113,8 @@ def getMessageFromId(request):
     try:
         if request.method == 'POST':
             ids = json.loads(request.body, object_pairs_hook=OrderedDict)
+            if ids=={} or ids is None:
+                return HttpResponse(json.dumps([]), content_type='application/json')
             db = WCG()
             collection = "log_task" + str(ids['id'])
             resData = db.searchData(collection)
@@ -172,8 +178,14 @@ def startSpider(request):
             db.createCollection("url_task" + str(ids['id']))
             db.createCollection("result_task" + str(ids['id']))
             db.createCollection("log_task" + str(ids['id']))
+            db.createCollection("config_task" + str(ids['id']))
             task = Task(ids['id'])
             task.getTaskFromMGDB()
+            collection = "config_task" + str(ids['id'])
+            if task.method == "chrome":
+                db.insertDBforOne(collection, {"CHROME_ENABLE":True})
+            else:
+                db.insertDBforOne(collection, {"CHROME_ENABLE":False})
             db.motify("task", {"id": ids['id']}, {"status": "doing"})
             task.initTask()
             task.startTask()

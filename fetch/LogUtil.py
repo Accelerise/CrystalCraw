@@ -40,7 +40,7 @@ class LogUtil:
 		if cls.ENABLE_LEVEL >= LogUtil.INFO:
 			nowdate = datetime.datetime.now()
 			cls.lock.acquire()
-			print "[Crystal|Info   ]~",nowdate,":"+info
+			print "[Crystal|Info   ]~"+str(nowdate)+":",info
 			cls.lock.release()
 
 	# 打印日志 level : notice
@@ -49,7 +49,7 @@ class LogUtil:
 		if cls.ENABLE_LEVEL >= LogUtil.NOTICE:
 			nowdate = datetime.datetime.now()
 			cls.lock.acquire()
-			print "[Crystal|Notice ]~",nowdate,":"+info
+			print "[Crystal|Notice ]~"+str(nowdate)+":",info
 			cls.lock.release()
 
 	# 打印日志 level : debug
@@ -58,7 +58,7 @@ class LogUtil:
 		if cls.ENABLE_LEVEL >= LogUtil.DEBUG:
 			nowdate = datetime.datetime.now()
 			cls.lock.acquire()
-			print "[Crystal|Debug  ]~",nowdate,":"+info
+			print "[Crystal|Debug  ]~"+str(nowdate)+":",info
 			cls.lock.release()
 
 	# 打印日志 level : warning
@@ -67,7 +67,7 @@ class LogUtil:
 		if cls.ENABLE_LEVEL >= LogUtil.WARNING:
 			nowdate = datetime.datetime.now()
 			cls.lock.acquire()
-			print "[Crystal|Warning]~",nowdate,":"+info
+			print "[Crystal|Warning]~"+str(nowdate)+":",info
 			cls.lock.release()
 
 	# 打印日志 level : error
@@ -76,7 +76,7 @@ class LogUtil:
 		if cls.ENABLE_LEVEL >= LogUtil.ERROR:
 			nowdate = datetime.datetime.now()
 			cls.lock.acquire()
-			print "[Crystal|Error  ]~",nowdate,":"+info
+			print "[Crystal|Error  ]~"+str(nowdate)+":",info
 			cls.lock.release()
 	
 if __name__ == '__main__':

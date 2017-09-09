@@ -8,18 +8,21 @@ class Downloader:
 	_downloader = None
 	# 默认使用requests
 	chrome_enable = False
+	page_load_time = 10
+	script_time = 10
 
 	# 构造函数
 	def __init__(self):
 		self.options = webdriver.ChromeOptions()
-		#self.options.binary_location = '/opt/google/chrome-unstable/google-chrome-unstable'
-		self.options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+		self.options.binary_location = '/opt/google/chrome-unstable/google-chrome-unstable'
+		#self.options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 		self.options.add_argument('headless')
+		self.options.add_argument('no-sandbox')
 		self.options.add_argument('window-size=1200x600')
 		self.options.add_argument('load-images=no')  ##关闭图片加载
 		self.driver = webdriver.Chrome(chrome_options=self.options)
-		# self.driver.set_page_load_timeout(8)
-		# self.driver.set_script_timeout(8)
+		self.driver.set_page_load_timeout(Downloader.page_load_time)
+		self.driver.set_script_timeout(Downloader.script_time)
 		self.cnt = 0
 
 	# 单例模式
@@ -46,7 +49,8 @@ class Downloader:
 
 	# String 1.requests
 	def getByRequests(self,url):
-		print self.cnt,url
+		LogUtil.n( str(self.cnt)+' '+url)
+		self.cnt = self.cnt + 1
 		page = requests.get(url).content.decode("utf-8")
 		return page
 
@@ -58,8 +62,8 @@ class Downloader:
 		page = self.driver.find_elements_by_xpath("/html")[0].get_attribute("innerHTML")
 		self.driver.quit()
 		self.driver = webdriver.Chrome(chrome_options=self.options)
-		# self.driver.set_page_load_timeout(10)
-		# self.driver.set_script_timeout(10)
+		self.driver.set_page_load_timeout(Downloader.page_load_time)
+		self.driver.set_script_timeout(Downloader.script_time)
 		return page
 
 	# void 关闭Chrome下载器

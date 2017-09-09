@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 import re
-
+import random
 class Rules:
 	# 构造函数
 	def __init__(self):
@@ -50,7 +50,8 @@ class Rules:
 		return False
 
 if __name__ == '__main__':
-	url = "https://item.taobao.com/item.htm?id=557598393787&ns=1&abbucket=0"
+	print random.random()
+	url = "https://s.taobao.com/search?q=%E6%81%92%E6%BA%90%E7%A5%A5%E6%AF%9B%E8%A1%A3%E7%94%B7&rs=up&rsclick=14&preq=%E6%AF%9B%E8%A1%A3%E7%94%B7"
 	rules = Rules()
 	rules.initRules(["https://item.taobao.com/item.htm\?id=\d+.*"])
 	match = rules.match(url)

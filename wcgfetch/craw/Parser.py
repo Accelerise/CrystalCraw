@@ -71,18 +71,14 @@ class Parser:
         for url in urls:
             url = self.standardizeUrl(host,url)
             if url is not False:
-                self.lock.acquire()
                 if(not self.bf.isContains(url)):
                     LogUtil.i("put in url:" + url + '\n')
                     self.bf.add(url)
                     self.db.incId("collectUrl_task"+str(self.crystal()._taskId))
-                    self.lock.release()
                     collection = 'url_task'+str(self.crystal()._taskId)
                     id = self.db.incId(collection)
                     document = {"id":id,"url":url}
                     self.db.insertDBforOne(collection, document)
-                else:
-                    self.lock.release()
 
     def initCollectURLs(self, host, pagelink, page):
         LogUtil.n("开始初始化爬出url："+pagelink,self.crystal()._taskId)
@@ -107,6 +103,11 @@ class Parser:
     # - String -  host 本页host，用于拼接URL
     def parseDetail(self,dom,pagelink,host):
         self.db.incId("anlysisUrl_task"+str(self.crystal()._taskId))
+        def innerHTML(node): 
+            buildString = ''
+            for child in node:
+                buildString += etree.tostring(child, encoding="utf-8")
+            return buildString
         def extractElement(key):
             res = []
             if self.xpath.isXpath(self.xpathBox[key]):
@@ -116,7 +117,11 @@ class Parser:
             else:
                 tmp = dom.cssselect(self.xpathBox[key])
                 for each in tmp:
-                    res.append(each.text.strip())
+                    if each.text is not None:
+                        if each.text.strip() == "":
+                            res.append(innerHTML(each).strip())
+                        else:
+                            res.append(each.text.strip())
 
             if len(res) is 1:
                 return res[0]
@@ -148,7 +153,8 @@ class Parser:
                     item[key] = ""
                     # 找不到后面的，判断为xpath不够完善
                     item["xpath_fail_url"] = pagelink
-
+            if type(item[key]) == list:
+                item[key] = item[key][0]
             LogUtil.n("提取xpath："+self.xpathBox[key]+"，获取结果："+item[key],self.crystal()._taskId)
 
         if item["xpath_fail_url"] is None:
@@ -171,12 +177,7 @@ class Parser:
     # - String -  host 本页host，用于拼接URL
     # - String -  url 要清洗的URL
     def standardizeUrl(self,host,url):
-        # 清洗掉一级域名错误的url
-        # 如 要爬取 （京东）www.jd.com 的数据 那么像 www.baidu.com 的url不会通过
-        pat = re.compile(self.domainFir+r"\.")
-        match = pat.search(url)
-        if not match:
-            return False
+        
         # 给host拼接协议
         # 如 www.amazon.cn => proto+www.amazon.cn
         pat = re.compile(r'^(\w+?(\.\w+?))',re.S)
@@ -192,6 +193,12 @@ class Parser:
 
         pat = re.compile(r'(.*)(#.*$)',re.S)
         url = pat.sub(r'\1' , url)
+        # 清洗掉一级域名错误的url
+        # 如 要爬取 （京东）www.jd.com 的数据 那么像 www.baidu.com 的url不会通过
+        pat = re.compile(self.domainFir+r"\.")
+        match = pat.search(url)
+        if not match:
+            return False
         # 使用给定的url规则匹配，默认所有url都会通过，即(.*)
         noProto = url[len(self.proto):]
         if self.rules.match(noProto):

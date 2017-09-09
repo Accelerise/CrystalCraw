@@ -43,6 +43,7 @@ class File:
         if not os.path.exists(folder):
             os.makedirs(folder)
         self.save_path = folder+"/"
+        pass
 
     def fileExist(self,filename):
         path = self.save_path + filename
@@ -76,6 +77,8 @@ class File:
                     break
                 else:
                     res = res + lines
+        for i in range(0, len(res)):
+            res[i] = res[i][0:-1]
         return res
 
     def fileRemove(self,filename):
@@ -85,10 +88,11 @@ class File:
 if __name__ == '__main__':
     queue = Queue()
     file = File()
-    file.setDir("京东")
+    file.setDir("京东手机")
 
     # print file.fileRead("sample")
-    print str(file.fileExist("queue"))
+    print file.fileReadLine("queue")
+    # print str(file.fileExist("queue"))
     # queue.put("1dgdfg")
     # queue.put("22222")
     # queue.put("3sdjkf")
