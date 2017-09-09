@@ -1,9 +1,9 @@
-# CraystalCrawler:分布式爬虫框架
+# CraystalCraw:分布式爬虫框架
 
 ## 概览
-CrystalCrawler是一个分布式的爬虫框架。
-使用者无需编写代码，只需输入几个必要的参数即可从绝大多数博客类和电商类网站爬取结构化数据。
-用户交互基于B/S结构，使用了Redis，Celery,MongoDB，Chrome-headless，Bloom过滤等技术。
+CrystalCraw是一个分布式的爬虫平台。
+用户无需编写代码，只需输入几个必要的参数即可从绝大多数博客类和电商类网站爬取结构化数据。
+用户交互基于B/S结构，使用了多线程，Redis，Celery,MongoDB，Chrome-headless，Bloom过滤等技术。
 
 ## 环境要求
 + 操作系统Ubuntu 16.04
@@ -18,9 +18,10 @@ CrystalCrawler是一个分布式的爬虫框架。
 2.	Python后端获取到信息，初始化MongoDB数据库。
 3.	开启爬虫模块先爬取一次满足规则的URL，通过Bloom去重后作为任务队列的初始化内容。
 4.	Python后端将消费者需要的任务通过Celery的Broker分配给消费者。
-5.	消费者获取任务开始爬取，如果碰到符合详情页规则的页面则开始具体分析，将分析结果放入存储结果的MongoDB数据库。
+5.	消费者获取任务开始爬取，如果碰到符合详情页规则的页面则开始具体分析，将分析结果放入存储结果的MongoDB数据库，同时把消费者运行的日志信息同时保存到数据库中。
 6.	重复4，5直到队列无新的任务后停止。
-7.	前端可以随时通过请求后端获得当前数据库存储的数据。
+7.	前端可以随时通过请求后端获得当前数据库存储的数据
+
 
 ## 爬虫流程
 <img src="screenshots/crawler.png" width="695" height="712"/>
