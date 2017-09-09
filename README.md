@@ -1,7 +1,7 @@
-# CraystalCraw:分布式爬虫平台
+# WCGfetcher:分布式爬虫平台
 
 ## 概览
-CrystalCraw是一个分布式的爬虫平台。
+WCGfetcher是一个分布式的爬虫平台。
 用户无需编写代码，只需输入几个必要的参数即可从绝大多数博客类和电商类网站爬取结构化数据。
 用户交互基于B/S结构，爬虫使用了多线程，Redis，Celery,MongoDB，Chrome-headless，Bloom过滤等技术。
 
@@ -48,7 +48,7 @@ CrystalCraw是一个分布式的爬虫平台。
 |      |--dist 						//前端页面
 |   |--craw 						//爬虫模块         
 |   |--myapp						//celery启动模块
-|-- fetch							//单例爬虫
+|-- fetch						//单例爬虫Crystal
 ```
 
 
