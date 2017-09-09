@@ -2,11 +2,11 @@
 # -*- coding:utf-8 -*-
 
 import re
-urls = ['//channel.jd.com/outdoor.html','http://car.jd.com/','www.jd.com','/gp/help/customer/display.html/ref=footer_hp_fp_topup/459-1201203-5640422?ie=UTF8&nodeId=201522740']
+urls = ['//channel.jd.com/outdoor.html','//channel.jd.com/outdoor.html#comment','http://car.jd.com/','www.jd.com','/gp/help/customer/display.html/ref=footer_hp_fp_topup/459-1201203-5640422?ie=UTF8&nodeId=201522740']
 proto = 'http://';
 host = 'www.amazon.cn'
 # 修正Url格式
-def validateUrl(url,https):
+def validateUrl(url):
 	# 给host拼接协议 
 	# 如 www.amazon.cn => proto+www.amazon.cn
 	pat = re.compile(r'^(\w+?(\.\w+?))',re.S)
@@ -20,6 +20,9 @@ def validateUrl(url,https):
 	pat = re.compile(r'^//',re.S)
 	url = pat.sub(proto , url)
 
+	pat = re.compile(r'(.*)(#.*$)',re.S)
+	url = pat.sub(r'\1' , url)
+
 	return url
 for url in urls:
-	print validateUrl(url,https)
+	print validateUrl(url)

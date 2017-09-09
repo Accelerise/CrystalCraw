@@ -6,12 +6,12 @@ import os
 
 parent_folder = os.path.split(os.path.realpath(__file__))[0] + '/../'
 sys.path.append(parent_folder)
-import settings
+import CrawSetting
 
 class Configer:
 	@classmethod
 	def getConfig(cls):
-		return vars(settings)
+		return vars(CrawSetting)
 
 if __name__ == '__main__':
 	res = Configer.getConfig()

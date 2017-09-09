@@ -20,11 +20,12 @@ class Rules:
 
 	# void 传入参数初始化
 	# - Array - arr url规则数组
-	def initRules(self,arr):
+	def initRules(self,arr,detailUrl=None):
 		self.rules = []
 		for rule in arr:
 			rule = re.compile(rule)
 			self.rules.append(rule)
+		self.detailUrl = detailUrl
 
 	# Array 得到rules数组
 	def getRules(self):
@@ -39,11 +40,19 @@ class Rules:
 				return True
 		return False
 
+	# Bool 判断url是否匹配detailUrl
+	# - String - url 待匹配url
+	def matchDetail(self,url):
+		pat=re.compile(self.detailUrl)
+		match = pat.match(url)
+		if match:
+			return True
+		return False
+
 if __name__ == '__main__':
-	url = "https://item.jd.com/5025518.html"
-	pat = re.compile("https://item.jd.com/\d+.html")
+	url = "https://item.taobao.com/item.htm?id=557598393787&ns=1&abbucket=0"
 	rules = Rules()
-	rules.initRules(["https://item.jd.com/\d+.html"])
+	rules.initRules(["https://item.taobao.com/item.htm\?id=\d+.*"])
 	match = rules.match(url)
 	if not match:
 		print "不匹配"

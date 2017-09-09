@@ -7,6 +7,9 @@ import Xpath
 import re
 from LogUtil import LogUtil
 
+from Tool import Queue,File
+file = File()
+file.setDir(".")
 class Parser:
 	# 解析页面，通用解析过程为1.收集url 2.尝试生成item，成功即插入数据库
 
@@ -17,12 +20,20 @@ class Parser:
 	def __init__(self,crystal,proto="https://"):
 		self.proto = proto
 		self.crystal = crystal
+		self.xpath = crystal._xpath
 		self.xpathBox = crystal._xpath.getXpath()
 		self.queue = crystal._queue
 		self.rules = crystal._rules
 		self.bf = crystal._bf
-		self.domainFir = crystal._hostInfo["fir"]
+
 		self.lock = crystal._lock
+
+		if self.xpathBox is None:
+			raise XpathNotInit
+		if self.queue is None:
+			raise QueueNotInit
+		if self.bf is None:
+			raise BFNotInit
 
 	# Parser 单例模式
 	@classmethod
@@ -35,18 +46,15 @@ class Parser:
 	# - String - proto 协议
 	def setProto(self,proto):
 		self.proto = proto
+
+	def setDomain(self,domainFir):
+		self.domainFir = domainFir
 		
 	# void 通用页面解析
 	# - String - host 页面host，url
 	# - String - pagelink 页面源链接
 	# - String - page 页面文档内容
 	def process_item(self,host,pagelink,page):
-		if self.xpathBox is None:
-			raise XpathNotInit
-		if self.queue is None:
-			raise QueueNotInit
-		if self.bf is None:
-			raise BFNotInit
 		LogUtil.i("开始解析页面："+pagelink)
 		dom = etree.HTML(page)
 		self.collectURLs(dom=dom,pagelink=pagelink,host=host)
@@ -78,41 +86,65 @@ class Parser:
 	# - String -  pagelink 本页链接，用于调试时参考
 	# - String -  host 本页host，用于拼接URL
 	def parseDetail(self,dom,pagelink,host):
+
+		def extractElement(key):
+			res = []
+			if self.xpath.isXpath(self.xpathBox[key]):
+				tmp = dom.xpath(self.xpathBox[key])
+				# file.fileIn("wtf",etree.tostring(dom))
+				# print "写入了"+pagelink
+				for each in tmp:
+					res.append(each.strip())
+			else:
+				tmp = dom.cssselect(self.xpathBox[key])
+				# file.fileIn("wtf",etree.tostring(dom))
+				# print "写入了"+pagelink
+				for each in tmp:
+					res.append(each.text.strip())
+				
+			if len(res) is 1:
+				return res[0]
+			elif len(res) > 1:
+				return res
+			else:
+				# 第一个就找不到，判定该页非详情页
+				return None
+
 		item = {}
 		item["xpath_fail_url"] = None
 		first = True
+		if(self.rules.detailUrl!=None):
+			flag = self.rules.matchDetail(pagelink)
+			if(flag==False):
+				return
 		for key in self.xpathBox:
 			if first:
 				first = False
-				res = dom.xpath(self.xpathBox[key])
-				
-				if len(res) is 1:
-					item[key] = res[0]
-				elif len(res) > 1:
-					item[key] = res
-				else:
-					LogUtil.n("第一个就找不到，判定该页非详情页")
-					# 第一个就找不到，判定该页非详情页
+				item[key] = extractElement(key)
+				if item[key] is None:
+					LogUtil.i("第一个就找不到，判定该页非详情页")
 					return
-				LogUtil.d("提取xpath："+self.xpathBox[key]+"，获取结果："+item[key])
+				
 			else:
-				res = dom.xpath(self.xpathBox[key])
-				if len(res) is 1:
-					item[key] = res[0]
-				elif len(res) > 1:
-					item[key] = res
-				else:
-					LogUtil.n("找不到后面的，判断为xpath不够完善")
+				item[key] = extractElement(key)
+				if item[key] is None:
+					LogUtil.i("找不到后面的，判断为xpath不够完善")
 					# 找不到后面的，判断为xpath不够完善
 					item["xpath_fail_url"] = pagelink
-				LogUtil.d("提取xpath："+self.xpathBox[key]+"，获取结果："+item[key])
+
+			LogUtil.i("提取xpath："+self.xpathBox[key]+"，获取结果："+item[key])
+		
 		if item["xpath_fail_url"] is None:
 			# 数据库操作，插入数据item
-			LogUtil.n("数据库操作，插入数据item")
+			db = DB('127.0.0.1', 27017)
+			db.createDB("craw")
+			id = db.incId()
+			document = {"id":id,"url":pagelink}
 			for key in item:
-				if item[key] is None:
-					item[key] = 'None'
-				LogUtil.n(key+' '+item[key])
+				if (key!="xpath_fail_url"):
+					document[key] = item[key]
+			print document
+			db.insertDBforOne("Result",document)
 			# raw_input("我等等你")
 		else:
 			# 错误处理
@@ -145,6 +177,9 @@ class Parser:
 		# 如 //channel.jd.com => proto+channel.jd.com
 		pat = re.compile(r'^//',re.S)
 		url = pat.sub(self.proto , url)
+
+		pat = re.compile(r'(.*)(#.*$)',re.S)
+		url = pat.sub(r'\1' , url)
 		# 使用给定的url规则匹配，默认所有url都会通过，即(.*)
 		noProto = url[len(self.proto):]
 		if self.rules.match(noProto):
@@ -155,7 +190,7 @@ class Parser:
 			return False
 
 class XpathNotInit(Exception):
-	value="You have not initialized XpathBox,please call setXpathBox(dic) and pass a Xpath in"
+	value="You have not initialized XpathBox,please construct Parser with a complete Crystal instance"
 	"""docstring for XpathNotInit"""
 	def __init__(self, value=""):
 		super(Exception, self).__init__()
@@ -163,9 +198,9 @@ class XpathNotInit(Exception):
 			self.value = value
 	def __str__(self):
 		return repr(self.value)
-		
+
 class QueueNotInit(Exception):
-	value="You have not initialized Queue,please call setQueue(queue) and pass a Queue in"
+	value="You have not initialized Queue,please construct Parser with a complete Crystal instance"
 	"""docstring for XpathNotInit"""
 	def __init__(self, value=""):
 		super(Exception, self).__init__()
@@ -175,7 +210,7 @@ class QueueNotInit(Exception):
 		return repr(self.value)
 
 class BFNotInit(Exception):
-	value="You have not initialized BloomFilter,please call setBF(bf) and pass a BloomFilter in"
+	value="You have not initialized BloomFilter,please construct Parser with a complete Crystal instance"
 	"""docstring for XpathNotInit"""
 	def __init__(self, value=""):
 		super(Exception, self).__init__()
@@ -185,38 +220,21 @@ class BFNotInit(Exception):
 		return repr(self.value)
 
 if __name__ == '__main__':
-	from Bloom import Bloomfilter
 	from Tool import Queue,File
-	from Xpath import Xpath
-	from Rules import Rules
-
-	_xpath = Xpath()
-	dic = {}
-	dic["名"] = '/html/body/div[7]/div/div[2]/div[1]/text()'
-	dic["价格"] = '/html/body/div[7]/div/div[2]/div[3]/div/div[1]/div[2]/span/span[2]/text()'
-	_xpath.initXpath(dic)
-
-	arr = ["https://list.jd.com/list.html?cat=670,671,672.*","https://item.jd.com/\d+.html"]
-	_rules = Rules()
-	_rules.initRules(arr)
-
-	_queue = Queue()
-	_bf = Bloomfilter(1000000,0.0001)
-
-	parser = Parser()
-	parser.setXpathBox(_xpath.getXpath())
-	parser.setRules(_rules)
-	parser.setQueue(_queue)
-	parser.setBF(_bf)
-	parser.setDomainFir("jd") # 传入一级域名
-
-	host = "www.jd.com"
-	pagelink = "https://www.jd.com"
+	import weakref
+	a = Queue()
+	a_ref = weakref.ref(a)
+	print a_ref
 
 	file = File()
 	file.setDir(".")
-
-	page = file.fileRead("sample")
-	LogUtil.start_log()
-	parser.process_item(host,pagelink,page)
-	LogUtil.end_log()
+	xpathBox = {}
+	xpathBox["名称"] = '//*[@id="J_ShopInfo"]/a/img/@src'
+	page = file.fileRead("wtf")
+	dom = etree.HTML(page)
+	res = []
+	tmp = dom.xpath(xpathBox["名称"])
+	
+	for each in tmp:
+		res.append(each.strip())
+	print res

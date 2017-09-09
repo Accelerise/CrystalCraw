@@ -6,6 +6,7 @@ import sys
 import re
 import threading
 import time
+import signal
 
 from lxml import etree
 from Bloom import Bloomfilter
@@ -17,6 +18,7 @@ from Downloader import Downloader
 from Parser import Parser
 from Configer import Configer
 from LogUtil import LogUtil
+from httplib import BadStatusLine
 
 class Crystal:
 	# 构造函数
@@ -25,8 +27,7 @@ class Crystal:
 		self._xpath = None
 		self._rules = None
 		self._parser = None
-		self._downloader = None
-		self._configer = None
+		self._config = None
 		self._bf = None
 		self._queue = None
 		self._hostInfo = None
@@ -34,10 +35,11 @@ class Crystal:
 
 		self.initComponents()
 
+		self.firstState()
+
 	# void 初始化各组件
 	def initComponents(self):
-		self._config = Configer.getConfig()
-		self.initStartUrl()
+		self.initConfig()
 		self.initXpath()
 		self.initRules()
 		
@@ -45,40 +47,58 @@ class Crystal:
 		self.initQueue()
 		self.initParser()
 		self.createDir(self._projectName)
-		for each in self.start_url:
-			self._queue.put(each)
 
 	# void 运行
 	def run(self):
+		self.threadAdd()
 		LogUtil.start_log()
-		TIMEOUT_COUNT = 0
+		empty_count = 0
 		_downloader = self.newDownloader()
-		while True:
+		while self.getState() == "running":
 			self._lock.acquire()
 			if not self._queue.empty():
 				pagelink = self._queue.pop()
 				self._lock.release()
 
-				parseRes = self.parseUrl(pagelink)
-				if parseRes is None:
-					host = None
-					# 该url不合法
-				else:
-					host = parseRes["host"]
-				page = _downloader.get(pagelink)
+				# parseRes = self.parseUrl(pagelink)
+				# if parseRes is None:
+				# 	host = None
+				# 	# 该url不合法
+				# else:
+				host = self._hostInfo["host"]
+				try:
+					page = _downloader.get(pagelink)
+				except Exception:
+					continue
 				self._parser.process_item(host=host,pagelink=pagelink,page=page)
+				
 			else:
 				self._lock.release()
-				if TIMEOUT_COUNT < 3:
-					TIMEOUT_COUNT = TIMEOUT_COUNT + 1
-					time.sleep(3)
+				if empty_count < 3:
+					empty_count = empty_count + 1
+					time.sleep(5)
+				else:
+					break
+			time.sleep(self._config["DOWNLOAD_DELAY"])
+
+		self.threadReduce()
 		LogUtil.end_log()
+
 
 	# void 初始化起始URL
 	def initStartUrl(self):
 		# 修改这里获取起始URL的途径
-		self.start_url = ["https://list.jd.com/list.html?cat=670,671,672"]
+
+		if self.getState() == "restart":
+			self.start_url = self.loadQueue()
+		else:
+			self.start_url = ["https://s.taobao.com/search?q=%E6%AF%9B%E8%A1%A3%E7%94%B7"]
+
 		self._hostInfo = self.parseUrl(self.start_url[0])
+		self._parser.setProto(self._hostInfo["proto"]) # 默认为https://
+		self._parser.setDomain(self._hostInfo["fir"])
+		for each in self.start_url:
+			self._queue.put(each)
 		LogUtil.i("初始化起始URL完成")
 
 	# void 初始化xpath
@@ -91,15 +111,24 @@ class Crystal:
 		LogUtil.i("初始化Xpath完成")
 
 	# void 初始化rules
-	def initRules(self):
+	def initRules(self,detailUrl = None):
 		# 获取url规则数组
 		self._rules = Rules()
 		if(not self._rules.isManual()):
 			arr = self.getRulesFromMGDB()
 			# 如果能获取到数据，说明用户在web前台填写了url规则
 			if arr is not None:
-				self._rules.initRules(arr)
+				self._rules.initRules(arr,detailUrl)
 		LogUtil.i("初始化Rules完成")
+
+	# void 读取本地配置
+	def initConfig(self):
+		self._config = {}
+
+		# 本地配置
+		localConfig = Configer.getConfig()
+		for row in localConfig:
+			self._config[row] = localConfig[row]
 
 	# void 初始化downloader
 	def newDownloader(self):
@@ -126,12 +155,7 @@ class Crystal:
 	# void 初始化Parser
 	def initParser(self):
 		self._parser = Parser.getInstance(self)
-		# self._parser.setProto("http://") # 默认为https://，最好根据用户的输入智能设置 #
-		# self._parser.setXpathBox(self._xpath.getXpath())
-		# self._parser.setRules(self._rules)
-		# self._parser.setQueue(self._queue)
-		# self._parser.setBF(self._bf)
-		# self._parser.setDomainFir(self._hostInfo["fir"]) # 传入一级域名
+		
 		LogUtil.i("初始化Parser完成")
 
 	# {} / False 解析URL
@@ -161,6 +185,19 @@ class Crystal:
 			return res
 		else:
 			return False
+
+	def setState(self,state):
+		self._state = state
+		# init running stop restart end
+
+	def getState(self):
+		return self._state
+
+	def firstState(self):
+		if self.fileTool.fileExist("queue") :
+			self.setState("restart")
+		else:
+			self.setState("init")
 	
 	# void 创建工作目录
 	# - String - projectName 工程名
@@ -169,11 +206,41 @@ class Crystal:
 		self.fileTool.setDir(projectName)
 		LogUtil.i("创建工作目录")
 
+
+	def saveQueue(self):
+		if self.fileTool.fileExist("queue") :
+			self.fileTool.fileRemove("queue")
+		while not self._queue.empty():
+			url = self._queue.pop()
+			self.fileTool.fileAppend("queue",url + "\n")
+
+	def loadQueue(self):
+		return self.fileTool.fileReadLine("queue")
 	
+	def threadAdd(self):
+		self._lock.acquire()
+		self._threadCount = self._threadCount + 1
+		self._lock.release()
+
+	def threadReduce(self):
+		self._lock.acquire()
+		self._threadCount = self._threadCount - 1
+		self._lock.release()
+
+	def getThreadCount(self):
+		self._lock.acquire()
+		res = self._threadCount
+		self._lock.release()
+		return res
+
+
 	# void 从数据库获取给定的xpath规则
 	def getXpathFromMGDB(self):
 		dic = {}
-		dic["电影名"] = '//*[@id="content"]/h1/span[1]/text()'
+
+		dic["名称"] = '//*[@id="J_Title"]/h3/text()'
+		dic["价格"] = '#J_StrPrice > em.tb-rmb-num' 
+		dic["图片地址"] = '//*[@id="J_ShopInfo"]/a/img/@src'
 		LogUtil.i("从数据库获取给定的xpath规则")
 		return dic
 
@@ -181,19 +248,39 @@ class Crystal:
 	# void 从数据库获取给定的url规则
 	def getRulesFromMGDB(self):
 		LogUtil.i("从数据库获取给定的url规则")
-		return ["https://list.jd.com/list.html?cat=670,671,672.*","https://item.jd.com/\d+.html"]
-
-	# void 从数据库获取是否使用chrome-headless下载页面
-	def getIfChromeEnable(self):
-		LogUtil.i("从数据库获取是否使用chrome-headless下载页面")
-		return True
+		return ["https://s.taobao.com/search\?.*q=%E6%AF%9B%E8%A1%A3%E7%94%B7.*","https://item.taobao.com/item.htm\?id=\d+.*"]
 
 	def start(self):
-		print "线程数 4"
+		self.initStartUrl()
+		self.setState("running")
+		self._threadCount = 0
+		print "开启线程数 "+str(self._config["TREADING_COUNT"])
+		poo = []
 		for i in range(self._config["TREADING_COUNT"]):
-			threading.Thread(target=self.run).start()
+			poo.append(threading.Thread(target=self.run))
+		for task in poo:
+			task.setDaemon('True')
+			task.start()
+		try:
+			while self.getThreadCount() != 0:
+				time.sleep(2)
+		except KeyboardInterrupt as e:
+			self.setState("stop")
+			for task in poo:
+				task.join()
+			LogUtil.d('正在停止本次爬取，之后您再次开启时可接着上一次继续爬取')
 
+		if self.getState() == "stop":
+			self.saveQueue()
+			self.setState("end")
+		elif self.getState() == "running":
+			self.setState("end")
+
+	
 if __name__ == '__main__':
 
-	project = Crystal("京东")
+	project = Crystal("淘宝毛衣男")
 	project.start()
+	# project.initStartUrl()
+	# project.saveQueue()
+	# project.loadQueue()

@@ -22,14 +22,18 @@ class LogUtil:
 	@classmethod
 	def start_log(cls):
 		cls.start = datetime.datetime.now()
+		cls.lock.acquire()
 		print "start~",cls.start
+		cls.lock.release()
 
 	@classmethod
 	def end_log(cls):
 		cls.end = datetime.datetime.now()
 		used = cls.end - cls.start
+		cls.lock.acquire()
 		print " end ~",cls.end
 		print "used ~",used
+		cls.lock.release()
 	# 打印日志 level : info
 	@classmethod
 	def i(cls,info):

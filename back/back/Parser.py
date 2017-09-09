@@ -7,7 +7,6 @@ import Xpath
 import re
 from LogUtil import LogUtil
 from models import DB
-import json
 
 class Parser:
 	# 解析页面，通用解析过程为1.收集url 2.尝试生成item，成功即插入数据库
@@ -16,12 +15,23 @@ class Parser:
 
 	# 构造函数
 	# - String - proto(可选) 网站使用的协议 http:// / https://
-	def __init__(self,proto="https://"):
+	def __init__(self,crystal,proto="https://"):
 		self.proto = proto
-		self.xpathBox = None
-		self.rules = None
-		self.bf = None
-		self.domainFir = None
+		self.crystal = crystal
+		self.xpath = crystal._xpath
+		self.xpathBox = crystal._xpath.getXpath()
+		self.queue = crystal._queue
+		self.rules = crystal._rules
+		self.bf = crystal._bf
+		self.domainFir = crystal._hostInfo["fir"]
+		self.lock = crystal._lock
+
+		if self.xpathBox is None:
+			raise XpathNotInit
+		if self.queue is None:
+			raise QueueNotInit
+		if self.bf is None:
+			raise BFNotInit
 
 	# Parser 单例模式
 	@classmethod
@@ -35,41 +45,19 @@ class Parser:
 	# - String - proto 协议
 	def setProto(self,proto):
 		self.proto = proto
-
-	# void 设置xpath规则
-	# - {} -     dic xpath字典
-	def setXpathBox(self,dic):
-		self.xpathBox = dic
-
-	# void 设置url规则
-	# - {} -     dic url规则字典
-	def setRules(self,dic):
-		self.rules = dic
-
-	# void 传入查重过滤器
-	# - Queue -  queue 项目使用的url队列 
-	def setBF(self,bf):
-		self.bf = bf
-
-	# void 传入一级域名
-	# - String -  一级域名
-	def setDomainFir(self,fir):
-		self.domainFir = fir
-		
+	
+	def setDomain(self,domainFir):
+		self.domainFir = domainFir
 	# void 通用页面解析
 	# - String - host 页面host，url
 	# - String - pagelink 页面源链接
 	# - String - page 页面文档内容
-	def process_item(self,host,pagelink,page,detailUrl=None):
-		if self.xpathBox is None:
-			raise XpathNotInit
-		if self.bf is None:
-			raise BFNotInit
-		#LogUtil.i("开始解析页面："+pagelink)
+	def process_item(self,host,pagelink,page):
+		LogUtil.i("开始解析页面："+pagelink)
 		dom = etree.HTML(page)
 		self.collectURLs(dom=dom,pagelink=pagelink,host=host)
 		LogUtil.i("该页面收集URL结束："+pagelink)
-		self.parseDetail(dom=dom,pagelink=pagelink,host=host,detailUrl=detailUrl)
+		self.parseDetail(dom=dom,pagelink=pagelink,host=host)
 		LogUtil.i("该页面详细分析结束："+pagelink)
 
 	# void 收集URL
@@ -84,19 +72,18 @@ class Parser:
 		for url in urls:
 			url = self.standardizeUrl(host,url)
 			if url is not False:
+				self.lock.acquire()
 				if(not self.bf.isContains(url)):
 					LogUtil.n("put in url:" + url + '\n')
-					self.bf.insert(url)
+					self.bf.add(url)
+					self.lock.release()
 					id = db.incId()
 					document = {"id":id,"url":url}
 					db.insertDBforOne("Target",document)
-
+				else:
+					self.lock.release()
 
 	def initCollectURLs(self, host, pagelink, page):
-		if self.xpathBox is None:
-			raise XpathNotInit
-		if self.bf is None:
-			raise BFNotInit
 		db = DB('127.0.0.1',27017)
 		db.createDB("UrlCollect")
 		LogUtil.i("开始初始化爬出url："+pagelink)
@@ -107,7 +94,7 @@ class Parser:
 			if url is not False:
 				if (not self.bf.isContains(url)):
 					LogUtil.n("put in url:" + url + '\n')
-					self.bf.insert(url)
+					self.bf.add(url)
 					id = db.incId()
 					document = {"id":id,"url":url}
 					db.insertDBforOne("Target",document)
@@ -117,38 +104,50 @@ class Parser:
 	# - String -  dom html文档
 	# - String -  pagelink 本页链接，用于调试时参考
 	# - String -  host 本页host，用于拼接URL
-	def parseDetail(self,dom,pagelink,host,detailUrl=None):
+	def parseDetail(self,dom,pagelink,hostsel):
+
+		def extractElement(key):
+			res = []
+			if self.xpath.isXpath(self.xpathBox[key]):
+				tmp = dom.xpath(self.xpathBox[key])
+				for each in res:
+					res.append(each.strip())
+			else:
+				tmp = dom.cssselect(self.xpathBox[key])
+				for each in tmp:
+					res.append(each.text.strip())
+				
+			if len(res) is 1:
+				return res[0]
+			elif len(res) > 1:
+				return res
+			else:
+				# 第一个就找不到，判定该页非详情页
+				return None
+
 		item = {}
 		item["xpath_fail_url"] = None
 		first = True
-		if(detailUrl!=None):
-			flag = self.rules.matchDetail(pagelink,detailUrl)
+		if(self.rules.detailUrl!=None):
+			flag = self.rules.matchDetail(pagelink)
 			if(flag==False):
 				return
 		for key in self.xpathBox:
 			if first:
 				first = False
-				res = dom.xpath(self.xpathBox[key])
-				print res
-				if len(res) is 1:
-					item[key] = res[0]
-				elif len(res) > 1:
-					item[key] = res
-				else:
-					LogUtil.n("第一个就找不到，判定该页非详情页")
-					# 第一个就找不到，判定该页非详情页
+				item[key] = extractElement(key)
+				if not item[key]:
+					LogUtil.i("第一个就找不到，判定该页非详情页")
 					return
 			else:
-				res = dom.xpath(self.xpathBox[key])
-				print res
-				if len(res) is 1:
-					item[key] = res[0]
-				elif len(res) > 1:
-					item[key] = res
-				else:
-					LogUtil.n("找不到后面的，判断为xpath不够完善")
+				item[key] = extractElement(key)
+				if not item[key]:
+					LogUtil.i("找不到后面的，判断为xpath不够完善")
 					# 找不到后面的，判断为xpath不够完善
 					item["xpath_fail_url"] = pagelink
+
+			LogUtil.i("提取xpath："+self.xpathBox[key]+"，获取结果："+item[key])
+
 		if item["xpath_fail_url"] is None:
 			db = DB('127.0.0.1', 27017)
 			db.createDB("CrystalCraw")
@@ -188,6 +187,9 @@ class Parser:
 		# 如 //channel.jd.com => proto+channel.jd.com
 		pat = re.compile(r'^//',re.S)
 		url = pat.sub(self.proto , url)
+
+		pat = re.compile(r'(.*)(#.*$)',re.S)
+		url = pat.sub(r'\1' , url)
 		# 使用给定的url规则匹配，默认所有url都会通过，即(.*)
 		noProto = url[len(self.proto):]
 		if self.rules.match(noProto):
@@ -198,7 +200,7 @@ class Parser:
 			return False
 
 class XpathNotInit(Exception):
-	value="You have not initialized XpathBox,please call setXpathBox(dic) and pass a Xpath in"
+	value="You have not initialized XpathBox,please construct Parser with a complete Crystal instance"
 	"""docstring for XpathNotInit"""
 	def __init__(self, value=""):
 		super(Exception, self).__init__()
@@ -207,9 +209,18 @@ class XpathNotInit(Exception):
 	def __str__(self):
 		return repr(self.value)
 
+class QueueNotInit(Exception):
+	value="You have not initialized Queue,please construct Parser with a complete Crystal instance"
+	"""docstring for XpathNotInit"""
+	def __init__(self, value=""):
+		super(Exception, self).__init__()
+		if value is not "":
+			self.value = value
+	def __str__(self):
+		return repr(self.value)
 
 class BFNotInit(Exception):
-	value="You have not initialized BloomFilter,please call setBF(bf) and pass a BloomFilter in"
+	value="You have not initialized BloomFilter,please construct Parser with a complete Crystal instance"
 	"""docstring for XpathNotInit"""
 	def __init__(self, value=""):
 		super(Exception, self).__init__()
