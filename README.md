@@ -1,9 +1,9 @@
-# CraystalCraw:分布式爬虫框架
+# CraystalCraw:分布式爬虫平台
 
 ## 概览
 CrystalCraw是一个分布式的爬虫平台。
 用户无需编写代码，只需输入几个必要的参数即可从绝大多数博客类和电商类网站爬取结构化数据。
-用户交互基于B/S结构，使用了多线程，Redis，Celery,MongoDB，Chrome-headless，Bloom过滤等技术。
+用户交互基于B/S结构，爬虫使用了多线程，Redis，Celery,MongoDB，Chrome-headless，Bloom过滤等技术。
 
 ## 环境要求
 + 操作系统Ubuntu 16.04
@@ -32,14 +32,14 @@ CrystalCraw是一个分布式的爬虫平台。
 1.	下载HTML文档
 1.	收集a标签
 1.	清洗去重URL
-1.	URL存入数据库
+1.	URL进入队列
 1.	分析HTML文档
 1.	爬取结果存入数据库
 
 ## 项目目录
 ```
-|-- back						//分布式爬虫
-|   |--back						//后端调度
+|-- wcgfetch						//分布式爬虫
+|   |--backend						//后端调度
 |      |--static				//前端静态资源
 |      |--Bloom.py				//URL查重器
 |      |--Configer.py			//配置文件读取类
@@ -56,29 +56,32 @@ CrystalCraw是一个分布式的爬虫平台。
 |      |--view.py
 |      |--wsgi.py
 |      |--Xpath.py				//Xpath规则容器
-|   |--templates
+|   |--frontend
 |      |--index.html			//首页模板
 |      |--loading.html			//监控爬虫页模板
 |      |--results.html			//结果查看页模板
-|   |--db.sqlite3
-|   |--manage.py
+|   |--craw
+|   |--myapp
+|   |--wcgfetch
 
 ```
 
 
 ## 使用方法
 
-+ THE MAIN URL ：作为初始链接，需要一个完整的url，完整至http。（必填）
-+ THE DETAIL URL：详情页链接url的正则表达示（可选）
-+ THE DATA URL 1：用于限制爬取范围的url正则表达式（可选，可增加条目）
-+ ATTRIBUTE NAME ： 想要爬取的属性的名称（必填，可增加条目）
-+ XPATH：需要爬取的属性的XPATH（必填，可增加条目）
++ 起始URL ：作为初始链接，需要一个完整的url，完整至http。（必填）
++ 详情页URL：详情页链接url的正则表达示（可选），不填即把所有链接都当详情页搜索数据
++ 数据范围URL：用于限制爬取范围的url正则表达式（可选），如限制范围为京东笔记本，则填写https://list.jd.com/list.html\?cat=670,671,672.*
++ Xpath/CSS规则： 想要爬取的属性的名称及对应的搜索依据（必填）
+如京东，
+'商品名' 对应 xpath /html/body/div[5]/div/div[2]/div[1]/text() 或对应 CSS div.sku-name
+'价格' 对应 xpath /html/body/div[5]/div/div[2]/div[3]/div/div[1]/div[2]/span/span[2]/text() 或对应 CSS span.price
 
 
 输入一个起始的网站地址，爬虫将以宽度优先的遍历顺序爬取网站中所有的链接。
 给定想要抓取的元素的Xpath，爬虫就会在遍历过程中将匹配到的数据存入数据库。
 如果用户指定了详情页的URL正则，那么爬虫就能更加精准地找到详情页。
-如果用户指定了爬虫应该检索的URL正则，那么宽度优先搜索时的路径将更加精确，利用这个功能可以实现剪枝。
+如果用户指定了爬虫应该检索的URL正则，那么宽度优先搜索时的路径将更加准确，减少无关商品的录入。
 
 
 ## 环境依赖
@@ -100,6 +103,7 @@ CrystalCraw是一个分布式的爬虫平台。
 2.	安装Django，sudo pip install Django
 3.	安装pymongo，sudo pip install pymongo
 4.	安装lxml，sudo pip install lxml
+4.	安装cssselect，sudo pip install cssselect
 5.	安装redis，sudo pip install redis
 6.	安装requests，sudo pip install requests
 7.	安装selenium，sudo pip install selenium

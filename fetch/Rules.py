@@ -8,11 +8,9 @@ class Rules:
 	def __init__(self):
 		all = re.compile(".*")
 		self.rules = [all]
-		#如要手动编写rules，请在构造函数中实现
-		#self.rules.append("url_reg")
 
-	# Bool 判断用户是否手动编写rules
-	def isManual(self):
+	# Bool True代表不限定范围，全站搜索
+	def isAll(self):
 		if(len(self.rules) is not 1 ):
 			return True
 		else:
@@ -26,6 +24,12 @@ class Rules:
 			rule = re.compile(rule)
 			self.rules.append(rule)
 		self.detailUrl = detailUrl
+		if not self.detailUrl == None:
+			self.rules.append(detailUrl)
+
+	def initDetailUrl(self,detailUrl):
+		self.detailUrl = detailUrl
+		self.rules.append(detailUrl)
 
 	# Array 得到rules数组
 	def getRules(self):

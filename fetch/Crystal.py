@@ -26,7 +26,7 @@ M_xpathBox = {}
 M_rules = []
 M_starturl = []
 M_table = ""
-M_detail = ""
+M_detail = None
 class Crystal:
 	# 构造函数
 	def __init__(self,projectName):
@@ -75,11 +75,6 @@ class Crystal:
 				pagelink = self._queue.pop()
 				self._lock.release()
 
-				# parseRes = self.parseUrl(pagelink)
-				# if parseRes is None:
-				# 	host = None
-				# 	# 该url不合法
-				# else:
 				host = self._hostInfo["host"]
 				try:
 					page = _downloader.get(pagelink)
@@ -108,7 +103,6 @@ class Crystal:
 		if self.getState() == "restart":
 			self.start_url = self.loadQueue()
 		else:
-			# self.start_url = ["https://s.taobao.com/search?q=%E6%AF%9B%E8%A1%A3%E7%94%B7"]
 			self.start_url = M_starturl
 
 		self._hostInfo = self.parseUrl(self.start_url[0])
@@ -131,13 +125,12 @@ class Crystal:
 	def initRules(self,detailUrl = None):
 		# 获取url规则数组
 		self._rules = Rules()
-		if(not self._rules.isManual()):
-			arr = self.getRulesFromMGDB()
-			if detailUrl is not None:
-				arr.append(detailUrl)
-			# 如果能获取到数据，说明用户在web前台填写了url规则
-			if arr is not None:
-				self._rules.initRules(arr,detailUrl)
+		arr = self.getRulesFromMGDB()
+		if len(arr) == 0:
+			self._rules.initDetailUrl(detailUrl)
+		else:
+			self._rules.initRules(arr,detailUrl)
+
 		LogUtil.i("初始化Rules完成")
 
 	# void 读取本地配置
@@ -256,19 +249,13 @@ class Crystal:
 	# void 从数据库获取给定的xpath规则
 	def getXpathFromMGDB(self):
 		dic = M_xpathBox
-
-		# dic["名称"] = '/html/body/div[5]/div/div[2]/div[1]/text()'
-		# dic["价格"] = '#J_StrPrice > em.tb-rmb-num' 
-		# dic["价格"] = "/html/body/div[5]/div/div[2]/div[3]/div/div[1]/div[2]/span/span[2]/text()"
-		# dic["图片地址"] = '//*[@id="J_ShopInfo"]/a/img/@src'
-		LogUtil.i("从数据库获取给定的xpath规则")
+		LogUtil.i("获取给定的xpath规则")
 		return dic
 
 
 	# void 从数据库获取给定的url规则
 	def getRulesFromMGDB(self):
-		LogUtil.i("从数据库获取给定的url规则")
-		# return ["https://s.taobao.com/search\?.*q=%E6%AF%9B%E8%A1%A3%E7%94%B7.*","https://item.taobao.com/item.htm\?id=\d+.*"]
+		LogUtil.i("获取给定的url规则")
 		return M_rules
 	def start(self):
 		self.initStartUrl()
