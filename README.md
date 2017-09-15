@@ -116,6 +116,6 @@ curl http://chromedriver.storage.googleapis.com/$VERSION/chromedriver_$PLATFORM.
 17.	在view.py中多处需要配置数据库地址，其中CrystalCraw相关的是存储数据的数据库，UrlCollect相关的是任务队列的数据库。
 
 ## 贡献者（排名不分先后）
-[rebirthwyw](https://github.com/rebirthwyw)
-[rebirthwyw](https://github.com/Accelerise)
-[guanzhentian](https://github.com/guanzhentian)
++ [rebirthwyw](https://github.com/rebirthwyw)
++ [Accelerise](https://github.com/Accelerise)
++ [guanzhentian](https://github.com/guanzhentian)
